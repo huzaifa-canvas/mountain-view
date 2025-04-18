@@ -1,0 +1,238 @@
+@media only screen and (min-width: 1800px){
+    .container{
+        max-width: 1700px;
+    }
+}
+@media only screen and (max-width: 1799px){
+    .header_logo {
+        max-width: 160px;
+    }
+    .header_inner_flex {
+        gap: 40px;
+    }
+    .header_nav ul {
+        gap: 30px;
+    }
+    .header_nav ul li a {
+        font-size: 14px;
+    }
+    .common_dark_btn {
+        width: 190px;
+        font-size: 14px;
+    }
+    .index_banner_wrap_text h4 {
+        font-size: 20px;
+    }
+    .index_banner_wrap_text h6 {
+        font-size: 65px;
+    }
+    .index_banner_form_box {
+        padding: 40px;
+    }
+    .index_first_wrapper {
+        padding: 80px 0px;
+    }
+    .sub_heading {
+        font-size: 18px;
+    }
+    .heading {
+        font-size: 55px;
+    }
+    .desc {
+        font-size: 16px;
+        margin: 0px 0px 10px 0px;
+    }
+    .index_first_wrap_text .desc {
+        margin: 0px auto 15px auto;
+        max-width: 1050px;
+    }
+    .index_second_wrapper {
+        padding: 80px 0px;
+    }
+    .index_second_wrap_box_text .heading {
+        margin: 0px 0px 20px 0px;
+        font-size: 35px;
+    }
+    .index_second_wrap_box_text .desc {
+        margin: 0px 0px 25px 0px;
+    }
+    .index_second_wrap_box_img {
+        width: 100%;
+        height: 340px;
+    }
+    .index_third_wrap_box{
+        padding: 30px;
+        height: 360px;
+    }
+    .index_third_wrap_box:hover {
+        padding: 30px 30px 30px 30px;
+    }
+    .index_third_wrap_box_text h6 {
+        font-size: 24px;
+        height: 55px;
+    }
+    .index_third_wrap_box_text p {
+        font-size: 14px;
+    }
+    .index_fourth_wrap_box_text h6 {
+        font-size: 26px;
+    }
+    .index_fifth_wrapper {
+        padding: 80px 0px;
+    }
+    .index_fifth_wrap_box {
+        padding: 20px 15px;
+    }
+    .index_fifth_wrap_box_text .desc {
+        font-size: 14px;
+    }
+    .index_sixth_wrapper {
+        padding: 80px 0px;
+    }
+    .index_sixth_wrap_img_box {
+        height: 280px;
+    }
+    .footer_logo {
+        max-width: 180px;
+    }
+    .footer_info ul li {
+        font-size: 14px;
+        width: 60%;
+    }
+    .footer_info ul li a {
+        font-size: 14px;
+    }
+    .footer_nav h6 {
+        font-size: 22px;
+    }
+    .footer_nav ul li a, .footer_nav p {
+        font-size: 14px;
+    }
+    .copyright {
+        margin: 70px 0px 0px 0px;
+    }
+    .copyright_text p {
+        font-size: 14px;
+    }
+}
+@media only screen and (max-width: 1399px){
+    .header_logo {
+        max-width: 190px;
+    }
+    .header_nav ul li a {
+        font-size: 13px;
+    }
+    .common_dark_btn {
+        width: 170px;
+        font-size: 12px;
+        height: 50px;
+    }
+    .index_banner_wrap_text h4 {
+        font-size: 16px;
+    }
+    .index_banner_wrap_text h6 {
+        font-size: 60px;
+        max-width: 800px;
+    }
+    .index_banner_form_box {
+        padding: 35px;
+    }
+    .index_banner_form_box_input input, .index_banner_form_box_input_1 input {
+        width: 220px;
+        font-size: 12px;
+    }
+    .index_banner_form_box_input_1 input {
+        width: 170px;
+        text-align: center;
+        font-size: 12px;
+    }
+    .sub_heading {
+        font-size: 14px;
+    }
+    .heading {
+        font-size: 50px;
+    }
+    .index_first_wrap_text .desc {
+        max-width: 950px;
+    }
+    .index_second_wrap_box_text .heading {
+        font-size: 32px;
+    }
+    .index_second_wrap_box_text .desc {
+        margin: 0px 0px 20px 0px;
+    }
+    .index_second_wrap_box_img {
+        height: 290px;
+    }
+    .index_third_wrap_box {
+        padding: 30px;
+        height: 390px;
+    }
+    .index_third_wrap_box:hover {
+        padding: 35px 30px 30px 35px;
+    }
+    .index_third_wrap_box_text h6 {
+        font-size: 19px;
+        height: 45px;
+    }
+    .index_fifth_wrap_box_text .desc {
+        font-size: 14px;
+        margin: 0px 0px 10px 0px !important;;
+    }
+    .booking_slider2 .swiper-slide img {
+        height: 400px;
+    }
+    .booking_card_box_text_m {
+        padding: 20px;
+    }
+    .booking_card_box_text ul li {
+        font-size: 13px;
+    }
+    .booking_card_box_htext .sub_heading {
+        font-size: 16px;
+    }
+    .booking_card_box_htext h6 span {
+        font-size: 14px;
+    }
+    .booking_card_box_htext h6 {
+        font-size: 30px;
+    }
+    .booking_card_box_text1 ul li {
+        font-size: 16px;
+    }
+    .booking_card_box_text1 input {
+        font-size: 14px;
+        height: 20px;
+    }
+    .booking_card_box_text1 .number {
+        padding: 8px 10px;
+        max-width: 165px;
+    }
+    .common_light_btn {
+        width: 170px;
+        font-size: 12px;
+        height: 50px;
+    }
+    .booking_card_box_text1f {
+        gap: 30px;
+    }
+    .booking_card_box_text1 h4 {
+        font-size: 14px;
+    }
+    .booking_card_box_ul ul li {
+        font-size: 13px;
+    }
+    .radio-button {
+        font-size: 14px;
+    }
+    .radio {
+        width: 20px;
+        height: 20px;
+    }
+}
+@media only screen and (max-width: 1199px){
+}
+@media only screen and (max-width: 991px){
+}
+@media only screen and (max-width: 575px){
+}
