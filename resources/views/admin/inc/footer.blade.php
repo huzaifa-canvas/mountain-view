@@ -1,9 +1,10 @@
+
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
    
       <div class="modal-body">
-        <form  action="{{url('admin/post-team/')}}" method='post' enctype="multipart/form-data" >
+        <form action="{{ url('admin/post-' . last(request()->segments())) }}" method="post" enctype="multipart/form-data">
           @csrf
         
           <section class="section">
@@ -143,29 +144,14 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-   
-  
-    </div>
-  </div>
-</div>
+
 
 
 
 <!-- ======= Footer ======= -->
  <footer id="footer" class="footer">
     <div class="copyright">
-      &copy; Copyright <strong><span>Yolo Elite</span></strong>. All Rights Reserved 
+      &copy; Copyright <strong><span>MountainView</span></strong>. All Rights Reserved 
     </div>
 
     </div>

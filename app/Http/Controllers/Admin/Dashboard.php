@@ -17,10 +17,12 @@ class Dashboard extends Controller
     
     }
 
-  
-    public function teams(){
-        $teams = DB::table('teams')->orderBy('teams_id','DESC')->get();
-        return view('admin.teams',compact('teams'));
+
+    public function listing(){
+        $query = DB::table('listings')->orderBy('listings_id', 'DESC');
+        $db = $query->from;
+        $collections = $query->get();
+        return view('admin.view', compact('collections','db'));
     
     }
     public function services(){

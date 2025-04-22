@@ -28,7 +28,7 @@ Route::get('/admin',function(){
 
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/dashboard', [Dashboard::class, 'index']);
-    Route::get('/homepage', [Dashboard::class, 'homepage']);
+    Route::get('/listings', [Dashboard::class, 'listing']);
     Route::get('/teams', [Dashboard::class, 'teams']);
     Route::get('/services', [Dashboard::class, 'services']);
     Route::get('/videos', [Dashboard::class, 'videos']);
@@ -66,6 +66,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 Route::get('/', [Main::class,'index']);
 Route::get('/booking', [Main::class,'booking']);
 Route::get('/room', [Main::class,'booking']);
+Route::get('/gallery', [Main::class,'gallery']);
 
 
 //Front End

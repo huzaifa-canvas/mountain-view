@@ -1,4 +1,4 @@
-<?php include 'inc/header.php'?>
+@include('admin.inc.header')
 
 <section class="index_banner_wrapper inner_banner_wrapper">
     <div class="container">
@@ -52,4 +52,4 @@
 </section>
 
 
-<?php include 'inc/footer.php'?>
+@include('admin.inc.footer')

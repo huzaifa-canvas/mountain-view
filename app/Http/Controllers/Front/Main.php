@@ -18,4 +18,7 @@ class Main extends Controller
     public function room(){
         return view('front.room');
     }
+    public function gallery(){
+        return view('front.gallery');
+    }
 }
