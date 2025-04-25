@@ -3,7 +3,7 @@
                     <div class="row">
                         <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                             <div class="footer_logo">
-                                <img src="assets/front/images/logo.png" class="img-fluid" alt="">
+                                <img src="{{ asset('assets/front/images/logo.png') }}" class="img-fluid" alt="">
                             </div>
                             <div class="footer_info">
                                 <ul>
@@ -46,7 +46,7 @@
                                         <p>Discover the Latest from Our motel mountain view</p>
                                         <div class="footer_nav_input">
                                             <input type="text" placeholder="Enter your email">
-                                            <img src="assets/front/images/arrow_long.png" class="img-fluid" alt="">
+                                            <img src="{{ asset('assets/front/images/arrow_long.png') }}" class="img-fluid" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -67,80 +67,79 @@
                     </div>
                 </div>
             </footer>
-        </div>
-    </div>
+            </div>
+            </div>
 
+            <script src="{{ asset('assets/front/js/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('assets/front/js/jquery-3.6.3.min.js') }}"></script>
+            <script src="{{ asset('assets/front/js/swiper-bundle.min.js') }}"></script>
+            <script src="{{ asset('assets/front/js/gsap.min.js') }}"></script>
+            <script src="{{ asset('assets/front/js/scrolltrigger.min.js') }}"></script>
+            <script src="{{ asset('assets/front/js/scrollsmoother.min.js') }}"></script>
+            <script src="{{ asset('assets/front/js/custom.js') }}"></script>
 
-<script src="assets/front/js/bootstrap.min.js"></script>
-<script src="assets/front/js/jquery-3.6.3.min.js"></script>
-<script src="assets/front/js/swiper-bundle.min.js"></script>
-<script src="assets/front/js/gsap.min.js"></script>
-<script src="assets/front/js/scrolltrigger.min.js"></script>
-<script src="assets/front/js/scrollsmoother.min.js"></script>
-<script src="assets/front/js/custom.js"></script>
+            <script>
+            function changeValue(id, step) {
+                let input = document.getElementById(id);
+                let value = input.value ? parseInt(input.value) : 0;
+                let newValue = value + step;
 
-<script>
-function changeValue(id, step) {
-    let input = document.getElementById(id);
-    let value = input.value ? parseInt(input.value) : 0;
-    let newValue = value + step;
+                if (newValue >= 0) {
+                    input.value = newValue;
+                }
+            }
+            </script>
 
-    if (newValue >= 0) {
-        input.value = newValue;
-    }
-}
-</script>
-
-<script>
-    var swiper = new Swiper(".booking_slider1", {
-      loop: true,
-      spaceBetween: 10,
-      slidesPerView: 4,
-      freeMode: true,
-      watchSlidesProgress: true,
-    });
-    var swiper2 = new Swiper(".booking_slider2", {
-      loop: true,
-      spaceBetween: 10,
-      effect: "fade",
-      thumbs: {
-        swiper: swiper,
-      },
-    });
-  </script>
-<script>
-    var swiper = new Swiper(".booking_slider3", {
-      loop: true,
-      spaceBetween: 10,
-      slidesPerView: 4,
-      freeMode: true,
-      watchSlidesProgress: true,
-    });
-    var swiper2 = new Swiper(".booking_slider4", {
-      loop: true,
-      spaceBetween: 10,
-      effect: "fade",
-      thumbs: {
-        swiper: swiper,
-      },
-    });
-  </script>
-<script>
-    var swiper = new Swiper(".booking_slider5", {
-      loop: true,
-      spaceBetween: 10,
-      slidesPerView: 4,
-      freeMode: true,
-      watchSlidesProgress: true,
-    });
-    var swiper2 = new Swiper(".booking_slider6", {
-      loop: true,
-      spaceBetween: 10,
-      effect: "fade",
-      thumbs: {
-        swiper: swiper,
-      },
-    });
-  </script>
-</body>
-</html>
+            <script>
+                var swiper = new Swiper(".booking_slider1", {
+                  loop: true,
+                  spaceBetween: 10,
+                  slidesPerView: 4,
+                  freeMode: true,
+                  watchSlidesProgress: true,
+                });
+                var swiper2 = new Swiper(".booking_slider2", {
+                  loop: true,
+                  spaceBetween: 10,
+                  effect: "fade",
+                  thumbs: {
+                    swiper: swiper,
+                  },
+                });
+              </script>
+            <script>
+                var swiper = new Swiper(".booking_slider3", {
+                  loop: true,
+                  spaceBetween: 10,
+                  slidesPerView: 4,
+                  freeMode: true,
+                  watchSlidesProgress: true,
+                });
+                var swiper2 = new Swiper(".booking_slider4", {
+                  loop: true,
+                  spaceBetween: 10,
+                  effect: "fade",
+                  thumbs: {
+                    swiper: swiper,
+                  },
+                });
+              </script>
+            <script>
+                var swiper = new Swiper(".booking_slider5", {
+                  loop: true,
+                  spaceBetween: 10,
+                  slidesPerView: 4,
+                  freeMode: true,
+                  watchSlidesProgress: true,
+                });
+                var swiper2 = new Swiper(".booking_slider6", {
+                  loop: true,
+                  spaceBetween: 10,
+                  effect: "fade",
+                  thumbs: {
+                    swiper: swiper,
+                  },
+                });
+              </script>
+            </body>
+            </html>
