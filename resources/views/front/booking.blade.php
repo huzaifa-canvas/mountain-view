@@ -1,6 +1,4 @@
 @include('front.inc.header')
-
-
 <section class="index_banner_wrapper booking_banner_wrapper">
     <div class="container">
         <div class="index_banner_wrap_text inner_banner_wrap">
@@ -11,12 +9,12 @@
                 <div class="index_banner_form_box_input">
                     <label for="">Check in</label>
                     <input type="date">
-                    <img src="assets/front/images/calendar_icon.png" class="img-fluid" alt="">
+                    <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
                 </div>
                 <div class="index_banner_form_box_input">
                     <label for="">Check Out</label>
                     <input type="date">
-                    <img src="assets/front/images/calendar_icon.png" class="img-fluid" alt="">
+                    <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
                 </div>
                <div class="index_banner_form_box_input_1">
                     <div class="number">
