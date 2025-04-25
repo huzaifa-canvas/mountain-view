@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Login;
 use App\Http\Controllers\Admin\Dashboard;
-use App\Http\Controllers\Admin\Home;
+use App\Http\Controllers\Admin\Listings;
 
 
 use App\Http\Controllers\Front\Main;
@@ -47,7 +47,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::get('profile/',[Dashboard::class,'profile']);
     //POST METHOD
-    Route::post('edit-homepage/{id}',[Home::class,'Store']);
+    Route::post('post-listings',[Listings::class,'Store']);
     Route::post('edit-founderpage/{id}',[Home::class,'store_founder']);
     Route::post('/upload-video', [Home::class, 'video']);
     Route::post('/global-settings/{id}',[Home::class,'global_setting']);

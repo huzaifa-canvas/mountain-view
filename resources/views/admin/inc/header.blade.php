@@ -26,6 +26,7 @@
   <link href="{{asset('assets/admin/vendor/simple-datatables/style.css')}}" rel="stylesheet">
   <link href="{{asset('assets/admin/vendor/multi/multi-style.css')}}" rel="stylesheet">
   <link href="{{asset('assets/admin/css/style.css')}}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
 
@@ -129,7 +130,7 @@
           <span>Dashboard</span>
         </a>
       </li><!-- End Dashboard Nav -->
-      <li class="nav-item">
+      {{-- <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-journal-text"></i><span>Page & Content Management</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -160,11 +161,11 @@
           </li>
          
         </ul>
-      </li>
+      </li> --}}
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url('admin/memberships') }}">
+        <a class="nav-link collapsed" href="{{ url('admin/listings') }}">
           <i class="bi bi-person"></i>
-          <span>Memberships</span>
+          <span>listings</span>
         </a>
       </li>
       <li class="nav-item">

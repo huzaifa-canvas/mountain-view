@@ -12,7 +12,7 @@
     </div>
 
     <section>
-      <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Add New {{ucfirst(str_replace('_','',$db))}}</a>
+      <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#{{$db}}Modal">Add New {{ucfirst(str_replace('_','',$db))}}</a>
 
       <table class="table datatable">
         <thead>
