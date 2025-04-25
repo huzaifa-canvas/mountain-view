@@ -11,7 +11,9 @@ class Main extends Controller
         return view('front.index');
     }
     public function booking(){
-        return view('front.booking');
+        $listings = \App\Models\Listing::orderBy('listings_id', 'desc')->get();
+
+        return view('front.booking',compact('listings'));
     }
 
 

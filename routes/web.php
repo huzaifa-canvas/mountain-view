@@ -65,7 +65,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
 Route::get('/', [Main::class,'index']);
 Route::get('/booking', [Main::class,'booking']);
-Route::get('/room', [Main::class,'booking']);
+Route::get('/room', [Main::class,'room']);
 Route::get('/gallery', [Main::class,'gallery']);
 
 
