@@ -40,9 +40,7 @@
         <span class="d-none d-lg-block">MountainView Admin Panel</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
-      <a href="{{url('admin/cache-clear')}}" class="btn btn-danger ms-3">
-        Clear Cache
-      </a>
+  
     </div><!-- End Logo -->
 
    
