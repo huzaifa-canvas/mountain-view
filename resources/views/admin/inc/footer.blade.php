@@ -30,14 +30,23 @@
                         <div class="col-sm-12">
                           <div id="answer_container">
                             <div class="input-group mb-2 answer_parent">
-                              <input type="text" name='listings_points[]' class="form-control">
+                              <input type="text" name='listings_points[]' class="form-control" placeholder="Enter Points" required>
                               <button type="button" class="btn btn-danger remove-btn"><i class="bi bi-x-lg"></i></button>
                             </div>
                           </div>
                           <button id="clone_btn" type="button" class="btn btn-success"><i class="bi bi-plus-lg"></i></button>
                         </div>
-                      
-                      </div> 
+                        <label for="inputText" class="col-sm-12 col-form-label">Listing Extras</label>
+                        <div class="col-sm-12">
+                          <div id="answer_container2">
+                            <div class="input-group mb-2 answer_parent2">
+                              <input type="text" name='listings_icons[]' class="form-control" placheholder="Enter Fontawesome Icon" required>
+                              <input type="text" name='listings_extras[]' class="form-control" placheholder="Enter Extras" required>
+                              <button type="button" class="btn btn-danger remove-btn2"><i class="bi bi-x-lg"></i></button>
+                            </div>
+                          </div>
+                          <button id="clone_btn2" type="button" class="btn btn-success"><i class="bi bi-plus-lg"></i></button>
+                        </div>
                         <div class="row mb-3">
                           <label for="inputText" class="col-sm-12 col-form-label">Team Img</label>
                           <div class="col-sm-12">
@@ -119,6 +128,30 @@
       });
     });
   </script>
+    <script>
+      $(document).ready(function(){
+        let counter = 1;
+        $('#clone_btn2').on('click', function(){
+            var answerContainer = $('#answer_container2');
+            if (answerContainer.length) {
+                var clone = $('.answer_parent2:first').clone(); 
+                clone.find('input').val(''); 
+                answerContainer.append(clone); 
+                counter++; 
+            } else {
+                console.error('Required elements are missing in the DOM.');
+            }
+        });
+  
+        $(document).on('click', '.remove-btn2', function(){
+            if ($('.answer_parent2').length > 1) {
+                $(this).closest('.answer_parent2').remove();
+            } else {
+                alert('At least one input field is required.');
+            }
+        });
+      });
+    </script>
   <script>
     tinymce.init({
       selector: 'textarea#default-editor'
