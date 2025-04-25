@@ -37,7 +37,7 @@
 
     <div class="d-flex align-items-center justify-content-between">
       <a href="{{url('admin/dashboard')}}" class="logo d-flex align-items-center">
-        <span class="d-none d-lg-block">YoloElite Admin Panel</span>
+        <span class="d-none d-lg-block">MountainView Admin Panel</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
       <a href="{{url('admin/cache-clear')}}" class="btn btn-danger ms-3">
