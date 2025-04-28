@@ -26,7 +26,6 @@
   <link href="{{asset('assets/admin/vendor/simple-datatables/style.css')}}" rel="stylesheet">
   <link href="{{asset('assets/admin/vendor/multi/multi-style.css')}}" rel="stylesheet">
   <link href="{{asset('assets/admin/css/style.css')}}" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
 
@@ -43,8 +42,7 @@
   
     </div><!-- End Logo -->
 
-   
-
+    
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
 
