@@ -116,6 +116,63 @@
     }
 }
 @media only screen and (max-width: 1399px){
+     .radio-button {
+        font-size: 14px;
+    }
+    .radio {
+        width: 20px;
+        height: 20px;
+    }
+    .checkout_form_input input {
+        font-size: 14px;
+        height: 55px;
+        padding: 0px 20px 0px 20px;
+    }
+    .checkout_form_input select {
+        font-size: 14px;
+        height: 55px;
+        padding: 0px 20px 0px 20px;
+    }
+    .checkout_form_input.flag_input img {
+        top: 55px;
+    }
+    .radio-input label {
+        gap: 10px;
+        height: 55px;
+    }
+    .radio-input .label .text {
+        font-size: 14px;
+    }
+    .checkout_review_pro_text p {
+        margin: 0px;
+    }
+    .desc {
+        font-size: 14px;
+    }
+    .checkout_m_wrap {
+        width: 95%;
+    }
+    .checkbox-wrapper-46 .cbx span:first-child {
+        width: 18px;
+        height: 17px;
+        margin: 5px 0px 0px 0px;
+    }
+    .checkbox-wrapper-46 .cbx span {
+        font-size: 14px;
+    }
+    .checkbox-wrapper-46 .cbx span:first-child svg {
+        top: 3px;
+        left: 2px;
+    }
+    .checkbox-wrapper-46 .cbx {
+        align-items: self-start;
+    }
+    input.sm_input {
+        width: 90px;
+    }
+    .checkout_review_text p {
+        font-size: 14px;
+    }
     .header_logo {
         max-width: 190px;
     }
@@ -231,6 +288,39 @@
     }
 }
 @media only screen and (max-width: 1199px){
+     .checkout_m_wrap {
+        width: 100%;
+    }
+    .checkout_review_pro_text p {
+        font-size: 14px;
+    }
+    .checkout_form_input label {
+        font-size: 14px;
+        margin: 0px 0px 10px 0px;
+        gap: 10px;
+    }
+    .checkout_form_input input {
+        font-size: 12px;
+        height: 50px;
+        padding: 0px 10px 0px 15px;
+    }
+    .checkout_form_input select {
+        font-size: 12px;
+        height: 50px;
+        padding: 0px 10px 0px 15px;
+    }
+    .checkout_review_cart_input input {
+        font-size: 12px;
+        padding: 0px 65px 0px 55px;
+    }
+    .checkout_review_cart_input button {
+        font-size: 14px;
+        top: 15px;
+        right: 20px;
+    }
+    .checkout_review_ssl_text p {
+        margin: 0;
+    }
 }
 @media only screen and (max-width: 991px){
 }

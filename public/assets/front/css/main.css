@@ -1494,4 +1494,512 @@ li.img_fix img {
 .booking_card_box_ul ul {
     column-count: 2;
 }
+.checkout_wrapper {
+    padding: 100px 0px;
+    background-color: var(--white);
+}
+.checkout_m_wrap {
+    border-radius: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #F5F7FC;
+    padding: 50px;
+    width: 85%;
+    margin: 0 auto;
+}
+.checkout_form_ttext h6{
+    font-size: 40px;
+    margin: 0px 0px 15px 0px;
+}
+.checkout_form_ttext p{
+    margin: 0px 0px 25px 0px;
+}
+
+.radio-input {
+  display: flex;
+  gap: 10px;
+  margin: 0px 0px 40px 0px;
+}
+.radio-input * {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+.radio-input label {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0px 20px;
+  cursor: pointer;
+  height: 60px;
+  position: relative;
+  border-radius: 48px;
+  z-index: 3;
+}
+.radio-input label::before {
+  position: absolute;
+  content: "";
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 60px;
+  z-index: -1;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-radius: 10px;
+  border: 1px solid #818EA1;
+  background: #F4F5FE;
+  border-radius: 48px;
+}
+.radio-input .label:has(input:checked)::before {
+  background-color: #F4F5FE;
+  border-color: #184E77;
+  height: 60px;
+}
+.radio-input .label .text {
+    color: var(--black);
+    font-size: 16px;
+    font-family: var(--plusJakartaSans-regular);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.radio-input .label input[type="radio"] {
+    background-color: #818EA1;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: 1px solid #818EA1 !important;
+    outline-offset: 2px;
+    position: relative;
+}
+.radio-input .label input[type="radio"]:checked {
+  background-color: #184E77;
+  -webkit-animation: puls 0.7s forwards;
+  animation: pulse 0.7s forwards;
+  outline: 1px solid #184E77 !important;
+}
+.radio-input .label input[type="radio"]:before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transition: all 0.1s cubic-bezier(0.165, 0.84, 0.44, 1);
+  background-color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+}
+.radio-input .label input[type="radio"]:checked::before {
+  transform: translate(-50%, -50%) scale(1);
+  outline-color: #000;
+}
+.checkout_form_input label {
+    font-size: 16px;
+    color: var(--black);
+    font-family: var(--plusJakartaSans-regular);
+    text-transform: capitalize;
+    margin: 0px 0px 15px 0px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.checkout_form_input select{
+    font-size: 16px;
+    font-family: var(--plusJakartaSans-regular);
+    width: 100%;
+    height: 60px;
+    padding: 0px 40px 0px 20px;
+    border: 1px solid #818EA1;
+    background-color: transparent;
+    border-radius: 40px;
+    color: #818EA1;
+}
+.checkout_form_input select option{
+    background-color: #184E77;
+    color: var(--white);
+}
+.checkout_form_input input:focus {
+    border: 1px solid var(--main-color);
+}
+.checkout_form_input select:focus {
+    border: 1px solid var(--main-color);
+}
+.checkout_form_input input{
+    font-size: 16px;
+    font-family: var(--plusJakartaSans-regular);
+    width: 100%;
+    height: 60px;
+    padding: 0px 40px 0px 20px;
+    border: 1px solid #818EA1;
+    background-color: transparent;
+    border-radius: 40px;
+    color: var(--black);
+}
+.checkout_form_input input::placeholder{
+    color: #818EA1;
+}
+.checkout_form_input {
+    margin: 0px 0px 25px 0px;
+    position: relative;
+}
+.checkout_form_input span {
+    position: absolute;
+    top: 69%;
+    left: 95%;
+    transform: translate(-50%, -50%);
+}
+.checkout_form_input_main_f {
+    display: flex;
+    gap: 30px;
+    margin: 0px 0px 20px 0px;
+}
+.checkout_form_input_f {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+input.sm_input {
+    text-align: center;
+    width: 125px;
+    padding: 0px 20px;
+}
+.checkout_form_input p {
+    font-size: 40px;
+    color: #4A5568;
+    transform: translateY(-5px);
+}
+.checkout_form_input_main_f .checkout_form_input {
+    margin: 0px;
+}
+.checkbox-wrapper-46 input[type="checkbox"] {
+  display: none;
+  visibility: hidden;
+}
+.checkbox-wrapper-46 {
+    margin: 0px 0px 15px 0px;
+}
+.checkbox-wrapper-46 .cbx {
+    margin: auto;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.checkbox-wrapper-46 .cbx span {
+  display: inline-block;
+  vertical-align: middle;
+  transform: translate3d(0, 0, 0);
+}
+.checkbox-wrapper-46 .cbx span:first-child {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  transform: scale(1);
+  vertical-align: middle;
+  border: 1px solid #9098a9;
+  transition: all 0.2s ease;
+}
+.checkbox-wrapper-46 .cbx span:first-child svg {
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  fill: none;
+  stroke: #319F43;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 16px;
+  stroke-dashoffset: 16px;
+  transition: all 0.3s ease;
+  transition-delay: 0.1s;
+  transform: translate3d(0, 0, 0);
+}
+.checkbox-wrapper-46 .cbx span:first-child:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    background: #319F43;
+    display: block;
+    transform: scale(0);
+    opacity: 1;
+    border-radius: 50%;
+}
+.checkbox-wrapper-46 .cbx span:last-child {
+  padding-left: 8px;
+}
+.checkbox-wrapper-46 .cbx:hover span:first-child {
+  border-color: #506eec;
+}
+
+.checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child {
+  background: #e7ebfa;
+  border-color: #319F43;
+  animation: wave-46 0.4s ease;
+}
+.checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child svg {
+  stroke-dashoffset: 0;
+}
+.checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child:before {
+  transform: scale(3.5);
+  opacity: 0;
+  transition: all 0.6s ease;
+}
+.checkout_review_ttext h6{
+    font-size: 20px;
+    margin: 0px 0px 25px 0px;
+}
+.checkout_review_text h5{
+    font-size: 16px;
+    margin: 0px 0px 10px 0px;
+}
+.checkout_review_text p {
+    font-size: 16px;
+}
+.checkout_review_text p span{
+    color: var(--black);
+}
+.checkout_review_product_wrap {
+    width: 100%;
+    height: 260px;
+    overflow-y: scroll;
+    margin: 0px 0px 20px 0px;
+}
+.checkout_review_product_wrap::-webkit-scrollbar {
+    width: 5px;
+    border-radius: 20px;
+}
+.checkout_review_product_wrap::-webkit-scrollbar-track {
+    background: var(--white); 
+    border-radius: 20px;
+}
+.checkout_review_product_wrap::-webkit-scrollbar-thumb {
+	background-color: #dfe4f1;
+	border-radius: 20px;
+}
+.checkout_review_text_f {
+    display: flex;
+    gap: 10px;
+    margin: 0px 0px 15px 0px;
+}
+.checkout_review_text_f .checkout_review_text {
+    width: 35%;
+}
+.checkout_review_pro_text h5{
+    font-size: 16px;
+    margin: 0px 0px 5px 0px;
+}
+.checkout_review_pro_text p {
+    font-size: 16px;
+    color: #697387;
+}
+.checkout_review_pro_text p span{
+    color: var(--black);
+}
+.checkout_review_pro_img {
+    border-radius: 8px;
+    border: 1px solid #DBDDE3;
+    background: var(--white);
+    padding: 5px;
+    width: 100px;
+    height: 110px;
+    overflow: hidden;
+}
+.checkout_review_pro_f {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0px 0px 15px 0px;
+}
+.checkout_review_pro_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.checkout_review_cart_input input {
+    font-size: 16px;
+    font-family: var(--plusJakartaSans-regular);
+    border-radius: 48px;
+    color: #818EA1;
+    border: 1px solid #DBDDE3;
+    background: var(--white);
+    width: 100%;
+    height: 52px;
+    padding: 0px 70px 0px 55px;
+}
+
+.checkout_review_cart_input {
+    position: relative;
+    margin: 0px 0px 20px 0px;
+}
+.checkout_review_cart_input img {
+    position: absolute;
+    top: 15px;
+    left: 20px;
+}
+.checkout_review_cart_input button {
+    font-size: 16px;
+    color: #425BE7;
+    font-family: var(--plusJakartaSans-medium);
+    background: transparent;
+    border: 0;
+    position: absolute;
+    top: 13px;
+    right: 20px;
+}
+.checkout_review_cart_price .checkout_review_text p {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0px 0px 10px 0px;
+}
+.checkout_review_cart_price .checkout_review_text p.darkk {
+    font-size: 18px;
+    color: var(--black);
+}
+.checkout_review_cart_btn button {
+    width: 100%;
+}
+.checkout_review_cart_price {
+    margin: 0px 0px 40px 0px;
+}
+.checkout_review_ssl_text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0px 0px 15px 0px;
+}
+.checkout_review_ssl_text p {
+    color: var(--black);
+}
+.checkout_review_cart_btn {
+    margin: 0px 0px 20px 0px;
+}
+.checkout_form_input label span {
+    position: unset;
+    transform: unset;
+    font-size: 16px;
+    color: #E23710;
+}
+.signin_box .checkout_form_input label {
+    gap: 5px !important;
+}
+.signin_box_btn{
+    margin: 0px 0px 20px 0px;
+}
+.signin_box_btn a {
+    font-size: 16px;
+    color: #319F43;
+    font-family: var(--plusJakartaSans-regular);
+}
+.signin_box_btn {
+    text-align: end;
+}
+.signin_box_btn a:hover {
+    text-decoration: underline;
+}
+.signin_box_btn1 button {
+    width: 50%;
+    margin: 0 auto;
+}
+.signup_box .checkout_form_input label {
+    gap: 5px !important;
+}
+.checkout_form_input.flag_input input {
+    padding: 0px 20px 0px 70px;
+}
+.checkout_form_input.flag_input img {
+    position: absolute;
+    top: 59px;
+    left: 20px;
+    cursor: pointer;
+}
+.check_main_btns {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 0px 0px 20px 0px;
+}
+
+.check_main_btns .long_btn {
+    width: 240px;
+}
+@keyframes wave-46 {
+  50% {
+    transform: scale(0.9);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.radio_buttonf{
+    display: flex;
+    gap: 10px;
+}
+.radio-button {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  position: relative;
+  align-items: center;
+  font-family: var(--plusJakartaSans-regular);
+  cursor: pointer;
+  color: var(--para);
+}
+
+.radio-button input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+}
+.radio {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  transform: translateZ(-25px);
+  transition: all 0.3s ease-in-out;
+}
+
+.radio::before {
+    position: absolute;
+    content: '';
+    width: 10px;
+    height: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background-color: var(--main-color);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.radio-button input[type="radio"]:checked + .radio {
+  border-color: #5cb85c;
+  transform: translateZ(0px);
+  background-color: #fff;
+}
+
+.radio-button input[type="radio"]:checked + .radio::before {
+  opacity: 1;
+}
 /* CSS-FOR-INNER-PAGES-END */

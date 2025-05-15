@@ -23,4 +23,7 @@ class Main extends Controller
     public function gallery(){
         return view('front.gallery');
     }
+        public function checkout(){
+        return view('front.checkout');
+    }
 }

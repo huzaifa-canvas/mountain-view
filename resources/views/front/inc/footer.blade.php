@@ -7,9 +7,18 @@
                             </div>
                             <div class="footer_info">
                                 <ul>
-                                    <li><i class="fa-solid fa-envelope"></i><a href="mailto:info@mountainviewhope.com">info@mountainviewhope.com</a></li>
-                                    <li><i class="fa-solid fa-phone"></i><a href="tel:+1 236-355-0999">+1 236-355-0999</a></li>
-                                    <li><i class="fa-solid fa-location-dot"></i><span>504 Old Hope Princeton Way Hope, BC V0X 1L4 Canada</span></li>
+                                    <li>
+                                        <i class="fa-solid fa-envelope"></i>
+                                        <a href="mailto:info@mountainviewhope.com">info@mountainviewhope.com</a>
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-phone"></i>
+                                        <a href="tel:+1 236-355-0999">+1 236-355-0999</a>
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        <span>504 Old Hope Princeton Way Hope, BC V0X 1L4 Canada</span>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -77,69 +86,89 @@
             <script src="{{ asset('assets/front/js/scrolltrigger.min.js') }}"></script>
             <script src="{{ asset('assets/front/js/scrollsmoother.min.js') }}"></script>
             <script src="{{ asset('assets/front/js/custom.js') }}"></script>
-
             <script>
-            function changeValue(id, step) {
-                let input = document.getElementById(id);
-                let value = input.value ? parseInt(input.value) : 0;
-                let newValue = value + step;
+                document.addEventListener("DOMContentLoaded", function () {
+                    const signInBtn = document.querySelector(".check_main_btns .common_dark_btn:not(.long_btn)");
+                    const signUpBtn = document.querySelector(".check_main_btns .common_dark_btn.long_btn");
 
-                if (newValue >= 0) {
-                    input.value = newValue;
-                }
-            }
+                    const checkoutBox = document.querySelector(".checkout_box");
+                    const signinBox = document.querySelector(".signin_box");
+                    const signupBox = document.querySelector(".signup_box");
+
+                    signInBtn.addEventListener("click", function () {
+                        checkoutBox.classList.add("d-none");
+                        signinBox.classList.remove("d-none");
+                        signupBox.classList.add("d-none");
+                    });
+
+                    signUpBtn.addEventListener("click", function () {
+                        checkoutBox.classList.add("d-none");
+                        signinBox.classList.add("d-none");
+                        signupBox.classList.remove("d-none");
+                    });
+                });
             </script>
+            <script>
+                function changeValue(id, step) {
+                    let input = document.getElementById(id);
+                    let value = input.value ? parseInt(input.value) : 0;
+                    let newValue = value + step;
 
+                    if (newValue >= 0) {
+                        input.value = newValue;
+                    }
+                }
+            </script>
             <script>
                 var swiper = new Swiper(".booking_slider1", {
-                  loop: true,
-                  spaceBetween: 10,
-                  slidesPerView: 4,
-                  freeMode: true,
-                  watchSlidesProgress: true,
+                    loop: true,
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesProgress: true,
                 });
                 var swiper2 = new Swiper(".booking_slider2", {
-                  loop: true,
-                  spaceBetween: 10,
-                  effect: "fade",
-                  thumbs: {
-                    swiper: swiper,
-                  },
+                    loop: true,
+                    spaceBetween: 10,
+                    effect: "fade",
+                    thumbs: {
+                        swiper: swiper,
+                    },
                 });
-              </script>
+            </script>
             <script>
                 var swiper = new Swiper(".booking_slider3", {
-                  loop: true,
-                  spaceBetween: 10,
-                  slidesPerView: 4,
-                  freeMode: true,
-                  watchSlidesProgress: true,
+                    loop: true,
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesProgress: true,
                 });
                 var swiper2 = new Swiper(".booking_slider4", {
-                  loop: true,
-                  spaceBetween: 10,
-                  effect: "fade",
-                  thumbs: {
-                    swiper: swiper,
-                  },
+                    loop: true,
+                    spaceBetween: 10,
+                    effect: "fade",
+                    thumbs: {
+                        swiper: swiper,
+                    },
                 });
-              </script>
+            </script>
             <script>
                 var swiper = new Swiper(".booking_slider5", {
-                  loop: true,
-                  spaceBetween: 10,
-                  slidesPerView: 4,
-                  freeMode: true,
-                  watchSlidesProgress: true,
+                    loop: true,
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesProgress: true,
                 });
                 var swiper2 = new Swiper(".booking_slider6", {
-                  loop: true,
-                  spaceBetween: 10,
-                  effect: "fade",
-                  thumbs: {
-                    swiper: swiper,
-                  },
+                    loop: true,
+                    spaceBetween: 10,
+                    effect: "fade",
+                    thumbs: {
+                        swiper: swiper,
+                    },
                 });
-              </script>
+            </script>
             </body>
             </html>

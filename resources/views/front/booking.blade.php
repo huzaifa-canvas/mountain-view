@@ -87,7 +87,7 @@
                 <div class="booking_card_box_text_m">
                     <div class="booking_card_box_htext">
                         <h6 class="heading">{{ $listing->listings_name }} <span>Recommended</span></h6>
-                        <p class="sub_heading">today’s Price ${{ $listing->listings_price }}</p>
+                        <p class="sub_heading">today's Price ${{ $listing->listings_price }}</p>
                     </div>
                     <div class="row">
                         <div class="col-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 col-xxl-7 mb-3">
@@ -119,6 +119,8 @@
                              
                             </div>
                         </div>
+                        <form action="{{ route('booking_cart', ['id' => $listing->listings_id]) }}" method="post">
+                            @csrf
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                             <div class="booking_card_box_textm_f">
                                 <div class="booking_card_box_text1f">
@@ -134,13 +136,13 @@
                                         <h4 class="heading">Need laundry?</h4>
                                         <div class="radio_buttonf">
                                             <label class="radio-button">
-                                              <input type="radio" name="example-radio" value="Yes1">
+                                              <input type="radio" value="Yes" name="laundry">
                                               <span class="radio"></span>
                                               Yes
                                             </label>
-                                            
+
                                             <label class="radio-button">
-                                              <input type="radio" name="example-radio" value="No1">
+                                              <input type="radio"  value="No" name="laundry" checked>
                                               <span class="radio"></span>
                                               No
                                             </label>
@@ -150,7 +152,7 @@
                                         <h4 class="heading mb-3">Have Pets?</h4>
                                         <div class="number">
                                             <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                                            <input type="text" name="1" value="0" maxlength="3" readonly="">
+                                            <input type="text" name="pets" value="0" maxlength="3" readonly="" required>
                                             <span class="plus"><i class="fa-solid fa-plus"></i></span>
                                         </div>
                                     </div>
@@ -158,17 +160,18 @@
                                         <h4 class="heading mb-3">Select Room</h4>
                                         <div class="number">
                                             <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                                            <input type="text" name="1" value="0" maxlength="3" readonly="">
+                                            <input type="text" name="room" value="0" maxlength="3" readonly="" required>
                                             <span class="plus"><i class="fa-solid fa-plus"></i></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="booking_card_box_btns">
                                     <a href="#!" class="common_light_btn">Read More <i class="fa-solid fa-circle-chevron-right"></i></a>
-                                    <a href="#!" class="common_dark_btn">Reserve Room <i class="fa-solid fa-circle-chevron-right"></i></a>
+                                    <button type="submit" class="common_dark_btn">Reserve Room <i class="fa-solid fa-circle-chevron-right"></i></button>
                                 </div>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>

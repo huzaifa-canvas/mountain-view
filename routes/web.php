@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Listings;
 
 use App\Http\Controllers\Front\Main;
 
+use App\Http\Controllers\Front\Ecommerce;
 
 
 Route::post('/auth',[Login::class,'authenticate']);
@@ -67,6 +68,9 @@ Route::get('/', [Main::class,'index']);
 Route::get('/booking', [Main::class,'booking']);
 Route::get('/room', [Main::class,'room']);
 Route::get('/gallery', [Main::class,'gallery']);
+Route::get('/checkout', [Main::class,'checkout']);
 
+Route::post('booking/{id}',[Ecommerce::class,'booking_cart'])->name('booking_cart');
+Route::post('post_checkout',[Ecommerce::class,'checkout'])->name('store_checkout');
 
 //Front End
