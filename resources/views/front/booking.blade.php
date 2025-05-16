@@ -1,4 +1,5 @@
 @include('front.inc.header')
+
 <section class="index_banner_wrapper booking_banner_wrapper">
     <div class="container">
         <div class="index_banner_wrap_text inner_banner_wrap">
@@ -24,7 +25,6 @@
                         <span class="plus" onclick="changeValue('Adult', 0)"><i class="fa-solid fa-plus"></i></span>
                     </div>
                 </div>
-                
                 <div class="index_banner_form_box_input_1">
                     <div class="number">
                         <label for="Children">Children</label>
@@ -49,7 +49,6 @@
                 <div class="booking_card_box_img">
                     <div class="swiper booking_slider2">
                         <div class="swiper-wrapper">
-
                         @php 
                             $images = json_decode($listing->listings_img, true);
                         @endphp
