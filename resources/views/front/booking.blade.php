@@ -5,39 +5,41 @@
         <div class="index_banner_wrap_text inner_banner_wrap">
             <h6 class="mb-4">BOOKING</h6>
         </div> 
-        <div class="index_banner_form_box_wrapper">
-            <div class="index_banner_form_box">
-                <div class="index_banner_form_box_input">
-                    <label for="">Check in</label>
-                    <input type="date">
-                    <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
-                </div>
-                <div class="index_banner_form_box_input">
-                    <label for="">Check Out</label>
-                    <input type="date">
-                    <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
-                </div>
-               <div class="index_banner_form_box_input_1">
-                    <div class="number">
-                        <label for="Adult">Adult</label>
-                        <span class="minus" onclick="changeValue('Adult', -0)"><i class="fa-solid fa-minus"></i></span>
-                        <input type="text" placeholder="No Of Adult" id="Adult" readonly>
-                        <span class="plus" onclick="changeValue('Adult', 0)"><i class="fa-solid fa-plus"></i></span>
+        <form action="{{ url('booking') }}" method="get">
+            <div class="index_banner_form_box_wrapper">
+                <div class="index_banner_form_box">
+                    <div class="index_banner_form_box_input">
+                        <label for="">Check in</label>
+                        <input type="date" name="check_in" id="check_in" required value="{{ request()->get('check_in') }}">
+                        <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
                     </div>
-                </div>
+                    <div class="index_banner_form_box_input">
+                        <label for="">Check Out</label>
+                        <input type="date" name="check_out" id="check_out" required value="{{ request()->get('check_out') }}">
+                        <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
+                    </div>
                 <div class="index_banner_form_box_input_1">
-                    <div class="number">
-                        <label for="Children">Children</label>
-                        <span class="minus" onclick="changeValue('Children', -0)"><i class="fa-solid fa-minus"></i></span>
-                        <input type="text" placeholder="No Of Children" id="Children" readonly>
-                        <span class="plus" onclick="changeValue('Children', 0)"><i class="fa-solid fa-plus"></i></span>
+                        <div class="number">
+                            <label for="Adult">Adult</label>
+                            <span class="minus" onclick="changeValue('Adult', -0)"><i class="fa-solid fa-minus"></i></span>
+                            <input type="text" name="adult" placeholder="No Of Adult" id="Adult" value="{{ request()->get('adult') }}">
+                            <span class="plus" onclick="changeValue('Adult', 0)"><i class="fa-solid fa-plus"></i></span>
+                        </div>
                     </div>
-                </div>
-                <div class="index_banner_form_box_btn">
-                    <a href="#!" class="common_dark_btn">SEARCH <i class="fa-solid fa-magnifying-glass"></i></a>
+                    <div class="index_banner_form_box_input_1">
+                        <div class="number">
+                            <label for="Children">Children</label>
+                            <span class="minus" onclick="changeValue('Children', -0)"><i class="fa-solid fa-minus"></i></span>
+                            <input type="text" name="children" placeholder="No Of Children" id="Children" value="{{ request()->get('children') }}">
+                            <span class="plus" onclick="changeValue('Children', 0)"><i class="fa-solid fa-plus"></i></span>
+                        </div>
+                    </div>
+                    <div class="index_banner_form_box_btn">
+                        <button class="common_dark_btn">SEARCH <i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </section>
 

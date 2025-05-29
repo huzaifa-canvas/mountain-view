@@ -10,22 +10,23 @@
             <h6>Nature and Hospitality at Mountain View Hope Motel</h6>
         </div>
         <div class="index_banner_form_box_wrapper">
+            <form action="{{ url('booking') }}" method="GET" class="index_banner_form_box">
             <div class="index_banner_form_box">
                 <div class="index_banner_form_box_input">
                     <label for="">Check in</label>
-                    <input type="date">
+                    <input type="date" name="check_in" id="check_in" required>
                     <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
                 </div>
                 <div class="index_banner_form_box_input">
                     <label for="">Check Out</label>
-                    <input type="date">
+                    <input type="date" name="check_out" id="check_out" required>
                     <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
                 </div>
                 <div class="index_banner_form_box_input_1">
                     <div class="number">
                         <label for="Adult">Adult</label>
                         <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                        <input type="number" placeholder="No Of Adult" name="1" oninput="this.value = this.value.slice(0, 3)" id="Adult">
+                        <input type="number" placeholder="No Of Adult" name="adult" oninput="this.value = this.value.slice(0, 3)" id="Adult">
                         <span class="plus"><i class="fa-solid fa-plus"></i></span>
                     </div>
                 </div>
@@ -33,14 +34,15 @@
                     <div class="number">
                         <label for="Children">Children</label>
                         <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                        <input type="number" placeholder="No Of Children" name="1" oninput="this.value = this.value.slice(0, 3)" id="Children">
+                        <input type="number" placeholder="No Of Children" name="children" oninput="this.value = this.value.slice(0, 3)" id="Children">
                         <span class="plus"><i class="fa-solid fa-plus"></i></span>
                     </div>
                 </div>
                 <div class="index_banner_form_box_btn">
-                    <a href="#!" class="common_dark_btn">SEARCH <i class="fa-solid fa-magnifying-glass"></i></a>
+                    <button type="submit" class="common_dark_btn">SEARCH <i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
             </div>
+            </form>
         </div>
     </div>
     <div class="index_banner_wrap_bottom_text">

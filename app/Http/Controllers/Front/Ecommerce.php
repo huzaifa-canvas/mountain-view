@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use Illuminate\Support\Facades\Http;
 class Ecommerce extends Controller
 {
     public function booking_cart(Request $request,$id){
@@ -31,8 +32,28 @@ class Ecommerce extends Controller
     }
 
     public function checkout(){
+        $accessToken = 'e29cc5da-a5a5-e71e-2a49-35fdc2aee152';
+        $merchantId = 'CMNW2BQJ42JR1';
 
-      return redirect()->back()->with('success','Checkout successfully');
+        $response = Http::withToken($accessToken)->post("https://sandbox.dev.clover.com/v1/merchants/{$merchantId}/paykeys", [
+            "amount" => 1000, 
+            "currency" => "usd",
+            "redirect_url" => url('/payment/success'),
+        ]);
+
+        $checkout = $response->json();
+
+        if (!isset($checkout['url'])) {
+            return response()->json([
+                'error' => 'Checkout URL not found in response.',
+                'response' => $checkout
+            ], 500);
+        }
+
+        return response()->json([
+            'checkout_url' => $checkout['url'],
+        ]);
       
     }
+
 }
