@@ -9,22 +9,29 @@ class Main extends Controller
 {
     
     public function index(){
+
         return view('front.index');
+
     }
     public function booking(){
-        $listings = \App\Models\Listing::orderBy('listings_id', 'desc')->get();
 
+        $listings = \App\Models\Listing::orderBy('listings_id', 'desc')->get();
         return view('front.booking',compact('listings'));
+    
     }
 
 
     public function room(){
+
         return view('front.room');
+        
     }
 
 
     public function gallery(){
+
         return view('front.gallery');
+
     }
 
 
@@ -34,19 +41,22 @@ class Main extends Controller
         $total = $checkout->sum('listings_price');
         if ($checkout->isEmpty()) {
             flash()->error('Your cart is empty.');
-            return redirect()->url('/');
+            return redirect()->to('/');
         }
 
         return view('front.checkout', compact('checkout', 'total'));
     }
 
-
     public function memberships(){
+
         return view('front.memberships');
+
     }
 
     public function contact(){
+
         return view('front.contact');
+
     }
 
     
