@@ -26,14 +26,16 @@ class Ecommerce extends Controller
         $cart->cart_laundry = $data['laundry'];
         $cart->cart_pets = $data['pets'];
         $cart->cart_rooms = $data['room'];
+        $cart->cart_check_in = $request->get('checkin');
+        $cart->cart_check_out = $request->get('checkout');
         $cart->save();
-        flash()->success('Item added to cart successfully');
+        flash()->success('Room added to cart successfully');
         return redirect()->back();
     }
 
     public function checkout(){
         $accessToken = 'e29cc5da-a5a5-e71e-2a49-35fdc2aee152';
-        $merchantId = 'CMNW2BQJ42JR1';
+        $merchantId = 'CMNW2BQJ42JR1';  
 
         $response = Http::withToken($accessToken)->post("https://sandbox.dev.clover.com/v1/merchants/{$merchantId}/paykeys", [
             "amount" => 1000, 

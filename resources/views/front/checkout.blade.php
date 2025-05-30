@@ -170,53 +170,44 @@
                                     <div class="checkout_review_text_f">
                                         <div class="checkout_review_text">
                                             <h5 class="heading">Check in</h5>
-                                            <p class="desc">07-11-2024</p>
+                                            <p class="desc">{{ $checkout[0]->cart_check_in }}</p>
                                         </div>
                                         <div class="checkout_review_text">
                                             <h5 class="heading">Check Out</h5>
-                                            <p class="desc">07-12-2024</p>
+                                            <p class="desc">{{ $checkout[0]->cart_check_out }}</p>
                                         </div>
                                     </div>
                                     <div class="checkout_review_text mb-3">
                                         <p class="desc">(Check in starts at 2pm and check out at 11am the next day.)</p>
                                     </div>
                                     <div class="checkout_review_text mb-2">
-                                        <p class="desc"><span>Total length of stay:</span> 3 nights</p>
+                                        @php
+                                            use Carbon\Carbon;
+                                            $checkIn = Carbon::parse($checkout[0]->cart_check_in);
+                                            $checkOut = Carbon::parse($checkout[0]->cart_check_out);
+                                            $nights = $checkIn->diffInDays($checkOut);
+                                        @endphp
+                                        <p class="desc"><span>Total length of stay:</span> {{ $nights }} night{{ $nights > 1 ? 's' : '' }}</p>
                                     </div>
                                     <div class="checkout_review_product_wrap">
+                                        @foreach($checkout as $cart)
                                         <div class="checkout_review_pro_f">
                                             <div class="checkout_review_pro_img">
-                                                <img src="{{ asset('assets/front/images/pro_img1.png') }}" class="img-fluid" alt="">
+                                                @php
+                                                $img = json_decode($cart->listings_img);
+                                                @endphp
+                                                <img src="{{ asset('storage/listing/'.$img[0]) }}" class="img-fluid" alt="{{ $cart->listings_name }}">
                                             </div>
                                             <div class="checkout_review_pro_text">
-                                                <h5 class="heading">Superior Queen Room</h5>
-                                                <p class="desc">2 Adults + 1 Child </p>
-                                                <p class="desc">Laundry</p>
-                                                <p class="desc"><span>$150</span></p>
+                                                <h5 class="heading">{{ $cart->listings_name }}</h5>
+                                                <p class="desc"> Adults +  Child </p>
+                                                <p class="desc">{{ $cart->cart_pets }}</p>
+                                                <p class="desc">{{ $cart->cart_rooms }}</p>
+                                                <p class="desc">{{ $cart->cart_laundry }}</p>
+                                                <p class="desc"><span>${{ $cart->listings_price }}</span></p>
                                             </div>
                                         </div>
-                                        <div class="checkout_review_pro_f">
-                                            <div class="checkout_review_pro_img">
-                                                <img src="{{ asset('assets/front/images/pro_img1.png') }}" class="img-fluid" alt="">
-                                            </div>
-                                            <div class="checkout_review_pro_text">
-                                                <h5 class="heading">Superior Queen Room</h5>
-                                                <p class="desc">1 Adults + 2 Child </p>
-                                                <p class="desc">1 Pet</p>
-                                                <p class="desc"><span>$200</span></p>
-                                            </div>
-                                        </div>
-                                        <div class="checkout_review_pro_f">
-                                            <div class="checkout_review_pro_img">
-                                                <img src="{{ asset('assets/front/images/pro_img1.png') }}" class="img-fluid" alt="">
-                                            </div>
-                                            <div class="checkout_review_pro_text">
-                                                <h5 class="heading">Superior Queen Room</h5>
-                                                <p class="desc">2 Adults + 2 Child </p>
-                                                <p class="desc">Laundry</p>
-                                                <p class="desc"><span>$250</span></p>
-                                            </div>
-                                        </div>
+                                        @endforeach
                                     </div>
                                     <div class="checkout_review_cart_input">
                                         <img src="{{ asset('assets/front/images/ticket_discount.png') }}" class="img-fluid" alt="">
@@ -226,9 +217,9 @@
                                     <div class="checkout_review_cart_price">
                                         <div class="checkout_review_text">
                                             <p class="desc">Subtotal <span>$45.00</span></p>
-                                            <p class="desc">Taxes & fees 15% <span>$5.00</span></p>
+                                            <p class="desc">Taxes & fees 15% <span>${{ $total * 0.15 }}</span></p>
                                             <p class="desc">Discount <span>-$10.00</span></p>
-                                            <p class="desc darkk">Total <span>$40.00</span></p>
+                                            <p class="desc darkk">Total <span>${{ $total }}</span></p>
                                         </div>
                                     </div>
                                     <div class="checkout_review_cart_btn">

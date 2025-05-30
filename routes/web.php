@@ -69,6 +69,10 @@ Route::get('/booking', [Main::class,'booking']);
 Route::get('/room', [Main::class,'room']);
 Route::get('/gallery', [Main::class,'gallery']);
 Route::get('/checkout', [Main::class,'checkout']);
+Route::get('/memberships', [Main::class,'memberships']);
+Route::get('/contact', [Main::class,'contact']);
+Route::get('/gallery',[Main::class,'gallery']);
+
 
 Route::post('booking/{id}',[Ecommerce::class,'booking_cart'])->name('booking_cart');
 Route::post('post_checkout',[Ecommerce::class,'checkout'])->name('store_checkout');

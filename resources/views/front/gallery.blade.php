@@ -1,4 +1,4 @@
-@include('admin.inc.header')
+@include('front.inc.header')
 
 <section class="index_banner_wrapper inner_banner_wrapper">
     <div class="container">
@@ -22,27 +22,27 @@
                 <div class="row gx-lg-3 gy-lg-3">
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <div class="index_sixth_wrap_img_box">
-                            <img src="assets/front/images/sixth_img_1.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/sixth_img_1.png') }}" class="img-fluid" alt="">
                         </div>
                     </div>
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <div class="index_sixth_wrap_img_box">
-                            <img src="assets/front/images/sixth_img_2.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/sixth_img_2.png') }}" class="img-fluid" alt="">
                         </div>
                     </div>
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <div class="index_sixth_wrap_img_box">
-                            <img src="assets/front/images/sixth_img_3.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/sixth_img_3.png') }}" class="img-fluid" alt="">
                         </div>
                     </div>
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <div class="index_sixth_wrap_img_box">
-                            <img src="assets/front/images/sixth_img_4.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/sixth_img_4.png') }}" class="img-fluid" alt="">
                         </div>
                     </div>
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <div class="index_sixth_wrap_img_box">
-                            <img src="assets/front/images/sixth_img_5.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/sixth_img_5.png') }}" class="img-fluid" alt="">
                         </div>
                     </div>
                 </div>
@@ -51,5 +51,4 @@
     </div>
 </section>
 
-
-@include('admin.inc.footer')
+@include('front.inc.footer')

@@ -120,7 +120,7 @@
                              
                             </div>
                         </div>
-                        <form action="{{ route('booking_cart', ['id' => $listing->listings_id]) }}" method="post">
+                        <form action="{{ route('booking_cart', ['id' => $listing->listings_id]) }}?checkin={{ request()->get('check_in') }}&checkout={{ request()->get('check_out') }}" method="post">
                             @csrf
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                             <div class="booking_card_box_textm_f">

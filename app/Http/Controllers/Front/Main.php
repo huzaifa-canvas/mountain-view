@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class Main extends Controller
 {
+    
     public function index(){
         return view('front.index');
     }
@@ -20,10 +21,33 @@ class Main extends Controller
     public function room(){
         return view('front.room');
     }
+
+
     public function gallery(){
         return view('front.gallery');
     }
-        public function checkout(){
-        return view('front.checkout');
+
+
+    public function checkout(){
+
+        $checkout = DB::table('cart')->where('session_id', session()->getId())->join('listings','cart.listings_id','=','listings.listings_id')->get();
+        $total = $checkout->sum('listings_price');
+        if ($checkout->isEmpty()) {
+            flash()->error('Your cart is empty.');
+            return redirect()->url('/');
+        }
+
+        return view('front.checkout', compact('checkout', 'total'));
     }
+
+
+    public function memberships(){
+        return view('front.memberships');
+    }
+
+    public function contact(){
+        return view('front.contact');
+    }
+
+    
 }

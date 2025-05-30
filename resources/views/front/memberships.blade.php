@@ -1,31 +1,5 @@
-<?php include 'inc/header.php'?>
+@include('front.inc.header')
 
-<style>
-    .member_wrapper .index_third_wrap_box_text h6 {
-        width: 80%;
-    }
-    .member_wrapper .index_third_wrap_text {
-        text-align: center;
-        margin: 0px auto 40px auto;
-        max-width: 1000px;
-    }
-    .member_wrapper .index_third_wrap_text h6{
-        margin: 0px 0px 15px 0px;
-    }
-    .member_slider .swiper-wrapper {
-        padding: 0px 0px 50px 0px;
-    }
-    .member_slider .swiper-pagination-bullet {
-        width: 10px;
-        height: 10px;
-    }
-    .member_slider .swiper-pagination-bullet-active {
-        background: var(--main-color);
-    }
-    .member_wrapper .desc span {
-        font-family: var(--plusJakartaSans-semiBold);
-    }
-</style>
 
 <section class="index_banner_wrapper inner_banner_wrapper">
     <div class="container">
@@ -107,4 +81,4 @@
     </div>
 </section>
 
-<?php include 'inc/footer.php'?>
+@include('front.inc.footer')

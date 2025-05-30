@@ -64,23 +64,23 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_1.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_1.png') }}" alt="img"></span>
                                                 <p>Refrigerator</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_2.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_2.png') }}" alt="img"></span>
                                                 <p>Tea/Coffe Maker</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_3.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_3.png') }}" alt="img"></span>
                                                 <p>Electric Kettle</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_2.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_2.png') }}" alt="img"></span>
                                                 <p>Coffe Machine</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_4.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_4.png') }}" alt="img"></span>
                                                 <p>Microwave</p>
                                             </li>
                                         </ul>
@@ -96,27 +96,27 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_5.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_5.png') }}" alt="img"></span>
                                                 <p>Free Toiletries</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_6.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_6.png') }}" alt="img"></span>
                                                 <p>Toilet</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_7.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_7.png') }}" alt="img"></span>
                                                 <p>Bathtub or Shower</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_8.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_8.png') }}" alt="img"></span>
                                                 <p>Hairdryer</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_6.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_6.png') }}" alt="img"></span>
                                                 <p>Guest Bathroom</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_9.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_9.png') }}" alt="img"></span>
                                                 <p>Toilet Paper</p>
                                             </li>
                                         </ul>
@@ -132,15 +132,15 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_10.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_10.png') }}" alt="img"></span>
                                                 <p>Balcony</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_11.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_11.png') }}" alt="img"></span>
                                                 <p>Garden View</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_12.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_12.png') }}" alt="img"></span>
                                                 <p>Mountain View</p>
                                             </li>
                                         </ul>
@@ -156,87 +156,87 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_13.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_13.png') }}" alt="img"></span>
                                                 <p>Carbon monoxide detector</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_2.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_2.png') }}" alt="img"></span>
                                                 <p>Coffee machine</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_14.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_14.png') }}" alt="img"></span>
                                                 <p>Flat-screen TV</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_15.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_15.png') }}" alt="img"></span>
                                                 <p>Alarm clock</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_16.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_16.png') }}" alt="img"></span>
                                                 <p>Towels</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_2.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_2.png') }}" alt="img"></span>
                                                 <p>Tea/Coffee maker</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_4.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_4.png') }}" alt="img"></span>
                                                 <p>Microwave</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_17.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_17.png') }}" alt="img"></span>
                                                 <p>TV</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_1.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_1.png') }}" alt="img"></span>
                                                 <p>Refrigerator</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_18.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_18.png') }}" alt="img"></span>
                                                 <p>Linens</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_19.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_19.png') }}" alt="img"></span>
                                                 <p>Streaming service (like Netflix)</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_20.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_20.png') }}" alt="img"></span>
                                                 <p>Entire unit located on ground floor</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_21.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_21.png') }}" alt="img"></span>
                                                 <p>Carpeted</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_22.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_22.png') }}" alt="img"></span>
                                                 <p>Kitchenette</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_3.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_3.png') }}" alt="img"></span>
                                                 <p>Electric kettle</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_23.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_23.png') }}" alt="img"></span>
                                                 <p>Single-room AC for guest accommodation</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_28.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_28.png') }}" alt="img"></span>
                                                 <p>Cable channels</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_24.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_24.png') }}" alt="img"></span>
                                                 <p>Radio</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_25.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_25.png') }}" alt="img"></span>
                                                 <p>Soundproof</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_23.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_23.png') }}" alt="img"></span>
                                                 <p>Air conditioning</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_26.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_26.png') }}" alt="img"></span>
                                                 <p>Hand sanitizer</p>
                                             </li>
                                         </ul>
@@ -252,7 +252,7 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_27.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_27.png') }}" alt="img"></span>
                                                 <p>No smoking</p>
                                             </li>
                                         </ul>
@@ -308,23 +308,23 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_1.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_1.png') }}" alt="img"></span>
                                                 <p>Refrigerator</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_2.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_2.png') }}" alt="img"></span>
                                                 <p>Tea/Coffe Maker</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_3.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_3.png') }}" alt="img"></span>
                                                 <p>Electric Kettle</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_2.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_2.png') }}" alt="img"></span>
                                                 <p>Coffe Machine</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_4.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_4.png') }}" alt="img"></span>
                                                 <p>Microwave</p>
                                             </li>
                                         </ul>
@@ -340,27 +340,27 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_5.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_5.png') }}" alt="img"></span>
                                                 <p>Free Toiletries</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_6.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_6.png') }}" alt="img"></span>
                                                 <p>Toilet</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_7.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_7.png') }}" alt="img"></span>
                                                 <p>Bathtub or Shower</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_8.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_8.png') }}" alt="img"></span>
                                                 <p>Hairdryer</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_6.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_6.png') }}" alt="img"></span>
                                                 <p>Guest Bathroom</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_9.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_9.png') }}" alt="img"></span>
                                                 <p>Toilet Paper</p>
                                             </li>
                                         </ul>
@@ -376,15 +376,15 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_10.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_10.png') }}" alt="img"></span>
                                                 <p>Balcony</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_11.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_11.png') }}" alt="img"></span>
                                                 <p>Garden View</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_12.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_12.png') }}" alt="img"></span>
                                                 <p>Mountain View</p>
                                             </li>
                                         </ul>
@@ -400,87 +400,87 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_13.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_13.png') }}" alt="img"></span>
                                                 <p>Carbon monoxide detector</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_2.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_2.png') }}" alt="img"></span>
                                                 <p>Coffee machine</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_14.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_14.png') }}" alt="img"></span>
                                                 <p>Flat-screen TV</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_15.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_15.png') }}" alt="img"></span>
                                                 <p>Alarm clock</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_16.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_16.png') }}" alt="img"></span>
                                                 <p>Towels</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_2.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_2.png') }}" alt="img"></span>
                                                 <p>Tea/Coffee maker</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_4.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_4.png') }}" alt="img"></span>
                                                 <p>Microwave</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_17.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_17.png') }}" alt="img"></span>
                                                 <p>TV</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_1.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_1.png') }}" alt="img"></span>
                                                 <p>Refrigerator</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_18.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_18.png') }}" alt="img"></span>
                                                 <p>Linens</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_19.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_19.png') }}" alt="img"></span>
                                                 <p>Streaming service (like Netflix)</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_20.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_20.png') }}" alt="img"></span>
                                                 <p>Entire unit located on ground floor</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_21.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_21.png') }}" alt="img"></span>
                                                 <p>Carpeted</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_22.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_22.png') }}" alt="img"></span>
                                                 <p>Kitchenette</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_3.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_3.png') }}" alt="img"></span>
                                                 <p>Electric kettle</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_23.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_23.png') }}" alt="img"></span>
                                                 <p>Single-room AC for guest accommodation</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_28.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_28.png') }}" alt="img"></span>
                                                 <p>Cable channels</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_24.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_24.png') }}" alt="img"></span>
                                                 <p>Radio</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_25.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_25.png') }}" alt="img"></span>
                                                 <p>Soundproof</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_23.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_23.png') }}" alt="img"></span>
                                                 <p>Air conditioning</p>
                                             </li>
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_26.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_26.png') }}" alt="img"></span>
                                                 <p>Hand sanitizer</p>
                                             </li>
                                         </ul>
@@ -496,7 +496,7 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                                         <ul class="amenities_list">
                                             <li>
-                                                <span><img src="assets/front/images/amenity_icon_27.png" alt="img"></span>
+                                                <span><img src="{{ asset('assets/front/images/amenity_icon_27.png') }}" alt="img"></span>
                                                 <p>No smoking</p>
                                             </li>
                                         </ul>
@@ -516,15 +516,15 @@
         <div class="room_second_wrap_ttext">
             <h6 class="heading mb-4">Most Popular Facilities</h6>
             <ul>
-                <li><span><img src="assets/front/images/free-parking.png" class="img-fluid" alt="" /></span> Free Parking</li>
-                <li><span><img src="assets/front/images/wi-fi.png" class="img-fluid" alt="" /></span> Free Wifi</li>
-                <li><span><img src="assets/front/images/amenity_icon_27.png" class="img-fluid" alt="" /></span> Non-smoking Rooms</li>
-                <li><span><img src="assets/front/images/amenity_icon_2.png" class="img-fluid" alt="" /></span> Tea/Coffee Maker in all rooms</li>
+                <li><span><img src="{{ asset('assets/front/images/free-parking.png') }}" class="img-fluid" alt="" /></span> Free Parking</li>
+                <li><span><img src="{{ asset('assets/front/images/wi-fi.png') }}" class="img-fluid" alt="" /></span> Free Wifi</li>
+                <li><span><img src="{{ asset('assets/front/images/amenity_icon_27.png') }}" class="img-fluid" alt="" /></span> Non-smoking Rooms</li>
+                <li><span><img src="{{ asset('assets/front/images/amenity_icon_2.png') }}" class="img-fluid" alt="" /></span> Tea/Coffee Maker in all rooms</li>
             </ul> 
         </div>
         <div class="room_sec_wrap_text_list">
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/amenity_icon_5.png" class="img-fluid" alt="" /></span>Great For Your Stay</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/amenity_icon_5.png') }}" class="img-fluid" alt="" /></span>Great For Your Stay</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Private Bathroom </li>
                     <li><i class="fa-solid fa-check"></i> Parking </li>
@@ -539,7 +539,7 @@
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/amenity_icon_7.png" class="img-fluid" alt="" /></span>Bathroom</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/amenity_icon_7.png') }}" class="img-fluid" alt="" /></span>Bathroom</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Toilet Paper </li>
                     <li><i class="fa-solid fa-check"></i> Towels </li>
@@ -552,25 +552,25 @@
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/bedroom.png" class="img-fluid" alt="" /></span>Bedroom</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/bedroom.png') }}" class="img-fluid" alt="" /></span>Bedroom</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Linens </li>
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/amenity_icon_12.png" class="img-fluid" alt="" /></span>View</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/amenity_icon_12.png') }}" class="img-fluid" alt="" /></span>View</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Mountain View </li>
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/amenity_icon_11.png" class="img-fluid" alt="" /></span>Outdoor</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/amenity_icon_11.png') }}" class="img-fluid" alt="" /></span>Outdoor</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Garden </li>
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/amenity_icon_22.png" class="img-fluid" alt="" /></span> Kitchen</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/amenity_icon_22.png') }}" class="img-fluid" alt="" /></span> Kitchen</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Electric kettle </li>
                     <li><i class="fa-solid fa-check"></i> Microwave </li>
@@ -578,13 +578,13 @@
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/pawprint.png" class="img-fluid" alt="" /></span> Pets</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/pawprint.png') }}" class="img-fluid" alt="" /></span> Pets</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Pets Are Allowed. Charges May Apply </li>
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/amenity_icon_14.png" class="img-fluid" alt="" /></span> Media & Technology</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/amenity_icon_14.png') }}" class="img-fluid" alt="" /></span> Media & Technology</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Streaming Service (like Netfilix) </li>
                     <li><i class="fa-solid fa-check"></i> Flat-screen TV </li>
@@ -592,25 +592,25 @@
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/fast-food.png" class="img-fluid" alt="" /></span> Food & Drink</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/fast-food.png') }}" class="img-fluid" alt="" /></span> Food & Drink</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Tea/Coffee Maker </li>
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/wi-fi.png" class="img-fluid" alt="" /></span>Internet</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/wi-fi.png') }}" class="img-fluid" alt="" /></span>Internet</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Wifi available in the rooms and is free to charge </li>
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/free-parking.png" class="img-fluid" alt="" /></span>Parking</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/free-parking.png') }}" class="img-fluid" alt="" /></span>Parking</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Free Private parking is available on <br> site (reservation is not needed) </li>
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/public-service.png" class="img-fluid" alt="" /></span>Services</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/public-service.png') }}" class="img-fluid" alt="" /></span>Services</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Pet Bowls </li>
                     <li><i class="fa-solid fa-check"></i> Daily housekeeping </li>
@@ -623,13 +623,13 @@
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/public-service.png" class="img-fluid" alt="" /></span>Front Desk Services</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/public-service.png') }}" class="img-fluid" alt="" /></span>Front Desk Services</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Invoice Provided </li>
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/security.png" class="img-fluid" alt="" /></span>Safety & security</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/security.png') }}" class="img-fluid" alt="" /></span>Safety & security</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Fire extinguishers </li>
                     <li><i class="fa-solid fa-check"></i> CCTV outside property </li>
@@ -642,7 +642,7 @@
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/information.png" class="img-fluid" alt="" /></span> General</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/information.png') }}" class="img-fluid" alt="" /></span> General</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Designated Smoking area </li>
                     <li><i class="fa-solid fa-check"></i> Air conditioning </li>
@@ -652,13 +652,13 @@
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"> <span><img src="assets/front/images/assis.png" class="img-fluid" alt="" /></span> Accessibility</h5>
+                <h5 class="list_heading"> <span><img src="{{ asset('assets/front/images/assis.png') }}" class="img-fluid" alt="" /></span> Accessibility</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> Entire unit located on ground floor </li>
                 </ul>
             </div>
             <div class="room_wrap_Feature_text">
-                <h5 class="list_heading"><span><img src="assets/front/images/language.png" class="img-fluid" alt="" /></span> Languages Spoken</h5>
+                <h5 class="list_heading"><span><img src="{{ asset('assets/front/images/language.png') }}" class="img-fluid" alt="" /></span> Languages Spoken</h5>
                 <ul>
                     <li><i class="fa-solid fa-check"></i> English </li>
                 </ul>
@@ -666,7 +666,5 @@
         </div>
     </div>
 </section>
-
-
 
 @include('front.inc.footer')

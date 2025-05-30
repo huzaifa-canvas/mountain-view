@@ -20,18 +20,17 @@
                 <div class="container-fluid ps-6 pe-6">
                     <div class="header_flex">
                         <div class="header_logo">
-                            <a href="index.php"><img src="{{ asset('assets/front/images/logo.png') }}" class="img-fluid" alt=""></a>
+                            <a href="{{ url('/') }}"><img src="{{ asset('assets/front/images/logo.png') }}" class="img-fluid" alt=""></a>
                         </div>
                         <div class="header_inner_flex">
                             <div class="header_nav">
                                 <ul>
                                     <li><a href="index.php">Home</a></li>
                                     <li><a href="about.php">About Us</a></li>
-                                    <li><a href="room.php">Rooms</a></li>
-                                    <li><a href="{{ url('booking') }}">Bookings</a></li>
-                                    <li><a href="memberships.php">Memberships</a></li>
+                                    <li><a href="{{ url('room') }}">Rooms</a></li>
+                                    <li><a href="{{ url('memberships') }}">Memberships</a></li>
                                     <li><a href="{{ url('gallery') }}">Gallery</a></li>
-                                    <li><a href="contact.php">Contact Us</a></li>
+                                    <li><a href="{{ url('contact') }}">Contact Us</a></li>
                                 </ul>
                             </div>
                             <div class="header_btn">

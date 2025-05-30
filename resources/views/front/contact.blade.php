@@ -1,5 +1,4 @@
-<?php include 'inc/header.php'?>
-
+@include('front.inc.header')
 <section class="index_banner_wrapper inner_banner_wrapper">
     <div class="container">
         <div class="index_banner_wrap_text inner_banner_wrap">
@@ -99,4 +98,4 @@
 </section>
 
 
-<?php include 'inc/footer.php'?>
+@include('front.inc.footer')

@@ -30,8 +30,7 @@
                                         <ul>
                                             <li><a href="index.php">Home</a></li>
                                             <li><a href="about.php">About Us</a></li>
-                                            <li><a href="room.php">rooms</a></li>
-                                            <li><a href="booking.php">bookings</a></li>
+                                            <li><a href="{{ url('room') }}">rooms</a></li>
                                             <li><a href="memberships.php">memberships</a></li>
                                             <li><a href="gallery.php">gallery</a></li>
                                             <li><a href="contact.php">Contact Us </a></li>
@@ -67,7 +66,7 @@
                     <div class="container-fluid ps-6 pe-6">
                         <div class="copyright_flex">
                             <div class="copyright_text">
-                                <p>© 2024 <span>motel mountain view</span>. All rights reserved</p>
+                                <p>© {{ date('Y') }} <span>motel mountain view</span>. All rights reserved</p>
                             </div>
                             <div class="copyright_text">
                                 <p>Designed by <span>WebAppDevs</span></p>

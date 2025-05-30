@@ -2002,4 +2002,30 @@ input.sm_input {
 .radio-button input[type="radio"]:checked + .radio::before {
   opacity: 1;
 }
+
+
+   .member_wrapper .index_third_wrap_box_text h6 {
+        width: 80%;
+    }
+    .member_wrapper .index_third_wrap_text {
+        text-align: center;
+        margin: 0px auto 40px auto;
+        max-width: 1000px;
+    }
+    .member_wrapper .index_third_wrap_text h6{
+        margin: 0px 0px 15px 0px;
+    }
+    .member_slider .swiper-wrapper {
+        padding: 0px 0px 50px 0px;
+    }
+    .member_slider .swiper-pagination-bullet {
+        width: 10px;
+        height: 10px;
+    }
+    .member_slider .swiper-pagination-bullet-active {
+        background: var(--main-color);
+    }
+    .member_wrapper .desc span {
+        font-family: var(--plusJakartaSans-semiBold);
+    }
 /* CSS-FOR-INNER-PAGES-END */
