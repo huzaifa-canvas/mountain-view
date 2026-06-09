@@ -200,11 +200,10 @@
                                             </div>
                                             <div class="checkout_review_pro_text">
                                                 <h5 class="heading">{{ $cart->listings_name }}</h5>
-                                                <p class="desc"> Adults +  Child </p>
-                                                <p class="desc">{{ $cart->cart_pets }}</p>
-                                                <p class="desc">{{ $cart->cart_rooms }}</p>
-                                                <p class="desc">{{ $cart->cart_laundry }}</p>
-                                                <p class="desc"><span>${{ $cart->listings_price }}</span></p>
+                                                <p class="desc"><strong>Pets:</strong> {{ $cart->cart_pets }}</p>
+                                                <p class="desc"><strong>Rooms:</strong> {{ $cart->cart_rooms }}</p>
+                                                <p class="desc"><strong>Laundry:</strong> {{ $cart->cart_laundry }}</p>
+                                                <p class="desc"><span>${{ number_format($cart->listings_price, 2) }} / night</span></p>
                                             </div>
                                         </div>
                                         @endforeach
@@ -216,10 +215,14 @@
                                     </div>
                                     <div class="checkout_review_cart_price">
                                         <div class="checkout_review_text">
-                                            <p class="desc">Subtotal <span>$45.00</span></p>
-                                            <p class="desc">Taxes & fees 15% <span>${{ $total * 0.15 }}</span></p>
-                                            <p class="desc">Discount <span>-$10.00</span></p>
-                                            <p class="desc darkk">Total <span>${{ $total }}</span></p>
+                                            @php
+                                                $subtotal = $total * ($nights > 0 ? $nights : 1);
+                                                $tax = $subtotal * 0.15;
+                                                $finalTotal = $subtotal + $tax;
+                                            @endphp
+                                            <p class="desc">Subtotal <span>${{ number_format($subtotal, 2) }}</span></p>
+                                            <p class="desc">Taxes & fees 15% <span>${{ number_format($tax, 2) }}</span></p>
+                                            <p class="desc darkk">Total <span>${{ number_format($finalTotal, 2) }}</span></p>
                                         </div>
                                     </div>
                                     <div class="checkout_review_cart_btn">

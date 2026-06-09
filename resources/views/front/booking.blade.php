@@ -49,7 +49,7 @@
         <div class="booking_main_wrap">
             <div class="booking_card_box">
                 <div class="booking_card_box_img">
-                    <div class="swiper booking_slider2">
+                    <div class="swiper booking_slider2 booking_slider2_{{ $listing->listings_id }}">
                         <div class="swiper-wrapper">
                         @php 
                             $images = json_decode($listing->listings_img, true);
@@ -66,7 +66,7 @@
 
                     </div>
                     <div class="booking_slider1_wrap">
-                        <div thumbsSlider="" class="swiper booking_slider1">
+                        <div thumbsSlider="" class="swiper booking_slider1 booking_slider1_{{ $listing->listings_id }}">
                             <div class="swiper-wrapper">
 
                         @php 
@@ -182,3 +182,25 @@
 </section>
 
 @include('front.inc.footer')
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        @foreach($listings as $listing)
+        var thumbSwiper_{{ $listing->listings_id }} = new Swiper(".booking_slider1_{{ $listing->listings_id }}", {
+            loop: false,
+            spaceBetween: 10,
+            slidesPerView: 4,
+            freeMode: true,
+            watchSlidesProgress: true,
+        });
+        var mainSwiper_{{ $listing->listings_id }} = new Swiper(".booking_slider2_{{ $listing->listings_id }}", {
+            loop: false,
+            spaceBetween: 10,
+            effect: "fade",
+            thumbs: {
+                swiper: thumbSwiper_{{ $listing->listings_id }},
+            },
+        });
+        @endforeach
+    });
+</script>

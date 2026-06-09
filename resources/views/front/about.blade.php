@@ -1,4 +1,4 @@
-<?php include 'inc/header.php'?>
+@include('front.inc.header')
 
 
 <section class="index_banner_wrapper inner_banner_wrapper">
@@ -194,4 +194,4 @@
 
 
 
-<?php include 'inc/footer.php'?>
+@include('front.inc.footer')

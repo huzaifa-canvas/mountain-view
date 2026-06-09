@@ -22,16 +22,11 @@ class Main extends Controller
 
 
     public function room(){
-
         return view('front.room');
-        
     }
 
-
     public function gallery(){
-
         return view('front.gallery');
-
     }
 
 
@@ -48,15 +43,27 @@ class Main extends Controller
     }
 
     public function memberships(){
-
         return view('front.memberships');
-
     }
 
     public function contact(){
-
         return view('front.contact');
+    }
 
+    public function about(){
+        return view('front.about');
+    }
+
+    public function cookie_privacy(){
+        return view('front.cookie-privacy');
+    }
+
+    public function privacy(){
+        return view('front.privacy');
+    }
+
+    public function term_condition(){
+        return view('front.term-condition');
     }
 
     

@@ -12,6 +12,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <link rel="stylesheet" href="{{ asset('assets/front/css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/front/css/responsive.css') }}">
+    <style>
+        .header_nav ul li a.active {
+            color: var(--primary_color, #000);
+            font-weight: 700;
+        }
+        .header_nav ul li a.active::before {
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <div id="smooth-wrapper">
@@ -25,12 +34,12 @@
                         <div class="header_inner_flex">
                             <div class="header_nav">
                                 <ul>
-                                    <li><a href="index.php">Home</a></li>
-                                    <li><a href="about.php">About Us</a></li>
-                                    <li><a href="{{ url('room') }}">Rooms</a></li>
-                                    <li><a href="{{ url('memberships') }}">Memberships</a></li>
-                                    <li><a href="{{ url('gallery') }}">Gallery</a></li>
-                                    <li><a href="{{ url('contact') }}">Contact Us</a></li>
+                                    <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
+                                    <li><a href="{{ url('about') }}" class="{{ request()->is('about') ? 'active' : '' }}">About Us</a></li>
+                                    <li><a href="{{ url('room') }}" class="{{ request()->is('room') || request()->is('booking') ? 'active' : '' }}">Rooms</a></li>
+                                    <li><a href="{{ url('memberships') }}" class="{{ request()->is('memberships') ? 'active' : '' }}">Memberships</a></li>
+                                    <li><a href="{{ url('gallery') }}" class="{{ request()->is('gallery') ? 'active' : '' }}">Gallery</a></li>
+                                    <li><a href="{{ url('contact') }}" class="{{ request()->is('contact') ? 'active' : '' }}">Contact Us</a></li>
                                 </ul>
                             </div>
                             <div class="header_btn">

@@ -18,13 +18,7 @@ class Dashboard extends Controller
     }
 
 
-    public function listing(){
-        $query = DB::table('listings')->orderBy('listings_id', 'DESC');
-        $db = $query->from;
-        $collections = $query->get();
-        return view('admin.view', compact('collections','db'));
-    
-    }
+
     public function services(){
         $services = DB::table('services')->orderBy('services_id','DESC')->get();
         return view('admin.service',compact('services'));

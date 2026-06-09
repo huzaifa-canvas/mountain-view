@@ -1,4 +1,4 @@
-<?php include 'inc/header.php'?>
+@include('front.inc.header')
 
 <section class="index_banner_wrapper inner_banner_wrapper">
     <div class="container">
@@ -38,7 +38,7 @@
         <div class="term_condition_wrap_text">
             <h5>4. Privacy and Data Protection</h5>
             <ul>
-                <li><span>Privacy Policy:</span> We are committed to protecting your privacy. Please refer to our <a href="privacy.php">Privacy Policy</a> for information about how we collect, use, and protect your data.</li>
+                <li><span>Privacy Policy:</span> We are committed to protecting your privacy. Please refer to our <a href="{{ url('privacy') }}">Privacy Policy</a> for information about how we collect, use, and protect your data.</li>
                 <li><span>Personal Data:</span> By using our services, you agree to the collection and use of your personal data as outlined in our privacy policy.</li>
             </ul>
         </div>
@@ -99,4 +99,4 @@
     </div>
 </section>
 
-<?php include 'inc/footer.php'?>
+@include('front.inc.footer')

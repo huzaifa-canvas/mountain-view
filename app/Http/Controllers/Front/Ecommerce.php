@@ -30,7 +30,7 @@ class Ecommerce extends Controller
         $cart->cart_check_out = $request->get('checkout');
         $cart->save();
         flash()->success('Room added to cart successfully');
-        return redirect()->back();
+        return redirect('checkout');
     }
 
     public function checkout(){

@@ -25,6 +25,8 @@
   <link href="{{asset('assets/admin/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
   <link href="{{asset('assets/admin/vendor/simple-datatables/style.css')}}" rel="stylesheet">
   <link href="{{asset('assets/admin/vendor/multi/multi-style.css')}}" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <link href="{{asset('assets/admin/css/style.css')}}" rel="stylesheet">
 
 </head>
@@ -121,7 +123,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link " href="{{url('admin/dashboard')}}">
+        <a class="nav-link {{ request()->is('admin') || request()->is('admin/dashboard') ? '' : 'collapsed' }}" href="{{url('admin/dashboard')}}">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
@@ -159,13 +161,13 @@
         </ul>
       </li> --}}
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url('admin/listings') }}">
+        <a class="nav-link {{ request()->is('admin/listings*') ? '' : 'collapsed' }}" href="{{ url('admin/listings') }}">
           <i class="bi bi-person"></i>
           <span>listings</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url('admin/providers') }}">
+        <a class="nav-link {{ request()->is('admin/providers*') ? '' : 'collapsed' }}" href="{{ url('admin/providers') }}">
           <i class="bi bi-bag"></i>
           <span>Providers</span>
         </a>
@@ -175,13 +177,13 @@
 
       <li class="nav-heading">General Setting</li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{url('admin/global-setting')}}">
+        <a class="nav-link {{ request()->is('admin/global-setting*') ? '' : 'collapsed' }}" href="{{url('admin/global-setting')}}">
           <i class="bi bi-gear"></i>
           <span>Global Setting</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url('admin/profile') }}">
+        <a class="nav-link {{ request()->is('admin/profile*') ? '' : 'collapsed' }}" href="{{ url('admin/profile') }}">
           <i class="bi bi-person"></i>
           <span>Profile</span>
         </a>

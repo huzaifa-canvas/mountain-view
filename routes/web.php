@@ -29,11 +29,14 @@ Route::get('/admin',function(){
 
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/dashboard', [Dashboard::class, 'index']);
-    Route::get('/listings', [Dashboard::class, 'listing']);
+    Route::get('/listings', [Listings::class, 'index']);
+    Route::get('/listings/create', [Listings::class, 'create']);
+    Route::get('/listings/{id}/edit', [Listings::class, 'edit']);
+    Route::put('/update-listing/{id}', [Listings::class, 'update']);
+    Route::delete('/delete-listing/{id}', [Listings::class, 'destroy']);
     Route::get('/teams', [Dashboard::class, 'teams']);
     Route::get('/services', [Dashboard::class, 'services']);
     Route::get('/videos', [Dashboard::class, 'videos']);
-    Route::get('/about', [Dashboard::class, 'about']);
     Route::get('/memberships', [Dashboard::class, 'membership']);
     Route::get('/providers', [Dashboard::class, 'providers']);
     Route::get('get-form/{id}',[Dashboard::class,'get_form']);
@@ -65,13 +68,16 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 //Front Start 
 
 Route::get('/', [Main::class,'index']);
+Route::get('/about', [Main::class, 'about']);
 Route::get('/booking', [Main::class,'booking']);
 Route::get('/room', [Main::class,'room']);
 Route::get('/gallery', [Main::class,'gallery']);
 Route::get('/checkout', [Main::class,'checkout']);
 Route::get('/memberships', [Main::class,'memberships']);
 Route::get('/contact', [Main::class,'contact']);
-Route::get('/gallery',[Main::class,'gallery']);
+Route::get('/cookie-privacy', [Main::class,'cookie_privacy']);
+Route::get('/privacy', [Main::class,'privacy']);
+Route::get('/term-condition', [Main::class,'term_condition']);
 
 
 Route::post('booking/{id}',[Ecommerce::class,'booking_cart'])->name('booking_cart');

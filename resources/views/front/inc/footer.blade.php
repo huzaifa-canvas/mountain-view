@@ -28,12 +28,12 @@
                                     <div class="footer_nav">
                                         <h6>Quick Links</h6>
                                         <ul>
-                                            <li><a href="index.php">Home</a></li>
-                                            <li><a href="about.php">About Us</a></li>
+                                            <li><a href="{{ url('/') }}">Home</a></li>
+                                            <li><a href="{{ url('about') }}">About Us</a></li>
                                             <li><a href="{{ url('room') }}">rooms</a></li>
-                                            <li><a href="memberships.php">memberships</a></li>
-                                            <li><a href="gallery.php">gallery</a></li>
-                                            <li><a href="contact.php">Contact Us </a></li>
+                                            <li><a href="{{ url('memberships') }}">memberships</a></li>
+                                            <li><a href="{{ url('gallery') }}">gallery</a></li>
+                                            <li><a href="{{ url('contact') }}">Contact Us </a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -42,9 +42,9 @@
                                         <h6>Resources</h6>
                                         <ul>
                                             <li><a href="#!">My account</a></li>
-                                            <li><a href="term-condition.php">Terms & Condition</a></li>
-                                            <li><a href="privacy.php">Privacy Policy</a></li>
-                                            <li><a href="cookie-privacy.php">Cookie Policy</a></li>
+                                            <li><a href="{{ url('term-condition') }}">Terms & Condition</a></li>
+                                            <li><a href="{{ url('privacy') }}">Privacy Policy</a></li>
+                                            <li><a href="{{ url('cookie-privacy') }}">Cookie Policy</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -117,57 +117,6 @@
                         input.value = newValue;
                     }
                 }
-            </script>
-            <script>
-                var swiper = new Swiper(".booking_slider1", {
-                    loop: true,
-                    spaceBetween: 10,
-                    slidesPerView: 4,
-                    freeMode: true,
-                    watchSlidesProgress: true,
-                });
-                var swiper2 = new Swiper(".booking_slider2", {
-                    loop: true,
-                    spaceBetween: 10,
-                    effect: "fade",
-                    thumbs: {
-                        swiper: swiper,
-                    },
-                });
-            </script>
-            <script>
-                var swiper = new Swiper(".booking_slider3", {
-                    loop: true,
-                    spaceBetween: 10,
-                    slidesPerView: 4,
-                    freeMode: true,
-                    watchSlidesProgress: true,
-                });
-                var swiper2 = new Swiper(".booking_slider4", {
-                    loop: true,
-                    spaceBetween: 10,
-                    effect: "fade",
-                    thumbs: {
-                        swiper: swiper,
-                    },
-                });
-            </script>
-            <script>
-                var swiper = new Swiper(".booking_slider5", {
-                    loop: true,
-                    spaceBetween: 10,
-                    slidesPerView: 4,
-                    freeMode: true,
-                    watchSlidesProgress: true,
-                });
-                var swiper2 = new Swiper(".booking_slider6", {
-                    loop: true,
-                    spaceBetween: 10,
-                    effect: "fade",
-                    thumbs: {
-                        swiper: swiper,
-                    },
-                });
             </script>
             </body>
             </html>

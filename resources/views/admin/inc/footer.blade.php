@@ -1,84 +1,4 @@
 
-<div class="modal fade" id="listingsModal" tabindex="-1" aria-labelledby="listingsModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-   
-      <div class="modal-body">
-        <form action="{{ url('admin/post-' . last(request()->segments())) }}" method="post" enctype="multipart/form-data">
-          @csrf
-        
-          <section class="section">
-            <div class="row">
-              <div class="col-lg-12">
-      
-                <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title">Add New Listing</h5>
-                        <div class="row mb-3">
-                          <label for="inputText" class="col-sm-12 col-form-label">Listing Name</label>
-                          <div class="col-sm-12">
-                            <input type="text" class="form-control" name='listings_name' id="inputText" placeholder="Enter Listing Name" required>
-                          </div>
-                        </div> 
-                        <div class="row mb-3">
-                          <label for="inputText" class="col-sm-12 col-form-label">Listing Price</label>
-                          <div class="col-sm-12">
-                            <input type="text" class="form-control" name='listings_price' placeholder="Enter Price" required>
-                          </div>
-                        </div> 
-                        <label for="inputText" class="col-sm-12 col-form-label">Listing Points</label>
-                        <div class="col-sm-12">
-                          <div id="answer_container">
-                            <div class="input-group mb-2 answer_parent">
-                              <input type="text" name='listings_points[]' class="form-control" placeholder="Enter Points" required>
-                              <button type="button" class="btn btn-danger remove-btn"><i class="bi bi-x-lg"></i></button>
-                            </div>
-                          </div>
-                          <button id="clone_btn" type="button" class="btn btn-success"><i class="bi bi-plus-lg"></i></button>
-                        </div>
-                        <label for="inputText" class="col-sm-12 col-form-label">Listing Extras</label>
-                        <div class="col-sm-12">
-                          <div id="answer_container2">
-                            <div class="input-group mb-2 answer_parent2">
-                              <input type="text" name='listings_icons[]' class="form-control" placheholder="Enter Fontawesome Icon" required>
-                              <input type="text" name='listings_extras[]' class="form-control" placheholder="Enter Extras" required>
-                              <button type="button" class="btn btn-danger remove-btn2"><i class="bi bi-x-lg"></i></button>
-                            </div>
-                          </div>
-                          <button id="clone_btn2" type="button" class="btn btn-success"><i class="bi bi-plus-lg"></i></button>
-                        </div>
-                        <div class="row mb-3">
-                          <label for="inputText" class="col-sm-12 col-form-label">Team Img</label>
-                          <div class="col-sm-12">
-                            <div class="input-images"></div>
-                          </div>
-                        </div> 
-                        <div class="row mb-3">
-                          <label for="inputText" class="col-sm-12 col-form-label">Listing Persons</label>
-                          <div class="col-sm-12">
-                            <input type="text" class="form-control" name='listings_number_of_persons' placeholder="Number of Persons" required>
-                          </div>
-                        </div> 
-                        <div class="row mb-3">
-                          <div class="col-sm-10">
-                              <input type="submit" value="Add New Listing" class='btn btn-success'>
-                          </div>
-                        </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
 <!-- ======= Footer ======= -->
  <footer id="footer" class="footer">
     <div class="copyright">
@@ -101,6 +21,7 @@
   <script src="{{asset('assets/admin/vendor/simple-datatables/simple-datatables.js')}}"></script>
   <script src="{{asset('assets/admin/vendor/tinymce/tinymce.min.js')}}"></script>
   <script src="{{asset('assets/admin/vendor/multi/image-uploader.min.js')}}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <!-- Template Main JS File -->
   <script src="{{asset('assets/admin/js/main.js')}}"></script>
@@ -129,15 +50,36 @@
     });
   </script>
     <script>
+      function formatIcon (icon) {
+          if (!icon.id) {
+              return icon.text;
+          }
+          var $icon = $('<span><i class="' + icon.element.value + '"></i> ' + icon.text + '</span>');
+          return $icon;
+      };
+
+      function initSelect2() {
+          $('.icon-select').select2({
+              templateResult: formatIcon,
+              templateSelection: formatIcon,
+              width: '100%'
+          });
+      }
+
       $(document).ready(function(){
-        let counter = 1;
+        initSelect2();
+        
         $('#clone_btn2').on('click', function(){
             var answerContainer = $('#answer_container2');
             if (answerContainer.length) {
+                $('.icon-select').select2('destroy');
+                
                 var clone = $('.answer_parent2:first').clone(); 
-                clone.find('input').val(''); 
+                clone.find('input[type="text"]').val(''); 
+                clone.find('select').prop('selectedIndex', 0);
+                
                 answerContainer.append(clone); 
-                counter++; 
+                initSelect2();
             } else {
                 console.error('Required elements are missing in the DOM.');
             }
@@ -160,10 +102,41 @@
   $("#tagsinput").tagsinput('items')	
 
   </script>
+  <style>
+      .image-uploader .upload-text {
+          color: #666 !important;
+          font-weight: 500;
+          text-align: center;
+      }
+      .image-uploader .upload-text i.material-icons {
+          font-size: 3.5rem !important;
+          color: #ccc !important;
+          margin-bottom: 10px;
+      }
+  </style>
   <script>
-        $('.input-images').imageUploader();
-        $('.input-images2').imageUploader2();
+        $('.input-images').imageUploader({
+            label: 'Drag & Drop files here or click to browse'
+        });
+        $('.input-images2').imageUploader2({
+            label: 'Drag & Drop files here or click to browse'
+        });
 
+        // Fix for image uploader placeholder not showing when all images are deleted
+        // Using capture phase (true) because the plugin stops event propagation
+        document.addEventListener('click', function(e) {
+            let deleteBtn = e.target.closest('.delete-image');
+            if (deleteBtn) {
+                let uploader = deleteBtn.closest('.image-uploader');
+                if (uploader) {
+                    setTimeout(function() {
+                        if (uploader.querySelectorAll('.uploaded-image').length === 0) {
+                            uploader.classList.remove('has-files');
+                        }
+                    }, 50);
+                }
+            }
+        }, true);
    </script>
 </body>
 </html>
