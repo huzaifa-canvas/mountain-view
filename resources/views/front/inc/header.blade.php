@@ -43,7 +43,7 @@
                                 </ul>
                             </div>
                             <div class="header_btn">
-                                <a href="#!" class="common_dark_btn">Book Now <i class="fa-solid fa-circle-chevron-right"></i></a>
+                                <a href="{{ url('booking') }}" class="common_dark_btn">Book Now <i class="fa-solid fa-circle-chevron-right"></i></a>
                             </div>
                         </div>
                     </div>
