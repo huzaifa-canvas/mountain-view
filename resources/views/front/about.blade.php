@@ -29,7 +29,7 @@
             </div>
             <div class="col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 col-xxl-5">
                 <div class="index_first_wrap_img text-center">
-                    <img src="assets/front/images/fourth_box_2.png" class="img-fluid" alt="">
+                    <img src="{{ asset('assets/front/images/fourth_box_2.png') }}" class="img-fluid" alt="">
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
             <div class="row align-items-center gx-lg-4">
                 <div class="col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 col-xxl-5">
                     <div class="index_first_wrap_img text-start">
-                        <img src="assets/front/images/second_img_1n.png" class="img-fluid" alt="">
+                        <img src="{{ asset('assets/front/images/second_img_1n.png') }}" class="img-fluid" alt="">
                     </div>
                 </div>
                 <div class="col-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 col-xxl-7">
@@ -73,7 +73,7 @@
                 </div>
                 <div class="col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 col-xxl-5">
                     <div class="index_first_wrap_img text-center">
-                        <img src="assets/front/images/second_img_2n.png" class="img-fluid" alt="">
+                        <img src="{{ asset('assets/front/images/second_img_2n.png') }}" class="img-fluid" alt="">
                     </div>
                 </div>
             </div>
@@ -84,7 +84,7 @@
             <div class="row align-items-center gx-lg-4">
                 <div class="col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 col-xxl-5">
                     <div class="index_first_wrap_img">
-                        <img src="assets/front/images/second_img_3n.png" class="img-fluid" alt="">
+                        <img src="{{ asset('assets/front/images/second_img_3n.png') }}" class="img-fluid" alt="">
                     </div>
                 </div>
                 <div class="col-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 col-xxl-7">
@@ -108,7 +108,7 @@
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <div class="index_third_wrap_box">
                             <div class="index_third_wrap_box_icon">
-                                <img src="assets/front/images/third_icon.png" class="img-fluid" alt="">
+                                <img src="{{ asset('assets/front/images/third_icon.png') }}" class="img-fluid" alt="">
                             </div>
                             <div class="index_third_wrap_box_text">
                                 <h6>Prime Location</h6>
@@ -119,7 +119,7 @@
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <div class="index_third_wrap_box">
                             <div class="index_third_wrap_box_icon">
-                                <img src="assets/front/images/third_icon.png" class="img-fluid" alt="">
+                                <img src="{{ asset('assets/front/images/third_icon.png') }}" class="img-fluid" alt="">
                             </div>
                             <div class="index_third_wrap_box_text">
                                 <h6 class="mb-2">Exceptional Service</h6>
@@ -130,7 +130,7 @@
                     <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                         <div class="index_third_wrap_box">
                             <div class="index_third_wrap_box_icon">
-                                <img src="assets/front/images/third_icon.png" class="img-fluid" alt="">
+                                <img src="{{ asset('assets/front/images/third_icon.png') }}" class="img-fluid" alt="">
                             </div>
                             <div class="index_third_wrap_box_text">
                                 <h6 class="mb-2">Unparalleled Comfort</h6>
@@ -153,7 +153,7 @@
             </div>
             <div class="col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 col-xxl-5">
                 <div class="index_first_wrap_img">
-                    <img src="assets/front/images/fourth_box_1.png" class="img-fluid" alt="" />
+                    <img src="{{ asset('assets/front/images/fourth_box_1.png') }}" class="img-fluid" alt="" />
                 </div>
             </div>
         </div>  
@@ -165,7 +165,7 @@
         <div class="row align-items-center gx-lg-5">
             <div class="col-12 col-sm-12 col-md-5 col-lg-5 col-xl-5 col-xxl-5">
                 <div class="index_first_wrap_img">
-                    <img src="assets/front/images/fourth_box_2.png" class="img-fluid" alt="" />
+                    <img src="{{ asset('assets/front/images/fourth_box_2.png') }}" class="img-fluid" alt="" />
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-md-7 col-lg-7 col-xl-7 col-xxl-7">

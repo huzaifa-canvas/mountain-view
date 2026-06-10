@@ -21,7 +21,7 @@ Route::get('/logout',function(){
 //AMDIN POST END 
 Route::get('/admin/login',function(){
     return view('admin.login');
-})->name('admin/login');
+})->name('login');
 
 Route::get('/admin',function(){
     return redirect('admin/dashboard');
