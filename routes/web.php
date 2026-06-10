@@ -81,6 +81,8 @@ Route::get('/term-condition', [Main::class,'term_condition']);
 
 
 Route::post('booking/{id}',[Ecommerce::class,'booking_cart'])->name('booking_cart');
+Route::delete('cart/{id}',[Ecommerce::class,'remove_cart'])->name('remove_cart');
+Route::delete('cart/listing/{id}',[Ecommerce::class,'remove_cart_listing'])->name('remove_cart_listing');
 Route::post('post_checkout',[Ecommerce::class,'checkout'])->name('store_checkout');
 
 //Front End

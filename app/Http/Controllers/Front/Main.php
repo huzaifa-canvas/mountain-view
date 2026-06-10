@@ -16,7 +16,9 @@ class Main extends Controller
     public function booking(){
 
         $listings = \App\Models\Listing::orderBy('listings_id', 'desc')->get();
-        return view('front.booking',compact('listings'));
+        $cartItems = \DB::table('cart')->where('session_id', session()->getId())->pluck('listings_id')->toArray();
+        $cartCount = count($cartItems);
+        return view('front.booking',compact('listings', 'cartCount', 'cartItems'));
     
     }
 

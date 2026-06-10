@@ -13,24 +13,61 @@ class Ecommerce extends Controller
         $validate = \Validator::make($data, [
             'laundry' => 'required',
             'pets' => 'required',
-            'room' => 'required',
+            'room' => 'required|numeric|min:1',
         ]);
 
         if($validate->fails()){
+            if($request->ajax()) {
+                return response()->json(['success' => false, 'errors' => $validate->errors()]);
+            }
             flash()->error($validate->errors());
             return redirect()->back();
         }
-        $cart = new Cart();
-        $cart->session_id = $request->session()->getId();
-        $cart->listings_id = $id;
+
+        // Check if already in cart
+        $cart = Cart::where('listings_id', $id)->where('session_id', $request->session()->getId())->first();
+        if(!$cart) {
+            $cart = new Cart();
+            $cart->session_id = $request->session()->getId();
+            $cart->listings_id = $id;
+        }
+        
         $cart->cart_laundry = $data['laundry'];
         $cart->cart_pets = $data['pets'];
         $cart->cart_rooms = $data['room'];
         $cart->cart_check_in = $request->get('checkin');
         $cart->cart_check_out = $request->get('checkout');
         $cart->save();
-        flash()->success('Room added to cart successfully');
-        return redirect('checkout');
+
+        if($request->ajax()) {
+            $cartCount = Cart::where('session_id', $request->session()->getId())->count();
+            return response()->json(['success' => true, 'message' => 'Room reserved successfully!', 'cartCount' => $cartCount]);
+        }
+
+        flash()->success('Room reserved successfully! You can continue browsing or proceed to checkout.');
+        return redirect()->back();
+    }
+
+    public function remove_cart(Request $request, $id){
+        $cart = Cart::where('cart_id', $id)->where('session_id', $request->session()->getId())->first();
+        if($cart){
+            $cart->delete();
+            flash()->success('Room removed from cart.');
+        }
+        return redirect()->back();
+    }
+
+    public function remove_cart_listing(Request $request, $id){
+        $cart = Cart::where('listings_id', $id)->where('session_id', $request->session()->getId())->first();
+        if($cart){
+            $cart->delete();
+        }
+        if($request->ajax()) {
+            $cartCount = Cart::where('session_id', $request->session()->getId())->count();
+            return response()->json(['success' => true, 'message' => 'Room removed from cart.', 'cartCount' => $cartCount]);
+        }
+        flash()->success('Room removed from cart.');
+        return redirect()->back();
     }
 
     public function checkout(){

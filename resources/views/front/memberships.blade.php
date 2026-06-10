@@ -20,7 +20,7 @@
               <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="index_third_wrap_box">
                         <div class="index_third_wrap_box_icon">
-                            <img src="assets/front/images/third_icon.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/third_icon.png') }}" class="img-fluid" alt="">
                         </div>
                         <div class="index_third_wrap_box_text">
                             <h6>Access to a Personalized Dashboard</h6>
@@ -31,7 +31,7 @@
               <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="index_third_wrap_box">
                         <div class="index_third_wrap_box_icon">
-                            <img src="assets/front/images/third_icon.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/third_icon.png') }}" class="img-fluid" alt="">
                         </div>
                         <div class="index_third_wrap_box_text">
                             <h6>Earn Loyalty Points</h6>
@@ -42,7 +42,7 @@
               <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="index_third_wrap_box">
                         <div class="index_third_wrap_box_icon">
-                            <img src="assets/front/images/third_icon.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/third_icon.png') }}" class="img-fluid" alt="">
                         </div>
                         <div class="index_third_wrap_box_text">
                             <h6>Exclusive Member Discounts</h6>
@@ -53,7 +53,7 @@
               <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="index_third_wrap_box">
                         <div class="index_third_wrap_box_icon">
-                            <img src="assets/front/images/third_icon.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/third_icon.png') }}" class="img-fluid" alt="">
                         </div>
                         <div class="index_third_wrap_box_text">
                             <h6>Priority Customer Support</h6>
@@ -64,7 +64,7 @@
               <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
                     <div class="index_third_wrap_box">
                         <div class="index_third_wrap_box_icon">
-                            <img src="assets/front/images/third_icon.png" class="img-fluid" alt="">
+                            <img src="{{ asset('assets/front/images/third_icon.png') }}" class="img-fluid" alt="">
                         </div>
                         <div class="index_third_wrap_box_text">
                             <h6>Early Access to Promotions</h6>
