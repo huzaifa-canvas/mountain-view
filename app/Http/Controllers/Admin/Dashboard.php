@@ -37,10 +37,41 @@ class Dashboard extends Controller
 
 
     public function global(){
-    
-        $general_setting= DB::table('general_setting')->where('general_setting_id','1')->first();
-        return view('admin.global',compact('general_setting'));
+        $general_setting = DB::table('general_setting')->where('general_setting_id', '1')->first();
+        return view('admin.global', compact('general_setting'));
     } 
+
+    public function update_global_setting(Request $request, $id = 1)
+    {
+        $updateData = [
+            'general_setting_text' => $request->input('general_setting_text'),
+            'general_setting_address' => $request->input('general_setting_address'),
+            'general_setting_phone' => $request->input('general_setting_phone'),
+            'general_setting_email' => $request->input('general_setting_email'),
+            'general_setting_facebook' => $request->input('general_setting_facebook'),
+            'general_setting_linkedin' => $request->input('general_setting_linkedin'),
+            'general_setting_youtube' => $request->input('general_setting_youtube'),
+            'general_setting_twitter' => $request->input('general_setting_twitter'),
+            'currency' => $request->input('currency', 'CAD'),
+            'tax_rate' => $request->input('tax_rate', 15.00),
+            'tax_label' => $request->input('tax_label', 'Taxes & fees'),
+            'loyalty_points_per_dollar' => $request->input('loyalty_points_per_dollar', 0.2000),
+            'loyalty_points_redemption_rate' => $request->input('loyalty_points_redemption_rate', 0.1000),
+            'loyalty_enabled' => $request->has('loyalty_enabled') ? 1 : 0,
+            'updated_at' => now()
+        ];
+
+        if ($request->hasFile('general_setting_logo')) {
+            $logo = $request->file('general_setting_logo');
+            $logoName = time() . '_' . $logo->getClientOriginalName();
+            $logo->storeAs('public/logo', $logoName);
+            $updateData['general_setting_logo'] = $logoName;
+        }
+
+        DB::table('general_setting')->where('general_setting_id', $id)->update($updateData);
+
+        return redirect()->back()->with('success', 'Global Settings Updated Successfully!');
+    }
 
     public function membership(){
         $membership = DB::table('membership_forms')->orderBy('membership_forms_id','DESC')->get();

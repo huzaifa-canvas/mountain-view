@@ -77,18 +77,70 @@
           <input type="text"  name='general_setting_youtube' value="{{$general_setting->general_setting_youtube ?? ''}}" class="form-control">
           </div>
         </div>
-        <div  class="row mb-3">
-          <label for="inputText" class="col-sm-2 col-form-label">Twitter</label>
+        <!-- Currency & Tax Settings -->
+        <hr class="my-4">
+        <h5 class="card-title pt-0">Currency & Tax Settings</h5>
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label">Currency</label>
           <div class="col-sm-10">
-          <input type="text"  name='general_setting_twitter' value="{{$general_setting->general_setting_twitter ?? ''}}" class="form-control">
+            <select name="currency" class="form-select">
+              <option value="CAD" {{ ($general_setting->currency ?? 'CAD') == 'CAD' ? 'selected' : '' }}>CAD ($ - Canadian Dollar)</option>
+              <option value="USD" {{ ($general_setting->currency ?? '') == 'USD' ? 'selected' : '' }}>USD ($ - US Dollar)</option>
+              <option value="EUR" {{ ($general_setting->currency ?? '') == 'EUR' ? 'selected' : '' }}>EUR (€ - Euro)</option>
+              <option value="GBP" {{ ($general_setting->currency ?? '') == 'GBP' ? 'selected' : '' }}>GBP (£ - British Pound)</option>
+              <option value="AUD" {{ ($general_setting->currency ?? '') == 'AUD' ? 'selected' : '' }}>AUD ($ - Australian Dollar)</option>
+            </select>
           </div>
         </div>
-          <div class="row mb-3">
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label">Tax Rate (%)</label>
+          <div class="col-sm-4">
+            <input type="number" step="0.01" name="tax_rate" value="{{ $general_setting->tax_rate ?? '15.00' }}" class="form-control" placeholder="15.00">
+          </div>
+          <label class="col-sm-2 col-form-label text-end">Tax Label</label>
+          <div class="col-sm-4">
+            <input type="text" name="tax_label" value="{{ $general_setting->tax_label ?? 'Taxes & fees' }}" class="form-control" placeholder="Taxes & fees">
+          </div>
+        </div>
+
+        <!-- Loyalty Points Settings -->
+        <hr class="my-4">
+        <h5 class="card-title pt-0">Loyalty Points Settings</h5>
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label">Enable Loyalty Program</label>
+          <div class="col-sm-10 d-flex align-items-center">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="loyalty_enabled" id="loyalty_enabled" value="1" {{ ($general_setting->loyalty_enabled ?? 1) ? 'checked' : '' }}>
+              <label class="form-check-label fw-bold" for="loyalty_enabled">Enable customer loyalty points earning and redemption</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label">Earning Rate (Points / $1)</label>
           <div class="col-sm-10">
-            <input type="submit" value="Update" class='btn btn-success'>
+            <input type="number" step="0.0001" name="loyalty_points_per_dollar" value="{{ $general_setting->loyalty_points_per_dollar ?? '0.2000' }}" class="form-control">
+            <small class="text-muted">Default: 0.2000 (1 point per $5 spent)</small>
           </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label">Redemption Rate ($ / Point)</label>
+          <div class="col-sm-10">
+            <input type="number" step="0.0001" name="loyalty_points_redemption_rate" value="{{ $general_setting->loyalty_points_redemption_rate ?? '0.1000' }}" class="form-control">
+            <small class="text-muted">Default: 0.1000 (100 points = $10 discount)</small>
           </div>
-        </form>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-sm-10 offset-sm-2">
+            <input type="submit" value="Update Settings" class='btn btn-success px-4'>
+          </div>
+        </div>
+      </form>
       </div>
       </div>
     </div>

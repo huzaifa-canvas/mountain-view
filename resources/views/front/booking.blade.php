@@ -10,13 +10,13 @@
                 <div class="index_banner_form_box">
                     <div class="index_banner_form_box_input">
                         <label for="">Check in</label>
-                        <input type="date" name="check_in" id="check_in" required value="{{ request()->get('check_in') }}">
-                        <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
+                        <input type="text" name="check_in" id="check_in" required placeholder="Select Check-in Date" value="{{ request()->get('check_in') }}">
+                        <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="" style="pointer-events: none;">
                     </div>
                     <div class="index_banner_form_box_input">
                         <label for="">Check Out</label>
-                        <input type="date" name="check_out" id="check_out" required value="{{ request()->get('check_out') }}">
-                        <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
+                        <input type="text" name="check_out" id="check_out" required placeholder="Select Check-out Date" value="{{ request()->get('check_out') }}">
+                        <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="" style="pointer-events: none;">
                     </div>
                 <div class="index_banner_form_box_input_1">
                         <div class="number">
@@ -304,15 +304,73 @@
             }
         }
 
-        // Update hidden checkin/checkout fields when top filter changes
-        document.getElementById('check_in').addEventListener('change', function() {
-            document.querySelectorAll('[id^="form_checkin_"]').forEach(function(el) { el.value = document.getElementById('check_in').value; });
-            document.querySelectorAll('.room-input').forEach(updatePrice);
-        });
-        document.getElementById('check_out').addEventListener('change', function() {
-            document.querySelectorAll('[id^="form_checkout_"]').forEach(function(el) { el.value = document.getElementById('check_out').value; });
-            document.querySelectorAll('.room-input').forEach(updatePrice);
-        });
+        // Initialize Flatpickr on Check In & Check Out
+        const checkInInput = document.getElementById('check_in');
+        const checkOutInput = document.getElementById('check_out');
+
+        if (checkInInput && checkOutInput) {
+            const checkInPicker = flatpickr(checkInInput, {
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "M j, Y",
+                onChange: function(selectedDates, dateStr, instance) {
+                    // Update hidden inputs
+                    document.querySelectorAll('[id^="form_checkin_"]').forEach(function(el) { el.value = dateStr; });
+                    
+                    if (selectedDates.length > 0) {
+                        const nextDay = new Date(selectedDates[0]);
+                        nextDay.setDate(nextDay.getDate() + 1);
+                        checkOutPicker.set('minDate', nextDay);
+                        
+                        const currentCheckOut = checkOutPicker.selectedDates[0];
+                        if (!currentCheckOut || currentCheckOut <= selectedDates[0]) {
+                            checkOutPicker.setDate(nextDay);
+                            
+                            const nextDayStr = checkOutPicker.formatDate(nextDay, "Y-m-d");
+                            document.querySelectorAll('[id^="form_checkout_"]').forEach(function(el) { el.value = nextDayStr; });
+                        }
+                    }
+                    
+                    // Trigger live price update
+                    document.querySelectorAll('.room-input').forEach(updatePrice);
+                }
+            });
+
+            const checkOutPicker = flatpickr(checkOutInput, {
+                minDate: checkInPicker.selectedDates[0] 
+                    ? new Date(new Date(checkInPicker.selectedDates[0]).getTime() + 24 * 60 * 60 * 1000)
+                    : new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "M j, Y",
+                onChange: function(selectedDates, dateStr, instance) {
+                    // Update hidden inputs
+                    document.querySelectorAll('[id^="form_checkout_"]').forEach(function(el) { el.value = dateStr; });
+                    
+                    // Trigger live price update
+                    document.querySelectorAll('.room-input').forEach(updatePrice);
+                }
+            });
+
+            // Correction logic on initial load
+            if (checkInPicker.selectedDates.length > 0) {
+                const checkInDate = checkInPicker.selectedDates[0];
+                const nextDay = new Date(checkInDate);
+                nextDay.setDate(nextDay.getDate() + 1);
+                
+                checkOutPicker.set('minDate', nextDay);
+                
+                const checkOutDate = checkOutPicker.selectedDates[0];
+                if (!checkOutDate || checkOutDate <= checkInDate) {
+                    checkOutPicker.setDate(nextDay);
+                    
+                    const nextDayStr = checkOutPicker.formatDate(nextDay, "Y-m-d");
+                    document.querySelectorAll('[id^="form_checkout_"]').forEach(function(el) { el.value = nextDayStr; });
+                    document.querySelectorAll('.room-input').forEach(updatePrice);
+                }
+            }
+        }
 
         // AJAX Reserve Form Submission
         document.querySelectorAll('.reserve-form').forEach(function(form) {

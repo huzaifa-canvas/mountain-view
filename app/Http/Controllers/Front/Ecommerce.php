@@ -70,29 +70,280 @@ class Ecommerce extends Controller
         return redirect()->back();
     }
 
-    public function checkout(){
-        $accessToken = 'e29cc5da-a5a5-e71e-2a49-35fdc2aee152';
-        $merchantId = 'CMNW2BQJ42JR1';  
-
-        $response = Http::withToken($accessToken)->post("https://sandbox.dev.clover.com/v1/merchants/{$merchantId}/paykeys", [
-            "amount" => 1000, 
-            "currency" => "usd",
-            "redirect_url" => url('/payment/success'),
-        ]);
-
-        $checkout = $response->json();
-
-        if (!isset($checkout['url'])) {
-            return response()->json([
-                'error' => 'Checkout URL not found in response.',
-                'response' => $checkout
-            ], 500);
+    public function createPaymentIntent(Request $request)
+    {
+        $checkout = Cart::where('session_id', $request->session()->getId())
+                        ->join('listings', 'cart.listings_id', '=', 'listings.listings_id')
+                        ->get();
+                        
+        if ($checkout->isEmpty()) {
+            return response()->json(['error' => 'Cart is empty'], 400);
         }
 
-        return response()->json([
-            'checkout_url' => $checkout['url'],
-        ]);
-      
+        $subtotal = 0;
+        foreach($checkout as $cart) {
+            $checkIn = \Carbon\Carbon::parse($cart->cart_check_in);
+            $checkOut = \Carbon\Carbon::parse($cart->cart_check_out);
+            $nights = $checkIn->diffInDays($checkOut);
+            $nights = $nights > 0 ? $nights : 1;
+            $subtotal += ($cart->listings_price * $cart->cart_rooms * $nights);
+        }
+
+        $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
+        $tax_rate = $general_setting ? $general_setting->tax_rate : 15.00;
+        $currency = $general_setting ? $general_setting->currency : 'CAD';
+        
+        $tax = $subtotal * ($tax_rate / 100);
+        $total = $subtotal + $tax;
+        
+        // Apply loyalty discount if requested
+        $loyalty_discount = 0;
+        if ($request->has('apply_points') && $request->apply_points && \Auth::guard('customer')->check()) {
+            $customer = \Auth::guard('customer')->user();
+            $redemption_rate = $general_setting ? $general_setting->loyalty_points_redemption_rate : 0.10;
+            $max_points_value = $customer->loyalty_points * $redemption_rate;
+            
+            // Can't discount more than total
+            $loyalty_discount = min($max_points_value, $total);
+            $total -= $loyalty_discount;
+            
+            $request->session()->put('applied_loyalty_discount', $loyalty_discount);
+            $request->session()->put('applied_loyalty_points', $loyalty_discount / $redemption_rate);
+        } else {
+            $request->session()->forget(['applied_loyalty_discount', 'applied_loyalty_points']);
+        }
+
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret') ?: env('STRIPE_SECRET'));
+
+        // Build customer metadata for Stripe
+        $customer_name = null;
+        $customer_email = null;
+        if (\Auth::guard('customer')->check()) {
+            $loggedCustomer = \Auth::guard('customer')->user();
+            $customer_name = trim($loggedCustomer->first_name . ' ' . $loggedCustomer->last_name);
+            $customer_email = $loggedCustomer->email;
+        }
+
+        $amount = max(50, round($total * 100));
+
+        try {
+            $existingPiId = $request->session()->get('stripe_payment_intent_id');
+
+            if ($existingPiId) {
+                // Try to update existing PaymentIntent instead of creating a new one
+                try {
+                    $paymentIntent = \Stripe\PaymentIntent::retrieve($existingPiId);
+                    
+                    // Only update if it hasn't been confirmed/succeeded yet
+                    if (in_array($paymentIntent->status, ['requires_payment_method', 'requires_confirmation', 'requires_action'])) {
+                        $updateData = ['amount' => $amount];
+                        
+                        if ($customer_name || $customer_email) {
+                            $updateData['metadata'] = [
+                                'customer_name' => $customer_name,
+                                'customer_email' => $customer_email,
+                            ];
+                        }
+
+                        $paymentIntent = \Stripe\PaymentIntent::update($existingPiId, $updateData);
+                    } else {
+                        // Old PI is in a terminal state, create a new one
+                        $existingPiId = null;
+                    }
+                } catch (\Exception $e) {
+                    // If retrieval fails, create a new one
+                    $existingPiId = null;
+                }
+            }
+
+            if (!$existingPiId) {
+                $createData = [
+                    'amount' => $amount,
+                    'currency' => strtolower($currency),
+                    'automatic_payment_methods' => [
+                        'enabled' => true,
+                    ],
+                ];
+
+                if ($customer_name || $customer_email) {
+                    $createData['metadata'] = [
+                        'customer_name' => $customer_name,
+                        'customer_email' => $customer_email,
+                    ];
+                    $createData['description'] = 'Booking by ' . ($customer_name ?: $customer_email);
+                    $createData['receipt_email'] = $customer_email;
+                }
+
+                $paymentIntent = \Stripe\PaymentIntent::create($createData);
+                $request->session()->put('stripe_payment_intent_id', $paymentIntent->id);
+            }
+
+            return response()->json([
+                'clientSecret' => $paymentIntent->client_secret,
+                'total' => $total,
+                'discount' => $loyalty_discount
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
+    public function processPayment(Request $request)
+    {
+        $paymentIntentId = $request->input('payment_intent');
+        
+        if (!$paymentIntentId) {
+            return redirect()->route('checkout')->with('error', 'Payment information missing.');
+        }
+
+        \Stripe\Stripe::setApiKey(config('services.stripe.secret') ?: env('STRIPE_SECRET'));
+        
+        try {
+            $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
+            
+            if ($paymentIntent->status !== 'succeeded') {
+                return redirect()->route('checkout')->with('error', 'Payment was not successful.');
+            }
+            
+            // Create Order
+            $cartItems = Cart::where('session_id', $request->session()->getId())
+                            ->join('listings', 'cart.listings_id', '=', 'listings.listings_id')
+                            ->get();
+                            
+            if ($cartItems->isEmpty()) {
+                return redirect()->route('checkout')->with('error', 'Your cart is empty.');
+            }
+
+            $subtotal = 0;
+            foreach($cartItems as $cart) {
+                $checkIn = \Carbon\Carbon::parse($cart->cart_check_in);
+                $checkOut = \Carbon\Carbon::parse($cart->cart_check_out);
+                $nights = $checkIn->diffInDays($checkOut) ?: 1;
+                $subtotal += ($cart->listings_price * $cart->cart_rooms * $nights);
+            }
+
+            $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
+            $tax_rate = $general_setting ? $general_setting->tax_rate : 15.00;
+            $tax = $subtotal * ($tax_rate / 100);
+            $total = $subtotal + $tax;
+            
+            $loyalty_discount = $request->session()->get('applied_loyalty_discount', 0);
+            $loyalty_points_used = $request->session()->get('applied_loyalty_points', 0);
+            $final_total = $total - $loyalty_discount;
+            
+            $customer_id = \Auth::guard('customer')->check() ? \Auth::guard('customer')->id() : null;
+            $order_number = 'ORD-' . strtoupper(uniqid());
+            
+            $order = \App\Models\Order::create([
+                'order_number' => $order_number,
+                'customer_id' => $customer_id,
+                'guest_name' => $customer_id ? null : $request->input('name'),
+                'guest_email' => $customer_id ? null : $request->input('email'),
+                'guest_phone' => $customer_id ? null : $request->input('phone'),
+                'subtotal' => $subtotal,
+                'tax_amount' => $tax,
+                'loyalty_discount' => $loyalty_discount,
+                'grand_total' => $final_total,
+                'stripe_payment_intent_id' => $paymentIntent->id,
+                'stripe_charge_id' => $paymentIntent->latest_charge,
+                'payment_status' => 'paid',
+                'booking_type' => $request->input('booking_type', 'Personal')
+            ]);
+            
+            foreach($cartItems as $cart) {
+                $checkIn = \Carbon\Carbon::parse($cart->cart_check_in);
+                $checkOut = \Carbon\Carbon::parse($cart->cart_check_out);
+                $nights = $checkIn->diffInDays($checkOut) ?: 1;
+                $itemTotal = $cart->listings_price * $cart->cart_rooms * $nights;
+                
+                \App\Models\OrderItem::create([
+                    'order_id' => $order->id,
+                    'listings_id' => $cart->listings_id,
+                    'listing_name' => $cart->listings_name,
+                    'check_in' => $cart->cart_check_in,
+                    'check_out' => $cart->cart_check_out,
+                    'rooms' => $cart->cart_rooms,
+                    'pets' => $cart->cart_pets,
+                    'laundry' => $cart->cart_laundry,
+                    'price_per_night' => $cart->listings_price,
+                    'nights' => $nights,
+                    'item_total' => $itemTotal
+                ]);
+            }
+            
+            // Handle Loyalty Points
+            if ($customer_id && $general_setting && $general_setting->loyalty_enabled) {
+                $customer = \App\Models\Customer::find($customer_id);
+                
+                // Deduct used points
+                if ($loyalty_points_used > 0) {
+                    $customer->loyalty_points -= $loyalty_points_used;
+                    \App\Models\LoyaltyTransaction::create([
+                        'customer_id' => $customer_id,
+                        'order_id' => $order->id,
+                        'points' => $loyalty_points_used,
+                        'type' => 'redeemed',
+                        'description' => 'Redeemed for Order ' . $order_number
+                    ]);
+                }
+                
+                // Award new points based on final total paid
+                $points_per_dollar = $general_setting->loyalty_points_per_dollar ?: 0.2;
+                $earned_points = floor($final_total * $points_per_dollar);
+                
+                if ($earned_points > 0) {
+                    $customer->loyalty_points += $earned_points;
+                    \App\Models\LoyaltyTransaction::create([
+                        'customer_id' => $customer_id,
+                        'order_id' => $order->id,
+                        'points' => $earned_points,
+                        'type' => 'earned',
+                        'description' => 'Earned from Order ' . $order_number
+                    ]);
+                }
+                
+                $customer->save();
+            }
+            
+            // Clear cart
+            Cart::where('session_id', $request->session()->getId())->delete();
+            $request->session()->forget(['applied_loyalty_discount', 'applied_loyalty_points', 'stripe_payment_intent_id']);
+            
+            // Send Emails
+            try {
+                $customer_email = $customer_id ? \Auth::guard('customer')->user()->email : $request->input('email');
+                if ($customer_email) {
+                    \Mail::to($customer_email)->send(new \App\Mail\BookingConfirmation($order));
+                }
+                
+                $admin_email = $general_setting ? $general_setting->general_setting_email : env('MAIL_FROM_ADDRESS');
+                if ($admin_email) {
+                    \Mail::to($admin_email)->send(new \App\Mail\AdminNewBooking($order));
+                }
+            } catch (\Exception $e) {
+                // Log email error but don't fail checkout
+                \Log::error('Email sending failed for order ' . $order_number . ': ' . $e->getMessage());
+            }
+
+            return redirect()->route('checkout.success', $order_number);
+            
+        } catch (\Exception $e) {
+            return redirect()->to('/checkout')->with('error', 'Payment processing failed: ' . $e->getMessage());
+        }
+    }
+    
+    public function orderSuccess($orderNumber)
+    {
+        $order = \App\Models\Order::with('items')->where('order_number', $orderNumber)->firstOrFail();
+        
+        // Ensure user can only view their own order unless they are a guest who just ordered it
+        if ($order->customer_id && (!\Auth::guard('customer')->check() || \Auth::guard('customer')->id() !== $order->customer_id)) {
+            return redirect('/');
+        }
+        
+        $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
+        $currency = $general_setting ? $general_setting->currency : 'CAD';
+        
+        return view('front.checkout-success', compact('order', 'currency'));
+    }
 }

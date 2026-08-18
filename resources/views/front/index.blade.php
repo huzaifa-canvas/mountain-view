@@ -14,13 +14,13 @@
             <div class="index_banner_form_box">
                 <div class="index_banner_form_box_input">
                     <label for="">Check in</label>
-                    <input type="date" name="check_in" id="check_in" required>
-                    <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
+                    <input type="text" name="check_in" id="check_in" placeholder="Select Check-in Date" required>
+                    <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="" style="pointer-events: none;">
                 </div>
                 <div class="index_banner_form_box_input">
                     <label for="">Check Out</label>
-                    <input type="date" name="check_out" id="check_out" required>
-                    <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="">
+                    <input type="text" name="check_out" id="check_out" placeholder="Select Check-out Date" required>
+                    <img src="{{ asset('assets/front/images/calendar_icon.png') }}" class="img-fluid" alt="" style="pointer-events: none;">
                 </div>
                 <div class="index_banner_form_box_input_1">
                     <div class="number">
@@ -471,5 +471,39 @@
     </div>
 </section>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkInInput = document.getElementById('check_in');
+        const checkOutInput = document.getElementById('check_out');
+
+        if(checkInInput && checkOutInput) {
+            const checkInPicker = flatpickr(checkInInput, {
+                minDate: "today",
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "M j, Y",
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (selectedDates.length > 0) {
+                        const nextDay = new Date(selectedDates[0]);
+                        nextDay.setDate(nextDay.getDate() + 1);
+                        checkOutPicker.set('minDate', nextDay);
+                        
+                        const currentCheckOut = checkOutPicker.selectedDates[0];
+                        if (!currentCheckOut || currentCheckOut <= selectedDates[0]) {
+                            checkOutPicker.setDate(nextDay);
+                        }
+                    }
+                }
+            });
+
+            const checkOutPicker = flatpickr(checkOutInput, {
+                minDate: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "M j, Y"
+            });
+        }
+    });
+</script>
 
 @include('front.inc.footer')

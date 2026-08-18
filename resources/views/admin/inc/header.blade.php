@@ -172,8 +172,20 @@
           <span>Providers</span>
         </a>
       </li>
-      <!-- End Forms Nav -->
 
+      <li class="nav-heading">Bookings & Orders</li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->is('admin/orders') || request()->is('admin/orders/*') && !request()->is('admin/orders/calendar*') ? '' : 'collapsed' }}" href="{{ route('admin.orders.index') }}">
+          <i class="bi bi-cart-check"></i>
+          <span>Orders List</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->is('admin/orders/calendar*') ? '' : 'collapsed' }}" href="{{ route('admin.orders.calendar') }}">
+          <i class="bi bi-calendar-event"></i>
+          <span>Calendar View</span>
+        </a>
+      </li>
 
       <li class="nav-heading">General Setting</li>
       <li class="nav-item">

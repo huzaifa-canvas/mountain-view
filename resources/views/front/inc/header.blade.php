@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('assets/front/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/front/css/swiper-bundle.min.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="{{ asset('assets/front/css/main.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/front/css/responsive.css') }}">
     <style>
@@ -40,6 +41,11 @@
                                     <li><a href="{{ url('memberships') }}" class="{{ request()->is('memberships') ? 'active' : '' }}">Memberships</a></li>
                                     <li><a href="{{ url('gallery') }}" class="{{ request()->is('gallery') ? 'active' : '' }}">Gallery</a></li>
                                     <li><a href="{{ url('contact') }}" class="{{ request()->is('contact') ? 'active' : '' }}">Contact Us</a></li>
+                                    @if(Auth::guard('customer')->check())
+                                        <li><a href="{{ route('customer.dashboard') }}" class="{{ request()->is('my-account') ? 'active' : '' }}">My Account</a></li>
+                                    @else
+                                        <li><a href="{{ route('customer.login') }}" class="{{ request()->is('customer/login') ? 'active' : '' }}">Login</a></li>
+                                    @endif
                                 </ul>
                             </div>
                             <div class="header_btn">

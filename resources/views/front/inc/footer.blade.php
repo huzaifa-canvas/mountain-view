@@ -85,6 +85,7 @@
             <script src="{{ asset('assets/front/js/scrolltrigger.min.js') }}"></script>
             <script src="{{ asset('assets/front/js/scrollsmoother.min.js') }}"></script>
             <script src="{{ asset('assets/front/js/custom.js') }}"></script>
+            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
                     const signInBtn = document.querySelector(".check_main_btns .common_dark_btn:not(.long_btn)");
