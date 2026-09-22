@@ -166,12 +166,7 @@
           <span>listings</span>
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->is('admin/providers*') ? '' : 'collapsed' }}" href="{{ url('admin/providers') }}">
-          <i class="bi bi-bag"></i>
-          <span>Providers</span>
-        </a>
-      </li>
+
 
       <li class="nav-heading">Bookings & Orders</li>
       <li class="nav-item">
@@ -184,6 +179,12 @@
         <a class="nav-link {{ request()->is('admin/orders/calendar*') ? '' : 'collapsed' }}" href="{{ route('admin.orders.calendar') }}">
           <i class="bi bi-calendar-event"></i>
           <span>Calendar View</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->is('admin/feedbacks*') ? '' : 'collapsed' }}" href="{{ route('admin.feedbacks.index') }}">
+          <i class="bi bi-chat-square-text"></i>
+          <span>Guest Feedbacks</span>
         </a>
       </li>
 

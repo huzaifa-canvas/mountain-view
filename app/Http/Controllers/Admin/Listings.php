@@ -52,6 +52,7 @@ class Listings extends Controller
         $listing->listings_extras = json_encode($arr3);
         $listing->listings_number_of_persons = $request->listings_number_of_persons;
         $listing->listings_number_of_rooms = $request->listings_number_of_rooms;
+        $listing->listings_number_of_beds = $request->listings_number_of_beds ?? 1;
         $listing->listings_status = $request->listings_status ?? 1;
         
         $listing->save();
@@ -98,6 +99,7 @@ class Listings extends Controller
         $listing->listings_extras = json_encode($arr3);
         $listing->listings_number_of_persons = $request->listings_number_of_persons;
         $listing->listings_number_of_rooms = $request->listings_number_of_rooms;
+        $listing->listings_number_of_beds = $request->listings_number_of_beds ?? 1;
         $listing->listings_status = $request->listings_status ?? 1;
         
         $listing->save();

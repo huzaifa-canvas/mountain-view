@@ -52,6 +52,9 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/orders/calendar', [\App\Http\Controllers\Admin\AdminOrders::class, 'calendar'])->name('admin.orders.calendar');
     Route::get('/orders/calendar-events', [\App\Http\Controllers\Admin\AdminOrders::class, 'calendarEvents'])->name('admin.orders.calendar-events');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\AdminOrders::class, 'show'])->name('admin.orders.show');
+    Route::post('/orders/{id}/mark-checked-out', [\App\Http\Controllers\Admin\AdminOrders::class, 'markCheckedOut'])->name('admin.orders.mark-checked-out');
+    Route::post('/orders/{id}/send-reminder', [\App\Http\Controllers\Admin\AdminOrders::class, 'sendReminder'])->name('admin.orders.send-reminder');
+    Route::get('/feedbacks', [\App\Http\Controllers\Admin\AdminOrders::class, 'feedbacks'])->name('admin.feedbacks.index');
 
     
     Route::get('/founder-page', [Dashboard::class, 'founder_page']);
@@ -102,11 +105,18 @@ Route::middleware('auth:customer')->group(function () {
 Route::post('booking/{id}',[Ecommerce::class,'booking_cart'])->name('booking_cart');
 Route::delete('cart/{id}',[Ecommerce::class,'remove_cart'])->name('remove_cart');
 Route::delete('cart-listing/{id}',[Ecommerce::class,'remove_cart_listing'])->name('remove_cart_listing');
+Route::delete('cart/listing/{id}',[Ecommerce::class,'remove_cart_listing']);
 
 // Checkout & Payment Routes
-Route::post('/create-payment-intent', [Ecommerce::class, 'createPaymentIntent'])->name('checkout.payment-intent');
+Route::post('/create-payment-intent', [Ecommerce::class, 'createPaymentIntent'])->name('checkout.create-payment-intent');
+Route::post('/apply-loyalty', [Ecommerce::class, 'applyLoyalty'])->name('checkout.apply-loyalty');
 Route::post('/process-payment', [Ecommerce::class, 'processPayment'])->name('checkout.process-payment');
 Route::get('/checkout/success/{order_number}', [Ecommerce::class, 'orderSuccess'])->name('checkout.success');
 Route::post('post_checkout',[Ecommerce::class,'checkout'])->name('store_checkout');
+
+// Guest Feedback Routes
+use App\Http\Controllers\Front\FeedbackController;
+Route::get('feedback/{order_number}', [FeedbackController::class, 'show'])->name('feedback.show');
+Route::post('feedback/{order_number}', [FeedbackController::class, 'store'])->name('feedback.store');
 
 //Front End

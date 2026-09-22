@@ -25,6 +25,7 @@
             <th>Name</th>
             <th>Price</th>
             <th>Persons</th>
+            <th>Beds</th>
             <th>Rooms</th>
             <th>Status</th>
             <th>Action</th>
@@ -37,6 +38,7 @@
             <td>{{ $listing->listings_name }}</td>
             <td>${{ $listing->listings_price }}</td>
             <td>{{ $listing->listings_number_of_persons }}</td>
+            <td>{{ $listing->listings_number_of_beds ?? 1 }}</td>
             <td>{{ $listing->listings_number_of_rooms ?? 'N/A' }}</td>
             <td>
               @if($listing->listings_status == 1)

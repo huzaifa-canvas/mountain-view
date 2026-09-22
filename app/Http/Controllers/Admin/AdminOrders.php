@@ -130,4 +130,73 @@ class AdminOrders extends Controller
 
         return response()->json($events);
     }
+
+    /**
+     * Mark an order as checked out and send Thank You + Feedback email to guest.
+     */
+    public function markCheckedOut(Request $request, $id)
+    {
+        $order = Order::with(['customer', 'items'])->findOrFail($id);
+
+        $order->checkout_status = 'checked_out';
+        $order->checked_out_at = now();
+        $order->save();
+
+        // Send Thank You email to guest
+        try {
+            $guestEmail = $order->customer_id ? $order->customer->email : $order->guest_email;
+            if ($guestEmail) {
+                \Mail::to($guestEmail)->send(new \App\Mail\GuestThankYou($order));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Thank You email failed for order ' . $order->order_number . ': ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Order marked as Checked Out. Thank you & feedback email sent to guest.');
+    }
+
+    /**
+     * Send a booking reminder email to the guest.
+     */
+    public function sendReminder($id)
+    {
+        $order = Order::with(['customer', 'items'])->findOrFail($id);
+
+        try {
+            $guestEmail = $order->customer_id ? $order->customer->email : $order->guest_email;
+            if ($guestEmail) {
+                \Mail::to($guestEmail)->send(new \App\Mail\BookingReminder($order));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Reminder email failed for order ' . $order->order_number . ': ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to send reminder email: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Booking reminder email sent successfully to guest.');
+    }
+
+    /**
+     * Display guest feedbacks list for admin.
+     */
+    public function feedbacks(Request $request)
+    {
+        $query = \App\Models\Feedback::orderBy('created_at', 'desc');
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('guest_name', 'like', "%{$search}%")
+                  ->orWhere('guest_email', 'like', "%{$search}%")
+                  ->orWhere('order_number', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->has('category') && !empty($request->category)) {
+            $query->where('category', $request->category);
+        }
+
+        $feedbacks = $query->paginate(15);
+        return view('admin.orders.feedbacks', compact('feedbacks'));
+    }
 }

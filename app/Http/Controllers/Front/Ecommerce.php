@@ -32,7 +32,9 @@ class Ecommerce extends Controller
             $cart->listings_id = $id;
         }
         
-        $cart->cart_laundry = $data['laundry'];
+        $laundryQty = ($data['laundry'] === 'Yes') ? max(1, intval($request->get('laundry_qty', 1))) : 0;
+        $cart->cart_laundry = ($data['laundry'] === 'Yes') ? "Yes ({$laundryQty} load" . ($laundryQty > 1 ? "s" : "") . ")" : "No";
+        $cart->cart_laundry_qty = $laundryQty;
         $cart->cart_pets = $data['pets'];
         $cart->cart_rooms = $data['room'];
         $cart->cart_check_in = $request->get('checkin');
@@ -70,6 +72,68 @@ class Ecommerce extends Controller
         return redirect()->back();
     }
 
+    public function applyLoyalty(Request $request)
+    {
+        $checkout = Cart::where('session_id', $request->session()->getId())
+                        ->join('listings', 'cart.listings_id', '=', 'listings.listings_id')
+                        ->get();
+
+        if ($checkout->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'Cart is empty'], 400);
+        }
+
+        $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
+        $tax_rate = $general_setting ? $general_setting->tax_rate : 15.00;
+        $pet_fee_rate = $general_setting && isset($general_setting->pet_fee) ? $general_setting->pet_fee : 25.00;
+        $laundry_fee_rate = $general_setting && isset($general_setting->laundry_fee) ? $general_setting->laundry_fee : 25.00;
+
+        $roomSubtotal = 0;
+        $pet_fee_total = 0;
+        $laundry_fee_total = 0;
+
+        foreach($checkout as $cart) {
+            $checkIn = \Carbon\Carbon::parse($cart->cart_check_in);
+            $checkOut = \Carbon\Carbon::parse($cart->cart_check_out);
+            $nights = $checkIn->diffInDays($checkOut) ?: 1;
+            $roomSubtotal += ($cart->listings_price * $cart->cart_rooms * $nights);
+
+            if ($cart->cart_pets > 0) {
+                $pet_fee_total += ($cart->cart_pets * $pet_fee_rate);
+            }
+            if (!empty($cart->cart_laundry_qty) && $cart->cart_laundry_qty > 0) {
+                $laundry_fee_total += ($cart->cart_laundry_qty * $laundry_fee_rate);
+            }
+        }
+
+        $subtotal = $roomSubtotal + $pet_fee_total + $laundry_fee_total;
+        $tax = $subtotal * ($tax_rate / 100);
+        $total = $subtotal + $tax;
+
+        $loyalty_discount = 0;
+        $apply = $request->input('apply_loyalty', false);
+
+        if ($apply && \Auth::guard('customer')->check()) {
+            $customer = \Auth::guard('customer')->user();
+            $redemption_rate = $general_setting ? $general_setting->loyalty_points_redemption_rate : 0.10;
+            $max_points_value = $customer->loyalty_points * $redemption_rate;
+            $loyalty_discount = min($max_points_value, $total);
+            $total -= $loyalty_discount;
+
+            $request->session()->put('applied_loyalty_discount', $loyalty_discount);
+            $request->session()->put('applied_loyalty_points', $loyalty_discount / $redemption_rate);
+        } else {
+            $request->session()->forget(['applied_loyalty_discount', 'applied_loyalty_points']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'loyalty_discount' => $loyalty_discount,
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'total' => $total
+        ]);
+    }
+
     public function createPaymentIntent(Request $request)
     {
         $checkout = Cart::where('session_id', $request->session()->getId())
@@ -80,19 +144,33 @@ class Ecommerce extends Controller
             return response()->json(['error' => 'Cart is empty'], 400);
         }
 
-        $subtotal = 0;
+        $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
+        $tax_rate = $general_setting ? $general_setting->tax_rate : 15.00;
+        $currency = $general_setting ? $general_setting->currency : 'CAD';
+        $pet_fee_rate = $general_setting && isset($general_setting->pet_fee) ? $general_setting->pet_fee : 25.00;
+        $laundry_fee_rate = $general_setting && isset($general_setting->laundry_fee) ? $general_setting->laundry_fee : 25.00;
+
+        $roomSubtotal = 0;
+        $pet_fee_total = 0;
+        $laundry_fee_total = 0;
+
         foreach($checkout as $cart) {
             $checkIn = \Carbon\Carbon::parse($cart->cart_check_in);
             $checkOut = \Carbon\Carbon::parse($cart->cart_check_out);
             $nights = $checkIn->diffInDays($checkOut);
             $nights = $nights > 0 ? $nights : 1;
-            $subtotal += ($cart->listings_price * $cart->cart_rooms * $nights);
+            
+            $roomSubtotal += ($cart->listings_price * $cart->cart_rooms * $nights);
+
+            if ($cart->cart_pets > 0) {
+                $pet_fee_total += ($cart->cart_pets * $pet_fee_rate);
+            }
+            if (!empty($cart->cart_laundry_qty) && $cart->cart_laundry_qty > 0) {
+                $laundry_fee_total += ($cart->cart_laundry_qty * $laundry_fee_rate);
+            }
         }
 
-        $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
-        $tax_rate = $general_setting ? $general_setting->tax_rate : 15.00;
-        $currency = $general_setting ? $general_setting->currency : 'CAD';
-        
+        $subtotal = $roomSubtotal + $pet_fee_total + $laundry_fee_total;
         $tax = $subtotal * ($tax_rate / 100);
         $total = $subtotal + $tax;
         
@@ -179,12 +257,17 @@ class Ecommerce extends Controller
             }
 
             return response()->json([
+                'success' => true,
                 'clientSecret' => $paymentIntent->client_secret,
                 'total' => $total,
                 'discount' => $loyalty_discount
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -214,16 +297,30 @@ class Ecommerce extends Controller
                 return redirect()->route('checkout')->with('error', 'Your cart is empty.');
             }
 
-            $subtotal = 0;
+            $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
+            $tax_rate = $general_setting ? $general_setting->tax_rate : 15.00;
+            $pet_fee_rate = $general_setting && isset($general_setting->pet_fee) ? $general_setting->pet_fee : 25.00;
+            $laundry_fee_rate = $general_setting && isset($general_setting->laundry_fee) ? $general_setting->laundry_fee : 25.00;
+
+            $roomSubtotal = 0;
+            $pet_fee_total = 0;
+            $laundry_fee_total = 0;
+
             foreach($cartItems as $cart) {
                 $checkIn = \Carbon\Carbon::parse($cart->cart_check_in);
                 $checkOut = \Carbon\Carbon::parse($cart->cart_check_out);
                 $nights = $checkIn->diffInDays($checkOut) ?: 1;
-                $subtotal += ($cart->listings_price * $cart->cart_rooms * $nights);
+                $roomSubtotal += ($cart->listings_price * $cart->cart_rooms * $nights);
+
+                if ($cart->cart_pets > 0) {
+                    $pet_fee_total += ($cart->cart_pets * $pet_fee_rate);
+                }
+                if (!empty($cart->cart_laundry_qty) && $cart->cart_laundry_qty > 0) {
+                    $laundry_fee_total += ($cart->cart_laundry_qty * $laundry_fee_rate);
+                }
             }
 
-            $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
-            $tax_rate = $general_setting ? $general_setting->tax_rate : 15.00;
+            $subtotal = $roomSubtotal + $pet_fee_total + $laundry_fee_total;
             $tax = $subtotal * ($tax_rate / 100);
             $total = $subtotal + $tax;
             
@@ -233,16 +330,42 @@ class Ecommerce extends Controller
             
             $customer_id = \Auth::guard('customer')->check() ? \Auth::guard('customer')->id() : null;
             $order_number = 'ORD-' . strtoupper(uniqid());
+
+            // Handle ID Proof Upload
+            $idProofPath = null;
+            if ($request->hasFile('id_proof')) {
+                $file = $request->file('id_proof');
+                $filename = time() . '_id_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('storage/id_proofs/'), $filename);
+                $idProofPath = 'storage/id_proofs/' . $filename;
+            }
+
+            $firstName = $request->input('first_name');
+            $lastName = $request->input('last_name');
+            $fullName = trim($firstName . ' ' . $lastName);
+            if (empty($fullName)) {
+                $fullName = $request->input('name');
+            }
             
             $order = \App\Models\Order::create([
                 'order_number' => $order_number,
                 'customer_id' => $customer_id,
-                'guest_name' => $customer_id ? null : $request->input('name'),
+                'guest_name' => $customer_id ? null : $fullName,
+                'guest_first_name' => $customer_id ? null : $firstName,
+                'guest_last_name' => $customer_id ? null : $lastName,
                 'guest_email' => $customer_id ? null : $request->input('email'),
                 'guest_phone' => $customer_id ? null : $request->input('phone'),
+                'guest_address' => $request->input('address'),
+                'guest_city' => $request->input('city'),
+                'guest_province' => $request->input('province'),
+                'guest_postal_code' => $request->input('postal_code'),
+                'guest_vehicle_number' => $request->input('vehicle_number'),
+                'guest_id_proof' => $idProofPath,
                 'subtotal' => $subtotal,
                 'tax_amount' => $tax,
                 'loyalty_discount' => $loyalty_discount,
+                'pet_fee_total' => $pet_fee_total,
+                'laundry_fee_total' => $laundry_fee_total,
                 'grand_total' => $final_total,
                 'stripe_payment_intent_id' => $paymentIntent->id,
                 'stripe_charge_id' => $paymentIntent->latest_charge,

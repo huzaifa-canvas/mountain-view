@@ -35,15 +35,19 @@
                 </div> 
 
                 <div class="row mb-3">
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                     <label for="listings_number_of_persons" class="form-label">Number of Persons</label>
                     <input type="number" class="form-control" name="listings_number_of_persons" id="listings_number_of_persons" value="{{ $listing->listings_number_of_persons }}" required>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-3">
+                    <label for="listings_number_of_beds" class="form-label">Number of Beds</label>
+                    <input type="number" class="form-control" name="listings_number_of_beds" id="listings_number_of_beds" value="{{ $listing->listings_number_of_beds ?? 1 }}" required>
+                  </div>
+                  <div class="col-md-3">
                     <label for="listings_number_of_rooms" class="form-label">Number of Rooms</label>
                     <input type="number" class="form-control" name="listings_number_of_rooms" id="listings_number_of_rooms" value="{{ $listing->listings_number_of_rooms }}">
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                     <label for="listings_status" class="form-label">Status</label>
                     <select name="listings_status" id="listings_status" class="form-select">
                       <option value="1" {{ $listing->listings_status == 1 ? 'selected' : '' }}>Active</option>

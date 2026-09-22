@@ -26,7 +26,7 @@
                     <div class="number">
                         <label for="Adult">Adult</label>
                         <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                        <input type="number" placeholder="No Of Adult" name="adult" oninput="this.value = this.value.slice(0, 3)" id="Adult">
+                        <input type="number" placeholder="No of Adult" name="adult" oninput="this.value = this.value.slice(0, 3)" id="Adult">
                         <span class="plus"><i class="fa-solid fa-plus"></i></span>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                     <div class="number">
                         <label for="Children">Children</label>
                         <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                        <input type="number" placeholder="No Of Children" name="children" oninput="this.value = this.value.slice(0, 3)" id="Children">
+                        <input type="number" placeholder="No of Children" name="children" oninput="this.value = this.value.slice(0, 3)" id="Children">
                         <span class="plus"><i class="fa-solid fa-plus"></i></span>
                     </div>
                 </div>

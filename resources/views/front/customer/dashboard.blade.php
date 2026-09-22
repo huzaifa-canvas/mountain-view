@@ -1,5 +1,224 @@
 @include('front.inc.header')
 
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+    .checkout_wrapper {
+        padding: 65px 0px 90px;
+        background-color: #F8FAFC;
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+
+    #v-pills-tabContent {
+        width: 100%;
+    }
+
+    /* Customer Sidebar Styling */
+    .dash_sidebar_card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 24px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
+    }
+    .dash_user_header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+        border-bottom: 1.5px solid #f1f5f9;
+    }
+    .dash_user_avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #184E77 0%, #1e293b 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 18px;
+        box-shadow: 0 4px 12px rgba(24, 78, 119, 0.25);
+    }
+    .dash_user_title {
+        font-size: 17px;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+        line-height: 1.2;
+    }
+    .dash_user_sub {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .dash_nav_link {
+        width: 100%;
+        text-align: left;
+        padding: 12px 16px !important;
+        margin-bottom: 8px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        color: #475569 !important;
+        border-radius: 12px !important;
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        transition: all 0.25s ease !important;
+    }
+    .dash_nav_link i {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+        color: #184E77;
+        transition: all 0.25s ease;
+    }
+    .dash_nav_link:hover {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+        color: #0f172a !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    }
+    .dash_nav_link.active {
+        background: #184E77 !important;
+        border-color: #184E77 !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        box-shadow: 0 6px 18px rgba(24, 78, 119, 0.25) !important;
+    }
+    .dash_nav_link.active i {
+        color: #ffffff !important;
+    }
+
+    .dash_logout_link {
+        width: 100%;
+        text-align: left;
+        padding: 12px 16px;
+        margin-top: 16px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #ef4444;
+        border-radius: 12px;
+        background: #fef2f2;
+        border: 1px solid #fee2e2;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+    .dash_logout_link:hover {
+        background: #fee2e2;
+        color: #dc2626;
+        border-color: #fca5a5;
+    }
+
+    /* Main Dashboard Cards */
+    .dash_main_card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 28px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05);
+    }
+    .profile-card-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 14px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .profile-card-title i {
+        font-size: 20px;
+        color: #184E77;
+    }
+
+    /* Stat Cards */
+    .stat_box_card {
+        border-radius: 14px;
+        padding: 22px 24px;
+        border: 1px solid #e2e8f0;
+        height: 100%;
+        transition: all 0.25s ease;
+    }
+    .stat_box_card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    }
+    .stat_box_loyalty {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-color: #bae6fd;
+    }
+    .stat_box_bookings {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-color: #e2e8f0;
+    }
+
+    /* Forms */
+    .profile-form-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: #334155;
+        margin-bottom: 6px;
+    }
+    .profile-form-control {
+        height: 48px;
+        border-radius: 10px;
+        border: 1.5px solid #cbd5e1;
+        padding: 0 16px;
+        font-size: 14px;
+        color: #0f172a;
+        background-color: #f8fafc;
+        transition: all 0.25s ease-in-out;
+    }
+    .profile-form-control:focus {
+        border-color: #184E77;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(24, 78, 119, 0.12);
+    }
+    .profile-submit-btn {
+        background-color: #184E77;
+        color: #ffffff;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(24, 78, 119, 0.25);
+    }
+    .profile-submit-btn:hover {
+        background-color: #123957;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(24, 78, 119, 0.35);
+    }
+
+    /* Empty state */
+    .empty_bookings_box {
+        text-align: center;
+        padding: 40px 20px;
+        background: #f8fafc;
+        border: 1.5px dashed #cbd5e1;
+        border-radius: 14px;
+        margin-top: 12px;
+    }
+</style>
+
 <section class="index_banner_wrapper inner_banner_wrapper">
     <div class="container">
         <div class="index_banner_wrap_text inner_banner_wrap">
@@ -8,73 +227,83 @@
     </div>
 </section>
 
-<style>
-    .checkout_wrapper {
-        padding: 75px 0px;
-        background-color: #F5F7FC;
-    }
-
-    #v-pills-tabContent {
-        width: 100%;
-    }   
-</style>
-
 <section class="checkout_wrapper">
     <div class="container">
         <div class="checkout_m_wrap_old" style="width: 100%;">
             <div class="row">
+                <!-- Sidebar -->
                 <div class="col-12 col-md-4 col-lg-3 mb-4 mb-md-0">
-                    <div class="bg-white p-4 rounded-3 shadow-sm border">
-                        <h5 class="mb-4 text-dark fw-bold">Hello, {{ $customer->first_name }}</h5>
+                    <div class="dash_sidebar_card">
+                        <div class="dash_user_header">
+                            <div class="dash_user_avatar">
+                                {{ strtoupper(substr($customer->first_name, 0, 1)) }}
+                            </div>
+                            <div>
+                                <h5 class="dash_user_title">Hello, {{ $customer->first_name }}</h5>
+                                <p class="dash_user_sub">{{ $customer->email }}</p>
+                            </div>
+                        </div>
+
                         <ul class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active w-100 text-start mb-2 py-2 px-3 fw-semibold" id="v-pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dashboard" type="button" role="tab"><i class="fa-solid fa-gauge me-2"></i> Dashboard</button>
+                                <button class="nav-link dash_nav_link active" id="v-pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dashboard" type="button" role="tab"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link w-100 text-start mb-2 py-2 px-3 fw-semibold" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab"><i class="fa-solid fa-receipt me-2"></i> Order History</button>
+                                <button class="nav-link dash_nav_link" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab"><i class="fa-solid fa-receipt"></i> Order History</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link w-100 text-start mb-2 py-2 px-3 fw-semibold" id="v-pills-loyalty-tab" data-bs-toggle="pill" data-bs-target="#v-pills-loyalty" type="button" role="tab"><i class="fa-solid fa-coins me-2"></i> Loyalty Points</button>
+                                <button class="nav-link dash_nav_link" id="v-pills-loyalty-tab" data-bs-toggle="pill" data-bs-target="#v-pills-loyalty" type="button" role="tab"><i class="fa-solid fa-coins"></i> Loyalty Points</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link w-100 text-start mb-2 py-2 px-3 fw-semibold" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab"><i class="fa-solid fa-user-pen me-2"></i> Profile Settings</button>
+                                <button class="nav-link dash_nav_link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab"><i class="fa-solid fa-user-gear"></i> Profile Settings</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link w-100 text-start text-danger py-2 px-3 fw-semibold mt-3" href="{{ route('customer.logout') }}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a>
+                                <a class="dash_logout_link" href="{{ route('customer.logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                             </li>
                         </ul>
                     </div>
                 </div>
                 
+                <!-- Content Area -->
                 <div class="col-12 col-md-8 col-lg-9">
                     <div class="tab-content" id="v-pills-tabContent">
                         
                         <!-- Dashboard Tab -->
                         <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel">
-                            <div class="bg-white p-4 rounded-3 shadow-sm border">
-                                <h4 class="profile-card-title"><i class="fa-solid fa-gauge"></i> Overview</h4>
+                            <div class="dash_main_card">
+                                <h4 class="profile-card-title"><i class="fa-solid fa-chart-line"></i> Overview</h4>
                                 
-                                <div class="row">
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card shadow-sm border h-100 bg-light">
-                                            <div class="card-body p-4">
-                                                <h6 class="text-muted fw-semibold">Available Loyalty Points</h6>
-                                                <h2 class="display-6 fw-bold mb-1" style="color: #184E77">{{ number_format($customer->loyalty_points, 0) }}</h2>
-                                                <p class="text-success fw-bold mb-0">Value: {{ $currency }} {{ number_format($points_value, 2) }}</p>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="stat_box_card stat_box_loyalty">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="text-muted fw-bold mb-1" style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">Available Loyalty Points</h6>
+                                                    <h2 class="display-6 fw-bold mb-1" style="color: #184E77; font-family:'Plus Jakarta Sans', sans-serif;">{{ number_format($customer->loyalty_points, 0) }}</h2>
+                                                    <p class="text-success fw-bold mb-0" style="font-size:14px;"><i class="fa-solid fa-tags me-1"></i> Value: {{ $currency }} {{ number_format($points_value, 2) }}</p>
+                                                </div>
+                                                <div style="background:#ffffff; width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#184E77; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+                                                    <i class="fa-solid fa-coins fs-5"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-4">
-                                        <div class="card shadow-sm border h-100 bg-light">
-                                            <div class="card-body p-4">
-                                                <h6 class="text-muted fw-semibold">Total Bookings</h6>
-                                                <h2 class="display-6 fw-bold mb-0 text-dark">{{ count($orders) }}</h2>
+                                    <div class="col-md-6">
+                                        <div class="stat_box_card stat_box_bookings">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="text-muted fw-bold mb-1" style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">Total Bookings</h6>
+                                                    <h2 class="display-6 fw-bold mb-0 text-dark" style="font-family:'Plus Jakarta Sans', sans-serif;">{{ count($orders) }}</h2>
+                                                </div>
+                                                <div style="background:#ffffff; width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#184E77; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
+                                                    <i class="fa-solid fa-hotel fs-5"></i>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <h5 class="fw-bold mt-4 mb-3" style="font-size: 16px; color: #1e293b;"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Recent Bookings</h5>
+                                <h5 class="fw-bold mt-4 mb-3" style="font-size: 16px; color: #0f172a;"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Recent Bookings</h5>
                                 @if(count($orders) > 0)
                                     <div class="table-responsive">
                                         <table class="table table-hover align-middle">
@@ -105,22 +334,27 @@
                                         </table>
                                     </div>
                                 @else
-                                    <p class="text-muted">You don't have any bookings yet.</p>
-                                    <a href="{{ url('room') }}" class="common_dark_btn">Book a Room</a>
+                                    <div class="empty_bookings_box">
+                                        <i class="fa-regular fa-calendar-xmark" style="font-size: 38px; color: #94a3b8; margin-bottom: 12px;"></i>
+                                        <p class="text-muted fw-semibold mb-3">You don't have any bookings yet.</p>
+                                        <a href="{{ url('booking') }}" class="common_dark_btn" style="border-radius:30px; padding:12px 30px; font-weight:700;">
+                                            <i class="fa-solid fa-calendar-plus me-2"></i> BOOK A ROOM
+                                        </a>
+                                    </div>
                                 @endif
                             </div>
                         </div>
 
                         <!-- Orders Tab -->
                         <div class="tab-pane fade" id="v-pills-orders" role="tabpanel">
-                            <div class="bg-white p-4 rounded-3 shadow-sm border">
+                            <div class="dash_main_card">
                                 <h4 class="profile-card-title"><i class="fa-solid fa-receipt"></i> Order History</h4>
                                 
                                 @if(count($orders) > 0)
                                     @foreach($orders as $order)
-                                        <div class="card mb-4 shadow-sm border">
+                                        <div class="card mb-4 shadow-sm border" style="border-radius:14px; overflow:hidden;">
                                             <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
-                                                <h6 class="mb-0 fw-bold">Order #{{ $order->order_number }}</h6>
+                                                <h6 class="mb-0 fw-bold" style="color:#0f172a;">Order #{{ $order->order_number }}</h6>
                                                 <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i> {{ $order->created_at->format('F d, Y g:i A') }}</span>
                                             </div>
                                             <div class="card-body p-4">
@@ -151,26 +385,32 @@
                                         </div>
                                     @endforeach
                                 @else
-                                    <p class="text-muted">You don't have any order history yet.</p>
+                                    <div class="empty_bookings_box">
+                                        <i class="fa-solid fa-receipt" style="font-size: 38px; color: #94a3b8; margin-bottom: 12px;"></i>
+                                        <p class="text-muted fw-semibold mb-3">You don't have any order history yet.</p>
+                                        <a href="{{ url('booking') }}" class="common_dark_btn" style="border-radius:30px; padding:12px 30px; font-weight:700;">
+                                            <i class="fa-solid fa-calendar-plus me-2"></i> BOOK A ROOM
+                                        </a>
+                                    </div>
                                 @endif
                             </div>
                         </div>
 
                         <!-- Loyalty Tab -->
                         <div class="tab-pane fade" id="v-pills-loyalty" role="tabpanel">
-                            <div class="bg-white p-4 rounded-3 shadow-sm border">
+                            <div class="dash_main_card">
                                 <h4 class="profile-card-title"><i class="fa-solid fa-coins"></i> Loyalty Points</h4>
                                 
-                                <div class="card bg-light border-0 mb-4">
+                                <div class="card bg-light border-0 mb-4" style="border-radius:14px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important; border: 1px solid #bae6fd !important;">
                                     <div class="card-body text-center p-5">
-                                        <h5 class="text-muted mb-2">Your Points Balance</h5>
-                                        <h1 class="display-3 fw-bold mb-2" style="color: #184E77">{{ number_format($customer->loyalty_points, 0) }}</h1>
+                                        <h5 class="text-muted mb-2 fw-bold" style="font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">Your Points Balance</h5>
+                                        <h1 class="display-3 fw-bold mb-2" style="color: #184E77; font-family:'Plus Jakarta Sans', sans-serif;">{{ number_format($customer->loyalty_points, 0) }}</h1>
                                         <h4 class="text-success fw-bold">= {{ $currency }} {{ number_format($points_value, 2) }}</h4>
                                         <p class="mt-3 text-muted mb-0">Points can be applied as a discount during checkout.</p>
                                     </div>
                                 </div>
                                 
-                                <h5 class="fw-bold mt-4 mb-3" style="font-size: 16px; color: #1e293b;"><i class="fa-solid fa-list-check text-primary me-2"></i> Recent Transactions</h5>
+                                <h5 class="fw-bold mt-4 mb-3" style="font-size: 16px; color: #0f172a;"><i class="fa-solid fa-list-check text-primary me-2"></i> Recent Transactions</h5>
                                 @php
                                     $transactions = $customer->loyaltyTransactions()->orderBy('created_at', 'desc')->get();
                                 @endphp
@@ -208,81 +448,21 @@
                             </div>
                         </div>
 
-<style>
-    .profile-card-title {
-        font-size: 20px;
-        font-weight: 700;
-        color: #1e293b;
-        border-bottom: 2px solid #f1f5f9;
-        padding-bottom: 12px;
-        margin-bottom: 24px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .profile-card-title i {
-        font-size: 20px;
-        color: #184E77;
-    }
-    .profile-form-label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #475569;
-        margin-bottom: 6px;
-    }
-    .profile-form-control {
-        height: 46px;
-        border-radius: 8px;
-        border: 1px solid #cbd5e1;
-        padding: 0 16px;
-        font-size: 14px;
-        color: #1e293b;
-        background-color: #ffffff;
-        transition: all 0.2s ease-in-out;
-    }
-    .profile-form-control:focus {
-        border-color: #184E77;
-        box-shadow: 0 0 0 3px rgba(24, 78, 119, 0.15);
-    }
-    .profile-submit-btn {
-        background-color: #184E77;
-        color: #ffffff;
-        border: none;
-        padding: 12px 28px;
-        border-radius: 30px;
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(24, 78, 119, 0.2);
-    }
-    .profile-submit-btn:hover {
-        background-color: #123957;
-        color: #ffffff;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(24, 78, 119, 0.3);
-    }
-</style>
-
                         <!-- Profile Settings Tab -->
                         <div class="tab-pane fade" id="v-pills-profile" role="tabpanel">
-                            <div class="bg-white p-4 rounded-3 shadow-sm border mb-4">
+                            <div class="dash_main_card mb-4">
                                 <h4 class="profile-card-title"><i class="fa-solid fa-user-gear"></i> Personal Information</h4>
 
                                 @if(session('success'))
-                                    <div class="alert alert-success mb-4">{{ session('success') }}</div>
+                                    <div class="alert alert-success mb-4" style="border-radius:10px;">{{ session('success') }}</div>
                                 @endif
 
                                 @if(session('error'))
-                                    <div class="alert alert-danger mb-4">{{ session('error') }}</div>
+                                    <div class="alert alert-danger mb-4" style="border-radius:10px;">{{ session('error') }}</div>
                                 @endif
 
                                 @if($errors->any())
-                                    <div class="alert alert-danger mb-4">
+                                    <div class="alert alert-danger mb-4" style="border-radius:10px;">
                                         <ul class="mb-0">
                                             @foreach ($errors->all() as $error)
                                                 <li>{{ $error }}</li>
@@ -341,8 +521,8 @@
                                 </form>
                             </div>
 
-                            <!-- Change Password Section (Separate Card at Bottom) -->
-                            <div class="bg-white p-4 rounded-3 shadow-sm border">
+                            <!-- Change Password Section -->
+                            <div class="dash_main_card">
                                 <h4 class="profile-card-title"><i class="fa-solid fa-lock"></i> Change Password</h4>
 
                                 <form action="{{ route('customer.password.update') }}" method="POST">

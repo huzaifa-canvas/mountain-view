@@ -105,6 +105,23 @@
           </div>
         </div>
 
+        <!-- Booking Fee Settings -->
+        <hr class="my-4">
+        <h5 class="card-title pt-0">Booking Fee Settings</h5>
+
+        <div class="row mb-3">
+          <label class="col-sm-2 col-form-label">Pet Fee ($)</label>
+          <div class="col-sm-4">
+            <input type="number" step="0.01" name="pet_fee" value="{{ $general_setting->pet_fee ?? '25.00' }}" class="form-control" placeholder="25.00">
+            <small class="text-muted">Per pet fee amount</small>
+          </div>
+          <label class="col-sm-2 col-form-label text-end">Laundry Fee ($)</label>
+          <div class="col-sm-4">
+            <input type="number" step="0.01" name="laundry_fee" value="{{ $general_setting->laundry_fee ?? '25.00' }}" class="form-control" placeholder="25.00">
+            <small class="text-muted">Per load fee amount</small>
+          </div>
+        </div>
+
         <!-- Loyalty Points Settings -->
         <hr class="my-4">
         <h5 class="card-title pt-0">Loyalty Points Settings</h5>
