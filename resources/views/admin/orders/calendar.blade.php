@@ -1,11 +1,11 @@
-@include('admin.inc.header')
+@include('admin.inc.header', ['pageTitle' => 'Bookings Calendar'])
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
 <main id="main" class="main">
 
-  <div class="pagetitle d-flex justify-content-between align-items-center">
-    <div>
+  <div class="mv-page-head">
+    <div class="pagetitle mb-0">
       <h1>Bookings Calendar</h1>
       <nav>
         <ol class="breadcrumb">
@@ -15,8 +15,8 @@
         </ol>
       </nav>
     </div>
-    <div>
-      <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary"><i class="bi bi-list-task me-1"></i> List View</a>
+    <div class="mv-page-actions">
+      <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary"><i class="bi bi-list-task me-1"></i> List view</a>
     </div>
   </div>
 
@@ -27,7 +27,7 @@
           <div class="card-body p-4" style="position: relative;">
             <div class="row mb-4 align-items-center">
               <div class="col-md-4">
-                <label class="form-label small fw-bold text-muted mb-1">Filter by Room Type</label>
+                <label class="form-label" for="calendar-room-filter">Filter by room</label>
                 <select id="calendar-room-filter" class="form-select">
                   <option value="">All Rooms</option>
                   @foreach($listings as $listing)
@@ -38,10 +38,10 @@
             </div>
 
             <!-- Calendar Loader Overlay -->
-            <div id="calendar-loader" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.85); z-index:10; display:flex; justify-content:center; align-items:center; border-radius:8px;">
+            <div id="calendar-loader">
               <div style="text-align:center;">
-                <i class="bi bi-arrow-repeat" style="font-size:32px; color:#4154f1; animation: spin 1s linear infinite;"></i>
-                <p style="margin:10px 0 0; font-size:14px; color:#475569; font-weight:600;">Loading bookings...</p>
+                <i class="bi bi-arrow-repeat" style="font-size:32px; color:var(--mv-gold); animation: spin 1s linear infinite;"></i>
+                <p style="margin:10px 0 0; font-size:14px; color:var(--mv-text-2); font-weight:600;">Loading bookings…</p>
               </div>
             </div>
 
@@ -59,9 +59,24 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+#calendar-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--mv-radius);
+  background: color-mix(in srgb, var(--mv-surface) 86%, transparent);
+}
+#booking-calendar { --fc-small-font-size: .82rem; }
+#booking-calendar .fc-toolbar-title { font-family: "Lora", Georgia, serif; font-size: 1.2rem; }
+#booking-calendar .fc-event { border-radius: 6px; padding: 1px 4px; font-size: .78rem; }
+@media (max-width: 767px) {
+  #booking-calendar .fc-toolbar { flex-direction: column; gap: 10px; }
+  #booking-calendar .fc-toolbar-title { font-size: 1.05rem; }
+}
 </style>
-
-@include('admin.inc.footer')
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -111,3 +126,5 @@
     }
   });
 </script>
+
+@include('admin.inc.footer')

@@ -114,15 +114,96 @@ class CustomerAuth extends Controller
     public function dashboard()
     {
         $customer = Auth::guard('customer')->user();
-        $orders = $customer->orders()->orderBy('created_at', 'desc')->get();
-        
+        $orders = $customer->orders()->with('items')->orderBy('created_at', 'desc')->get();
+
         $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
         $currency = $general_setting ? $general_setting->currency : 'CAD';
         $redemption_rate = $general_setting ? $general_setting->loyalty_points_redemption_rate : 0.10;
-        
+
         $points_value = $customer->loyalty_points * $redemption_rate;
-        
-        return view('front.customer.dashboard', compact('customer', 'orders', 'currency', 'points_value'));
+
+        // Only settled money counts as "spent", and only a stay still ahead of
+        // the guest counts as upcoming — a cancelled one is neither.
+        $paid = $orders->where('payment_status', 'paid');
+
+        $upcoming = $orders->filter(fn ($order) => in_array($order->stayState(), ['awaiting', 'checked_in'], true))
+            ->sortBy(fn ($order) => $order->items->min('check_in'))
+            ->values();
+
+        $stats = [
+            'bookings'    => $orders->count(),
+            'upcoming'    => $upcoming->count(),
+            'nights'      => (int) $paid->sum(fn ($order) => (int) $order->items->sum('nights')),
+            'total_spent' => (float) $paid->sum('grand_total'),
+        ];
+
+        $nextStay = $upcoming->first();
+
+        return view('front.customer.dashboard', compact(
+            'customer', 'orders', 'currency', 'points_value', 'stats', 'upcoming', 'nextStay'
+        ));
+    }
+
+    /** One booking in full, scoped so a guest can only ever open their own. */
+    public function booking($orderNumber)
+    {
+        $customer = Auth::guard('customer')->user();
+
+        $order = $customer->orders()
+            ->with('items')
+            ->where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
+        $currency = $general_setting ? $general_setting->currency : 'CAD';
+
+        return view('front.customer.booking', compact('customer', 'order', 'currency'));
+    }
+
+    /**
+     * Let a guest cancel a stay they have not arrived for yet.
+     *
+     * The reason is required because it is what the front desk sees in the
+     * booking timeline; without it a cancellation is unexplainable after the
+     * fact. Money is not touched here — any refund is raised in Stripe by
+     * staff, so payment_status keeps showing what was actually collected.
+     */
+    public function cancelBooking(Request $request, $orderNumber)
+    {
+        $customer = Auth::guard('customer')->user();
+
+        $order = $customer->orders()
+            ->with('items')
+            ->where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        if (!$order->canCustomerCancel()) {
+            $state = $order->stayState();
+
+            $message = match ($state) {
+                'cancelled'   => 'This booking has already been cancelled.',
+                'checked_in'  => 'You have already checked in, so please speak to the front desk about ending this stay.',
+                'checked_out' => 'This stay has already finished and cannot be cancelled.',
+                default       => 'These dates have passed, so this booking can no longer be cancelled online. Please contact us.',
+            };
+
+            return redirect()->route('customer.booking.show', $order->order_number)->with('error', $message);
+        }
+
+        $validated = $request->validate([
+            'cancellation_reason' => ['required', 'string', 'min:5', 'max:1000'],
+        ], [
+            'cancellation_reason.required' => 'Please tell us why you are cancelling this booking.',
+            'cancellation_reason.min'      => 'Please give us a little more detail about why you are cancelling.',
+        ]);
+
+        $order->checkout_status = 'cancelled';
+        $order->cancelled_at = now();
+        $order->cancellation_reason = 'Cancelled by guest: ' . $validated['cancellation_reason'];
+        $order->save();
+
+        return redirect()->route('customer.booking.show', $order->order_number)
+            ->with('success', 'Your booking has been cancelled. If you have already paid, our team will be in touch about your refund.');
     }
 
     public function updateProfile(Request $request)

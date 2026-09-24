@@ -24,6 +24,37 @@ class Ecommerce extends Controller
             return redirect()->back();
         }
 
+        // A listing can only be reserved up to the rooms it actually has free
+        // on every night of the requested stay.
+        $listing = \App\Models\Listing::find($id);
+
+        if (!$listing) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'This room is no longer available.'], 404);
+            }
+            flash()->error('This room is no longer available.');
+            return redirect()->back();
+        }
+
+        $requestedRooms = (int) $data['room'];
+        $remaining = \App\Support\RoomAvailability::remaining(
+            $listing,
+            $request->get('checkin'),
+            $request->get('checkout')
+        );
+
+        if ($remaining !== null && $requestedRooms > $remaining) {
+            $message = $remaining === 0
+                ? 'Sorry, ' . $listing->listings_name . ' is fully booked for those dates.'
+                : 'Only ' . $remaining . ' ' . \Str::plural('room', $remaining) . ' left in ' . $listing->listings_name . ' for those dates.';
+
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => $message, 'remaining' => $remaining], 422);
+            }
+            flash()->error($message);
+            return redirect()->back();
+        }
+
         // Check if already in cart
         $cart = Cart::where('listings_id', $id)->where('session_id', $request->session()->getId())->first();
         if(!$cart) {
@@ -31,7 +62,7 @@ class Ecommerce extends Controller
             $cart->session_id = $request->session()->getId();
             $cart->listings_id = $id;
         }
-        
+
         $laundryQty = ($data['laundry'] === 'Yes') ? max(1, intval($request->get('laundry_qty', 1))) : 0;
         $cart->cart_laundry = ($data['laundry'] === 'Yes') ? "Yes ({$laundryQty} load" . ($laundryQty > 1 ? "s" : "") . ")" : "No";
         $cart->cart_laundry_qty = $laundryQty;
@@ -70,6 +101,89 @@ class Ecommerce extends Controller
         }
         flash()->success('Room removed from cart.');
         return redirect()->back();
+    }
+
+    /**
+     * Rooms still free per listing for a set of dates, for the booking page.
+     * With no dates it falls back to each listing's total room count.
+     */
+    public function availability(Request $request)
+    {
+        $checkIn  = $request->query('check_in');
+        $checkOut = $request->query('check_out');
+
+        $listings = [];
+
+        foreach (\App\Models\Listing::where('listings_status', 1)->get() as $listing) {
+            $total = \App\Support\RoomAvailability::totalRooms($listing);
+
+            $remaining = ($checkIn && $checkOut)
+                ? \App\Support\RoomAvailability::remaining($listing, $checkIn, $checkOut)
+                : $total;
+
+            $listings[$listing->listings_id] = [
+                'total'     => $total,
+                'remaining' => $remaining,
+            ];
+        }
+
+        return response()->json(['listings' => $listings]);
+    }
+
+    /**
+     * Free rooms per night for the date picker, so the calendar can show what
+     * is left and grey out nights where nothing is available.
+     */
+    public function calendarAvailability(Request $request)
+    {
+        $from = $request->query('from');
+        $to   = $request->query('to');
+
+        $start = $from ? \Carbon\Carbon::parse($from)->startOfDay() : now()->startOfDay();
+        $end   = $to ? \Carbon\Carbon::parse($to)->startOfDay() : $start->copy()->addYear();
+
+        // Keep the window sane whatever the caller asks for
+        if ($end->greaterThan($start->copy()->addYear())) {
+            $end = $start->copy()->addYear();
+        }
+
+        return response()->json([
+            'dates' => \App\Support\RoomAvailability::calendar($start, $end),
+        ]);
+    }
+
+    /**
+     * Re-checks every line in the cart against live availability.
+     *
+     * Rooms can sell out between adding to the cart and paying, so this runs
+     * again at payment time rather than trusting the check made at add-to-cart.
+     *
+     * @return string|null the problem to show the guest, or null if all fits
+     */
+    private function unavailableCartMessage($cartItems): ?string
+    {
+        foreach ($cartItems as $cart) {
+            $listing = \App\Models\Listing::find($cart->listings_id);
+
+            if (!$listing) {
+                return 'One of the rooms in your cart is no longer available.';
+            }
+
+            $remaining = \App\Support\RoomAvailability::remaining(
+                $listing,
+                $cart->cart_check_in,
+                $cart->cart_check_out
+            );
+
+            if ($remaining !== null && (int) $cart->cart_rooms > $remaining) {
+                return $remaining === 0
+                    ? $listing->listings_name . ' is fully booked for your dates. Please choose different dates.'
+                    : 'Only ' . $remaining . ' ' . \Str::plural('room', $remaining) . ' left in ' . $listing->listings_name
+                      . ' for your dates. Please update your booking.';
+            }
+        }
+
+        return null;
     }
 
     public function applyLoyalty(Request $request)
@@ -142,6 +256,10 @@ class Ecommerce extends Controller
                         
         if ($checkout->isEmpty()) {
             return response()->json(['error' => 'Cart is empty'], 400);
+        }
+
+        if ($problem = $this->unavailableCartMessage($checkout)) {
+            return response()->json(['success' => false, 'error' => $problem, 'message' => $problem], 409);
         }
 
         $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
@@ -295,6 +413,17 @@ class Ecommerce extends Controller
                             
             if ($cartItems->isEmpty()) {
                 return redirect()->route('checkout')->with('error', 'Your cart is empty.');
+            }
+
+            // Someone else may have taken the last room while this guest paid.
+            // Stop before writing the order; the payment needs refunding in Stripe.
+            if ($problem = $this->unavailableCartMessage($cartItems)) {
+                \Log::warning('Booking oversold after payment for intent ' . $paymentIntent->id . ': ' . $problem);
+
+                return redirect()->to('/checkout')->with(
+                    'error',
+                    $problem . ' Your payment has not been used for a booking — please contact us and we will refund it.'
+                );
             }
 
             $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();

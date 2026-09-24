@@ -13,8 +13,47 @@ use Illuminate\Support\Facades\Cache;
 class Dashboard extends Controller
 {
     public function index(){
-          return view('admin.index');
-    
+        $general_setting = DB::table('general_setting')->where('general_setting_id', '1')->first();
+        $currency = $general_setting->currency ?? 'CAD';
+
+        $today = now()->startOfDay();
+
+        $stats = [
+            'orders_total'    => \App\Models\Order::count(),
+            'orders_paid'     => \App\Models\Order::where('payment_status', 'paid')->count(),
+            // Range, not whereDate(): wrapping the column in DATE() would stop
+            // MySQL using the created_at index.
+            'orders_today'    => \App\Models\Order::whereBetween('created_at', [$today, $today->copy()->endOfDay()])->count(),
+            'revenue_total'   => (float) \App\Models\Order::where('payment_status', 'paid')->sum('grand_total'),
+            'revenue_month'   => (float) \App\Models\Order::where('payment_status', 'paid')
+                                    ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])
+                                    ->sum('grand_total'),
+            'listings_total'  => \App\Models\Listing::count(),
+            'listings_active' => \App\Models\Listing::where('listings_status', 1)->count(),
+            'customers'       => \App\Models\Customer::count(),
+            'feedbacks'       => \App\Models\Feedback::count(),
+            // Guests whose stay covers today and who have not been checked out yet
+            'in_stay'         => \App\Models\OrderItem::whereDate('check_in', '<=', $today)
+                                    ->whereDate('check_out', '>=', $today)
+                                    ->whereHas('order', fn ($q) => $q->where('checkout_status', '!=', 'checked_out'))
+                                    ->count(),
+        ];
+
+        $recent_orders = \App\Models\Order::with(['customer', 'items'])
+                            ->orderBy('created_at', 'desc')
+                            ->limit(6)
+                            ->get();
+
+        $upcoming = \App\Models\OrderItem::with('order.customer')
+                        ->whereDate('check_in', '>=', $today)
+                        ->whereDate('check_in', '<=', now()->addDays(14)->endOfDay())
+                        ->orderBy('check_in')
+                        ->limit(6)
+                        ->get();
+
+        $latest_feedbacks = \App\Models\Feedback::orderBy('created_at', 'desc')->limit(4)->get();
+
+        return view('admin.index', compact('stats', 'recent_orders', 'upcoming', 'latest_feedbacks', 'currency'));
     }
 
 

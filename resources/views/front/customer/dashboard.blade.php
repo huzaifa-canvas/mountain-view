@@ -1,8 +1,71 @@
 @include('front.inc.header')
 
+@php
+    // One place decides how a stay is coloured, so the overview table, the
+    // history cards and the details page never disagree.
+    $stayTone = function ($order) {
+        return match ($order->stayState()) {
+            'cancelled'   => ['bg' => '#FEE2E2', 'fg' => '#991B1B', 'icon' => 'fa-circle-xmark'],
+            'checked_out' => ['bg' => '#E2E8F0', 'fg' => '#334155', 'icon' => 'fa-circle-check'],
+            'checked_in'  => ['bg' => '#DCFCE7', 'fg' => '#166534', 'icon' => 'fa-house-user'],
+            'no_show'     => ['bg' => '#FEF3C7', 'fg' => '#92400E', 'icon' => 'fa-user-slash'],
+            default       => ['bg' => '#DBEAFE', 'fg' => '#1E40AF', 'icon' => 'fa-clock'],
+        };
+    };
+@endphp
+
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
+    .stay_badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 5px 13px; border-radius: 30px;
+        font-size: 12px; font-weight: 700; white-space: nowrap;
+    }
+    .next_stay_card {
+        background: linear-gradient(135deg, #184E77 0%, #1F6394 100%);
+        border-radius: 16px; padding: 22px 24px; color: #fff; margin-bottom: 20px;
+    }
+    .next_stay_label {
+        font-size: 11px; font-weight: 700; letter-spacing: .8px;
+        text-transform: uppercase; opacity: .75; margin-bottom: 6px;
+    }
+    .next_stay_dates { font-size: 21px; font-weight: 800; margin-bottom: 4px; }
+    .next_stay_meta { font-size: 13px; opacity: .85; }
+    .next_stay_btn {
+        background: #fff; color: #184E77; font-weight: 700; font-size: 13px;
+        border-radius: 30px; padding: 9px 20px; text-decoration: none;
+        display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+    }
+    .next_stay_btn:hover { background: #E2E8F0; color: #123A59; }
+    .mini_stat {
+        background: #fff; border: 1px solid #E2E8F0; border-radius: 14px;
+        padding: 16px 18px; height: 100%;
+    }
+    .mini_stat_label {
+        font-size: 11px; font-weight: 700; color: #94A3B8;
+        text-transform: uppercase; letter-spacing: .7px; margin-bottom: 6px;
+    }
+    .mini_stat_value { font-size: 22px; font-weight: 800; color: #0F172A; line-height: 1.1; }
+    .order_card_actions { display: flex; flex-wrap: wrap; gap: 9px; }
+    .btn_pill_outline {
+        border: 1px solid #CBD5E1; background: #fff; color: #0F172A;
+        font-weight: 700; font-size: 13px; border-radius: 30px;
+        padding: 9px 20px; text-decoration: none;
+        display: inline-flex; align-items: center; gap: 7px;
+    }
+    .btn_pill_outline:hover { border-color: #184E77; color: #184E77; }
+    .btn_pill_danger {
+        border: 1px solid #FCA5A5; background: #fff; color: #DC2626;
+        font-weight: 700; font-size: 13px; border-radius: 30px;
+        padding: 9px 20px; text-decoration: none;
+        display: inline-flex; align-items: center; gap: 7px;
+    }
+    .btn_pill_danger:hover { background: #DC2626; border-color: #DC2626; color: #fff; }
+    .cancel_reason_note {
+        background: #FEF2F2; border: 1px solid #FECACA; border-radius: 10px;
+        padding: 11px 14px; color: #7F1D1D; font-size: 13px; margin-top: 12px;
+    }
     .checkout_wrapper {
         padding: 65px 0px 90px;
         background-color: #F8FAFC;
@@ -272,6 +335,37 @@
                         <div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel">
                             <div class="dash_main_card">
                                 <h4 class="profile-card-title"><i class="fa-solid fa-chart-line"></i> Overview</h4>
+
+                                @if($nextStay)
+                                    @php
+                                        $nsIn  = $nextStay->items->min('check_in');
+                                        $nsOut = $nextStay->items->max('check_out');
+                                    @endphp
+                                    <div class="next_stay_card">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                                            <div>
+                                                <div class="next_stay_label"><i class="fa-solid fa-suitcase-rolling me-1"></i> Your next stay</div>
+                                                <div class="next_stay_dates">
+                                                    {{ $nsIn ? \Carbon\Carbon::parse($nsIn)->format('M d') : '' }}
+                                                    &rarr;
+                                                    {{ $nsOut ? \Carbon\Carbon::parse($nsOut)->format('M d, Y') : '' }}
+                                                </div>
+                                                <div class="next_stay_meta">
+                                                    #{{ $nextStay->order_number }}
+                                                    &middot; {{ $nextStay->roomCount() }} {{ Str::plural('room', $nextStay->roomCount()) }}
+                                                    &middot; {{ $nextStay->stayLabel() }}
+                                                    @if($nsIn && \Carbon\Carbon::parse($nsIn)->isFuture())
+                                                        @php $daysAway = (int) now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($nsIn)->startOfDay()); @endphp
+                                                        &middot; in {{ $daysAway }} {{ Str::plural('day', $daysAway) }}
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <a href="{{ route('customer.booking.show', $nextStay->order_number) }}" class="next_stay_btn">
+                                                View booking <i class="fa-solid fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
                                 
                                 <div class="row g-3">
                                     <div class="col-md-6">
@@ -303,6 +397,34 @@
                                     </div>
                                 </div>
 
+
+                                <div class="row g-3 mt-1">
+                                    <div class="col-6 col-lg-3">
+                                        <div class="mini_stat">
+                                            <div class="mini_stat_label">Upcoming</div>
+                                            <div class="mini_stat_value">{{ $stats['upcoming'] }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-lg-3">
+                                        <div class="mini_stat">
+                                            <div class="mini_stat_label">Nights booked</div>
+                                            <div class="mini_stat_value">{{ $stats['nights'] }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-lg-3">
+                                        <div class="mini_stat">
+                                            <div class="mini_stat_label">Total spent</div>
+                                            <div class="mini_stat_value" style="font-size:18px;">{{ $currency }} {{ number_format($stats['total_spent'], 2) }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-lg-3">
+                                        <div class="mini_stat">
+                                            <div class="mini_stat_label">All bookings</div>
+                                            <div class="mini_stat_value">{{ $stats['bookings'] }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <h5 class="fw-bold mt-4 mb-3" style="font-size: 16px; color: #0f172a;"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Recent Bookings</h5>
                                 @if(count($orders) > 0)
                                     <div class="table-responsive">
@@ -310,24 +432,46 @@
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>Order #</th>
-                                                    <th>Date</th>
+                                                    <th>Stay</th>
                                                     <th>Status</th>
                                                     <th>Total</th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach($orders->take(5) as $order)
+                                                @php $tone = $stayTone($order); @endphp
                                                 <tr>
-                                                    <td><strong>#{{ $order->order_number }}</strong></td>
-                                                    <td>{{ $order->created_at->format('M d, Y') }}</td>
                                                     <td>
-                                                        @if($order->payment_status == 'paid')
-                                                            <span class="badge bg-success">Paid</span>
-                                                        @else
-                                                            <span class="badge bg-warning text-dark">{{ ucfirst($order->payment_status) }}</span>
-                                                        @endif
+                                                        <strong>#{{ $order->order_number }}</strong>
+                                                        <div class="text-muted" style="font-size:12px;">{{ $order->created_at->format('M d, Y') }}</div>
+                                                    </td>
+                                                    <td style="font-size:13px;">
+                                                        {{ \Carbon\Carbon::parse($order->items->min('check_in'))->format('M d') }}
+                                                        &rarr;
+                                                        {{ \Carbon\Carbon::parse($order->items->max('check_out'))->format('M d, Y') }}
+                                                        <div class="text-muted" style="font-size:12px;">
+                                                            {{ $order->roomCount() }} {{ Str::plural('room', $order->roomCount()) }}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="stay_badge" style="background: {{ $tone['bg'] }}; color: {{ $tone['fg'] }};">
+                                                            <i class="fa-solid {{ $tone['icon'] }}"></i> {{ $order->stayLabel() }}
+                                                        </span>
+                                                        <div class="mt-1">
+                                                            @if($order->payment_status == 'paid')
+                                                                <span class="badge bg-success">Paid</span>
+                                                            @else
+                                                                <span class="badge bg-warning text-dark">{{ ucfirst($order->payment_status) }}</span>
+                                                            @endif
+                                                        </div>
                                                     </td>
                                                     <td><strong>{{ $currency }} {{ number_format($order->grand_total, 2) }}</strong></td>
+                                                    <td class="text-end">
+                                                        <a href="{{ route('customer.booking.show', $order->order_number) }}" class="btn_pill_outline">
+                                                            Details <i class="fa-solid fa-chevron-right" style="font-size:11px;"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -354,7 +498,13 @@
                                     @foreach($orders as $order)
                                         <div class="card mb-4 shadow-sm border" style="border-radius:14px; overflow:hidden;">
                                             <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
-                                                <h6 class="mb-0 fw-bold" style="color:#0f172a;">Order #{{ $order->order_number }}</h6>
+                                                <div class="d-flex flex-wrap align-items-center gap-2">
+                                                    <h6 class="mb-0 fw-bold" style="color:#0f172a;">Order #{{ $order->order_number }}</h6>
+                                                    @php $tone = $stayTone($order); @endphp
+                                                    <span class="stay_badge" style="background: {{ $tone['bg'] }}; color: {{ $tone['fg'] }};">
+                                                        <i class="fa-solid {{ $tone['icon'] }}"></i> {{ $order->stayLabel() }}
+                                                    </span>
+                                                </div>
                                                 <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i> {{ $order->created_at->format('F d, Y g:i A') }}</span>
                                             </div>
                                             <div class="card-body p-4">
@@ -380,6 +530,25 @@
                                                         @endif
                                                         <h5 class="mt-2 mb-0 fw-bold text-primary">Total: {{ $currency }} {{ number_format($order->grand_total, 2) }}</h5>
                                                     </div>
+                                                </div>
+
+                                                @if($order->stayState() === 'cancelled' && $order->cancellation_reason)
+                                                    <div class="cancel_reason_note">
+                                                        <i class="fa-solid fa-circle-xmark me-1"></i>
+                                                        Cancelled{{ $order->cancelled_at ? ' on ' . \Carbon\Carbon::parse($order->cancelled_at)->format('M d, Y') : '' }}
+                                                        &mdash; {{ $order->cancellation_reason }}
+                                                    </div>
+                                                @endif
+
+                                                <div class="order_card_actions mt-3 pt-3" style="border-top:1px solid #EEF2F7;">
+                                                    <a href="{{ route('customer.booking.show', $order->order_number) }}" class="btn_pill_outline">
+                                                        <i class="fa-solid fa-eye"></i> View details
+                                                    </a>
+                                                    @if($order->canCustomerCancel())
+                                                        <a href="{{ route('customer.booking.show', $order->order_number) }}#cancel" class="btn_pill_danger">
+                                                            <i class="fa-solid fa-circle-xmark"></i> Cancel booking
+                                                        </a>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

@@ -1,21 +1,42 @@
+@php
+  $mvUser  = Auth::user();
+  $mvName  = $mvUser->name ?? 'Admin';
+  $mvInit  = collect(preg_split('/\s+/', trim($mvName)))
+                ->filter()
+                ->take(2)
+                ->map(fn ($p) => mb_substr($p, 0, 1))
+                ->implode('');
+  $pageTitle = $pageTitle ?? 'Dashboard';
+@endphp
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="theme-color" content="#123A59">
 
-  <title>Dashboard - MountainView</title>
+  <title>{{ $pageTitle }} &middot; MountainView Admin</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
+  {{-- Apply the saved theme before first paint so there is no flash of the wrong mode --}}
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('mv-admin-theme');
+        var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Favicons -->
-  <link rel="icon" href="{{ asset('assets/front/images/favicon.png') }}">
+  <link rel="icon" href="{{ asset('assets/front/images/favicon.ico') }}">
 
   <!-- Google Fonts -->
-  <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
   <!-- Vendor CSS Files -->
   <link href="{{asset('assets/admin/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
   <link href="{{asset('assets/admin/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
@@ -27,98 +48,81 @@
   <link href="{{asset('assets/admin/vendor/multi/multi-style.css')}}" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+  <!-- Base template + MountainView theme (theme.css must load last) -->
   <link href="{{asset('assets/admin/css/style.css')}}" rel="stylesheet">
+  <link href="{{asset('assets/admin/css/theme.css')}}?v=2" rel="stylesheet">
 
 </head>
 
 <body>
 
-  <!-- ======= Header ======= -->
+  <!-- ======= Topbar ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="mv-topbar">
 
-    <div class="d-flex align-items-center justify-content-between">
-      <a href="{{url('admin/dashboard')}}" class="logo d-flex align-items-center">
-        <span class="d-none d-lg-block">MountainView Admin Panel</span>
-      </a>
-      <i class="bi bi-list toggle-sidebar-btn"></i>
-  
-    </div><!-- End Logo -->
+      <i class="bi bi-list toggle-sidebar-btn" role="button" aria-label="Toggle navigation"></i>
 
-    
-    <nav class="header-nav ms-auto">
-      <ul class="d-flex align-items-center">
+      <h2 class="mv-topbar-title d-none d-sm-block">{{ $pageTitle }}</h2>
 
-        <li class="nav-item d-block d-lg-none">
-          <a class="nav-link nav-icon search-bar-toggle " href="#">
-            <i class="bi bi-search"></i>
+      <div class="mv-topbar-actions">
+
+        <a href="{{ url('/') }}" target="_blank" class="mv-icon-btn d-none d-sm-inline-flex" title="View website">
+          <i class="bi bi-box-arrow-up-right"></i>
+        </a>
+
+        <button type="button" class="mv-icon-btn" data-mv-theme-toggle title="Toggle dark mode" aria-label="Toggle dark mode">
+          <i class="bi bi-moon-stars" data-mv-theme-icon></i>
+        </button>
+
+        <div class="dropdown">
+          <a class="mv-topbar-user" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="mv-avatar">{{ $mvInit ?: 'A' }}</span>
+            <span class="d-none d-md-block">{{ $mvName }}</span>
           </a>
-        </li>
-        <!-- End Search Icon-->
-
-
-        <li class="nav-item dropdown pe-3">
-
-          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <span class="d-none d-md-block dropdown-toggle ps-2">{{Auth::user()->name}}</span>
-          </a><!-- End Profile Iamge Icon -->
-
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <ul class="dropdown-menu dropdown-menu-end">
             <li class="dropdown-header">
-              <h6>{{Auth::user()->name}}</h6>
-              <span>Admin</span>
+              <h6>{{ $mvName }}</h6>
+              <span>Administrator</span>
             </li>
+            <li><hr class="dropdown-divider"></li>
             <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-person"></i>
-                <span>My Profile</span>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url('admin/profile') }}">
+                <i class="bi bi-person"></i><span>My Profile</span>
               </a>
             </li>
             <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                <i class="bi bi-gear"></i>
-                <span>Account Settings</span>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url('admin/global-setting') }}">
+                <i class="bi bi-gear"></i><span>Global Settings</span>
               </a>
             </li>
             <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                <i class="bi bi-question-circle"></i>
-                <span>Need Help?</span>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url('admin/cache-clear') }}">
+                <i class="bi bi-arrow-repeat"></i><span>Clear Cache</span>
               </a>
             </li>
+            <li><hr class="dropdown-divider"></li>
             <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{url('logout')}}">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Sign Out</span>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url('logout') }}">
+                <i class="bi bi-box-arrow-right"></i><span>Sign Out</span>
               </a>
             </li>
+          </ul>
+        </div>
 
-          </ul><!-- End Profile Dropdown Items -->
-        </li>
-        <!-- End Profile Nav -->
-
-      </ul>
-    </nav><!-- End Icons Navigation -->
-
-  </header><!-- End Header -->
+      </div>
+    </div>
+  </header><!-- End Topbar -->
 
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
+
+    <a href="{{ url('admin/dashboard') }}" class="mv-brand">
+      <span class="mv-brand-logo">
+        <img src="{{ asset('assets/front/images/logo.png') }}" alt="Mountain View Hope Motel">
+      </span>
+      <span class="mv-brand-sub">Admin Panel</span>
+    </a>
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
@@ -127,60 +131,38 @@
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>
-      </li><!-- End Dashboard Nav -->
-      {{-- <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-journal-text"></i><span>Page & Content Management</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{{url('admin/homepage')}}">
-              <i class="bi bi-circle"></i><span>HomePage</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{url('admin/founder-page')}}">
-              <i class="bi bi-circle"></i><span>Founder Page</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{url('admin/teams')}}">
-              <i class="bi bi-circle"></i><span>Teams</span>
-            </a>
-          </li>
-          <a href="{{url('admin/services')}}">
-            <i class="bi bi-circle"></i><span>Services</span>
-          </a>
-        </li>
-          <li>
-            <a href="{{url('admin/videos')}}">
-              <i class="bi bi-circle"></i><span>Videos</span>
-            </a>
-          </li>
-         
-        </ul>
-      </li> --}}
+      </li>
+
       <li class="nav-item">
         <a class="nav-link {{ request()->is('admin/listings*') ? '' : 'collapsed' }}" href="{{ url('admin/listings') }}">
-          <i class="bi bi-person"></i>
-          <span>listings</span>
+          <i class="bi bi-door-open"></i>
+          <span>Listings</span>
         </a>
       </li>
 
-
-      <li class="nav-heading">Bookings & Orders</li>
       <li class="nav-item">
-        <a class="nav-link {{ request()->is('admin/orders') || request()->is('admin/orders/*') && !request()->is('admin/orders/calendar*') ? '' : 'collapsed' }}" href="{{ route('admin.orders.index') }}">
+        <a class="nav-link {{ request()->is('admin/members*') ? '' : 'collapsed' }}" href="{{ route('admin.members.index') }}">
+          <i class="bi bi-people"></i>
+          <span>Members</span>
+        </a>
+      </li>
+
+      <li class="nav-heading">Bookings &amp; Orders</li>
+
+      <li class="nav-item">
+        <a class="nav-link {{ request()->is('admin/orders') || (request()->is('admin/orders/*') && !request()->is('admin/orders/calendar*')) ? '' : 'collapsed' }}" href="{{ route('admin.orders.index') }}">
           <i class="bi bi-cart-check"></i>
           <span>Orders List</span>
         </a>
       </li>
+
       <li class="nav-item">
         <a class="nav-link {{ request()->is('admin/orders/calendar*') ? '' : 'collapsed' }}" href="{{ route('admin.orders.calendar') }}">
           <i class="bi bi-calendar-event"></i>
           <span>Calendar View</span>
         </a>
       </li>
+
       <li class="nav-item">
         <a class="nav-link {{ request()->is('admin/feedbacks*') ? '' : 'collapsed' }}" href="{{ route('admin.feedbacks.index') }}">
           <i class="bi bi-chat-square-text"></i>
@@ -188,21 +170,48 @@
         </a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link {{ request()->is('admin/email-templates*') ? '' : 'collapsed' }}" href="{{ route('admin.emails.index') }}">
+          <i class="bi bi-envelope"></i>
+          <span>Email Templates</span>
+        </a>
+      </li>
+
       <li class="nav-heading">General Setting</li>
+
       <li class="nav-item">
         <a class="nav-link {{ request()->is('admin/global-setting*') ? '' : 'collapsed' }}" href="{{url('admin/global-setting')}}">
-          <i class="bi bi-gear"></i>
+          <i class="bi bi-sliders"></i>
           <span>Global Setting</span>
         </a>
       </li>
+
       <li class="nav-item">
         <a class="nav-link {{ request()->is('admin/profile*') ? '' : 'collapsed' }}" href="{{ url('admin/profile') }}">
           <i class="bi bi-person"></i>
           <span>Profile</span>
         </a>
-      </li><!-- End Profile Page Nav -->
-
+      </li>
 
     </ul>
 
-  </aside><!-- End Sidebar-->
+    <div class="mv-side-foot">
+      <div class="mv-side-user">
+        <span class="mv-avatar">{{ $mvInit ?: 'A' }}</span>
+        <div class="min-w-0">
+          <div class="mv-side-user-name">{{ $mvName }}</div>
+          <div class="mv-side-user-role">Administrator</div>
+        </div>
+      </div>
+
+      <button type="button" class="mv-theme-toggle" data-mv-theme-toggle>
+        <span class="mv-switch"></span>
+        <span>Dark mode</span>
+      </button>
+
+      <a href="{{ url('logout') }}" class="mv-side-signout">Sign out</a>
+    </div>
+
+  </aside><!-- End Sidebar -->
+
+  <div class="mv-backdrop" data-mv-backdrop></div>

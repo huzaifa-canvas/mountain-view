@@ -511,17 +511,30 @@
                                         </div>
 
                                         <!-- Room Tile -->
+                                        @php
+                                            // Rooms free on the chosen dates; null means the listing has no limit
+                                            $freeRooms = $availability[$listing->listings_id] ?? null;
+                                            $stepperMax = $freeRooms === null ? 99 : $freeRooms;
+                                        @endphp
                                         <div class="control_tile">
                                             <h4 class="control_tile_title">Select Room</h4>
                                             <div class="number">
                                                 <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                                                <input type="text" name="room" value="{{ $savedRooms }}" maxlength="3" readonly required 
-                                                       data-max="{{ $listing->listings_number_of_rooms ?? 1 }}" 
+                                                <input type="text" name="room" value="{{ $savedRooms }}" maxlength="3" readonly required
+                                                       data-max="{{ $stepperMax }}"
                                                        data-price="{{ $listing->listings_price }}"
                                                        data-listing-id="{{ $listing->listings_id }}"
                                                        class="room-input">
                                                 <span class="plus"><i class="fa-solid fa-plus"></i></span>
                                             </div>
+                                            <p class="rooms_left_note" data-rooms-left="{{ $listing->listings_id }}">
+                                                @if($freeRooms === null)
+                                                @elseif($freeRooms === 0)
+                                                    <span class="is_full">Fully booked for these dates</span>
+                                                @else
+                                                    {{ $freeRooms }} {{ Str::plural('room', $freeRooms) }} left
+                                                @endif
+                                            </p>
                                         </div>
 
                                     </div>
@@ -738,12 +751,120 @@
         const checkInInput = document.getElementById('check_in');
         const checkOutInput = document.getElementById('check_out');
 
+
+        // Rooms free for the chosen dates. The stepper cap and the "N rooms
+        // left" note both follow this, so a guest can never ask for more than
+        // the motel has on those nights.
+        function refreshAvailability() {
+            var checkIn = document.querySelector('[id^="form_checkin_"]');
+            var checkOut = document.querySelector('[id^="form_checkout_"]');
+            if (!checkIn || !checkOut || !checkIn.value || !checkOut.value) return;
+
+            fetch('{{ route("room.availability") }}?check_in=' + encodeURIComponent(checkIn.value)
+                  + '&check_out=' + encodeURIComponent(checkOut.value))
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var listings = (data && data.listings) || {};
+
+                    document.querySelectorAll('.room-input').forEach(function (input) {
+                        var id = input.dataset.listingId;
+                        var info = listings[id];
+                        if (!info) return;
+
+                        var free = info.remaining;
+                        var note = document.querySelector('[data-rooms-left="' + id + '"]');
+
+                        if (free === null) {
+                            input.dataset.max = 99;
+                            if (note) note.innerHTML = '';
+                            return;
+                        }
+
+                        input.dataset.max = free;
+
+                        // Never leave the stepper above what is still free
+                        if ((parseInt(input.value) || 0) > free) {
+                            input.value = free;
+                            updatePriceForListing(id);
+                        }
+
+                        if (note) {
+                            note.innerHTML = free === 0
+                                ? '<span class="is_full">Fully booked for these dates</span>'
+                                : free + (free === 1 ? ' room left' : ' rooms left');
+                        }
+
+                        // Refresh the listing itself: a sold-out room type cannot
+                        // be reserved, so grey the card and block its button.
+                        var form = document.querySelector('#reserve-form-' + id);
+                        var card = document.getElementById('reserve-form-container-' + id);
+                        var reserveBtn = form ? form.querySelector('.reserve-btn') : null;
+
+                        if (reserveBtn) {
+                            reserveBtn.disabled = (free === 0);
+                            reserveBtn.classList.toggle('is_disabled', free === 0);
+                        }
+                        if (card) {
+                            card.classList.toggle('is_sold_out', free === 0);
+                        }
+                    });
+                })
+                .catch(function () { /* leave the current caps in place */ });
+        }
+
+
+        // Per-night availability for the date picker. Loaded once, then the
+        // pickers are redrawn so every day cell can show what is left and
+        // fully booked nights can be blocked outright.
+        var mvCalendar = {};
+
+        function mvDateKey(date) {
+            var y = date.getFullYear();
+            var m = String(date.getMonth() + 1).padStart(2, '0');
+            var d = String(date.getDate()).padStart(2, '0');
+            return y + '-' + m + '-' + d;
+        }
+
+        function mvNightIsFull(date) {
+            var info = mvCalendar[mvDateKey(date)];
+            return !!(info && info.full);
+        }
+
+        function mvDecorateDay(dayElem) {
+            var info = mvCalendar[mvDateKey(dayElem.dateObj)];
+            if (!info) return;
+
+            var old = dayElem.querySelector('.mv-day-left');
+            if (old) old.remove();
+
+            var tag = document.createElement('span');
+            tag.className = 'mv-day-left' + (info.full ? ' is_full' : '');
+            tag.textContent = info.full ? 'Full' : info.free;
+            dayElem.appendChild(tag);
+
+            dayElem.title = info.full
+                ? 'No rooms left on this date'
+                : info.free + (info.free === 1 ? ' room' : ' rooms') + ' left';
+        }
+
+        function loadCalendarAvailability(pickers) {
+            fetch('{{ route("room.availability.calendar") }}')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    mvCalendar = (data && data.dates) || {};
+                    pickers.forEach(function (fp) { if (fp) fp.redraw(); });
+                })
+                .catch(function () { /* calendar still works, just without counts */ });
+        }
+
         if (checkInInput && checkOutInput) {
             const checkInPicker = flatpickr(checkInInput, {
                 minDate: "today",
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "M j, Y",
+                disable: [mvNightIsFull],
+                onDayCreate: function (dObj, dStr, fp, dayElem) { mvDecorateDay(dayElem); },
                 onChange: function(selectedDates, dateStr, instance) {
                     document.querySelectorAll('[id^="form_checkin_"]').forEach(function(el) { el.value = dateStr; });
                     
@@ -765,6 +886,8 @@
                         var id = inp.dataset.listingId;
                         if (id) updatePriceForListing(id);
                     });
+
+                    refreshAvailability();
                 }
             });
 
@@ -775,6 +898,8 @@
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "M j, Y",
+                // The departure day itself is not slept in, so it is never blocked
+                onDayCreate: function (dObj, dStr, fp, dayElem) { mvDecorateDay(dayElem); },
                 onChange: function(selectedDates, dateStr, instance) {
                     document.querySelectorAll('[id^="form_checkout_"]').forEach(function(el) { el.value = dateStr; });
                     
@@ -782,8 +907,12 @@
                         var id = inp.dataset.listingId;
                         if (id) updatePriceForListing(id);
                     });
+
+                    refreshAvailability();
                 }
             });
+
+            loadCalendarAvailability([checkInPicker, checkOutPicker]);
 
             if (checkInPicker.selectedDates.length > 0) {
                 const checkInDate = checkInPicker.selectedDates[0];

@@ -1,4 +1,4 @@
-@include('admin.inc.header')
+@include('admin.inc.header', ['pageTitle' => 'Services'])
 
 <main id="main" class="main">
 

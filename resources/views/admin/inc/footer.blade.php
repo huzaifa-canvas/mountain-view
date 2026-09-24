@@ -2,7 +2,7 @@
 <!-- ======= Footer ======= -->
  <footer id="footer" class="footer">
     <div class="copyright">
-      &copy; Copyright <strong><span>MountainView</span></strong>. All Rights Reserved 
+      &copy; Copyright <strong><span>Mountain View Hope Motel</span></strong>. All Rights Reserved 
     </div>
 
     </div>
@@ -25,6 +25,53 @@
 
   <!-- Template Main JS File -->
   <script src="{{asset('assets/admin/js/main.js')}}"></script>
+
+  <!-- MountainView theme: dark mode + mobile sidebar -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var STORE_KEY = 'mv-admin-theme';
+
+      function syncIcons(theme) {
+        document.querySelectorAll('[data-mv-theme-icon]').forEach(function (icon) {
+          icon.className = theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars';
+        });
+      }
+
+      function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+        try { localStorage.setItem(STORE_KEY, theme); } catch (e) {}
+        syncIcons(theme);
+      }
+
+      syncIcons(root.getAttribute('data-theme') || 'light');
+
+      document.addEventListener('click', function (e) {
+        var toggle = e.target.closest('[data-mv-theme-toggle]');
+        if (toggle) {
+          e.preventDefault();
+          applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+          return;
+        }
+
+        // Tapping the dimmed overlay closes the mobile sidebar
+        if (e.target.closest('[data-mv-backdrop]')) {
+          document.body.classList.remove('toggle-sidebar');
+          return;
+        }
+
+        // Following a nav link on mobile should close the sidebar behind it
+        if (window.innerWidth < 1200 && e.target.closest('#sidebar-nav .nav-link')) {
+          document.body.classList.remove('toggle-sidebar');
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') document.body.classList.remove('toggle-sidebar');
+      });
+    })();
+  </script>
+
   <script>
     $(document).ready(function(){
       let counter = 1;

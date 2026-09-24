@@ -20,7 +20,21 @@ class Main extends Controller
         $cartItems = $cartRows->keys()->toArray();
         $cartCount = count($cartItems);
         $general_setting = \DB::table('general_setting')->where('general_setting_id', '1')->first();
-        return view('front.booking',compact('listings', 'cartCount', 'cartItems', 'cartRows', 'general_setting'));
+
+        // Rooms still free for the dates in the URL, so the first paint is
+        // already correct; the page refreshes this over AJAX as dates change.
+        $checkIn  = request()->get('check_in');
+        $checkOut = request()->get('check_out');
+        $availability = [];
+
+        foreach ($listings as $listing) {
+            $total = \App\Support\RoomAvailability::totalRooms($listing);
+            $availability[$listing->listings_id] = ($checkIn && $checkOut)
+                ? \App\Support\RoomAvailability::remaining($listing, $checkIn, $checkOut)
+                : $total;
+        }
+
+        return view('front.booking',compact('listings', 'cartCount', 'cartItems', 'cartRows', 'general_setting', 'availability'));
     
     }
 

@@ -2383,3 +2383,38 @@ input.sm_input {
 }
 
 /* CSS-FOR-INNER-PAGES-END */
+/* Rooms left for the chosen dates (booking page) */
+.rooms_left_note {
+    margin: 6px 0 0;
+    font-size: 12px;
+    line-height: 1.3;
+    color: #818EA1;
+    min-height: 16px;
+}
+.rooms_left_note .is_full {
+    color: #C62F14;
+    font-weight: 600;
+}
+
+/* Per-night availability inside the date picker */
+.flatpickr-day { position: relative; }
+.mv-day-left {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1px;
+    font-size: 9px;
+    line-height: 1;
+    font-weight: 600;
+    color: #319F43;
+    pointer-events: none;
+}
+.mv-day-left.is_full { color: #C62F14; }
+.flatpickr-day.flatpickr-disabled .mv-day-left { opacity: .45; }
+
+/* A room type with nothing free for the chosen dates */
+.is_sold_out { opacity: .6; }
+.is_sold_out .btn_reserve_room.is_disabled {
+    cursor: not-allowed;
+    filter: grayscale(1);
+}

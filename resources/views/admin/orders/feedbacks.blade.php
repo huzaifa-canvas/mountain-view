@@ -1,140 +1,152 @@
-@include('admin.inc.header')
+@include('admin.inc.header', ['pageTitle' => 'Guest Feedback'])
+
+@php
+  $categories = [
+    'Room Cleanliness',
+    'Staff Service',
+    'Amenities',
+    'Food & Beverages',
+    'Check-in / Check-out Process',
+    'Value for Money',
+    'General Suggestion',
+    'Complaint',
+    'Other',
+  ];
+  $hasFilters = request('search') || request('category');
+@endphp
 
 <main id="main" class="main">
 
-  <div class="pagetitle d-flex justify-content-between align-items-center">
-    <div>
-      <h1>Guest Feedbacks</h1>
+  <div class="mv-page-head">
+    <div class="pagetitle mb-0">
+      <h1>Guest Feedback</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{url('admin/dashboard')}}">Home</a></li>
-          <li class="breadcrumb-item active">Feedbacks</li>
+          <li class="breadcrumb-item active">Feedback</li>
         </ol>
       </nav>
     </div>
-    <div>
-      <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left me-1"></i> Back to Orders</a>
+    <div class="mv-page-actions">
+      <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Back to orders
+      </a>
     </div>
   </div>
 
   <section class="section">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Feedback Submissions</h5>
 
-            <form method="GET" action="{{ route('admin.feedbacks.index') }}" class="row g-2 mb-4 align-items-end">
-              <div class="col-md-4 col-sm-6">
-                <label class="form-label small fw-bold text-muted mb-1">Search</label>
-                <input type="text" name="search" class="form-control" placeholder="Name, Email, Order #..." value="{{ request('search') }}">
-              </div>
-              <div class="col-md-3 col-sm-6">
-                <label class="form-label small fw-bold text-muted mb-1">Category</label>
-                <select name="category" class="form-select">
-                  <option value="">All Categories</option>
-                  <option value="Room Cleanliness" {{ request('category') == 'Room Cleanliness' ? 'selected' : '' }}>Room Cleanliness</option>
-                  <option value="Staff Service" {{ request('category') == 'Staff Service' ? 'selected' : '' }}>Staff Service</option>
-                  <option value="Amenities" {{ request('category') == 'Amenities' ? 'selected' : '' }}>Amenities</option>
-                  <option value="Food & Beverages" {{ request('category') == 'Food & Beverages' ? 'selected' : '' }}>Food & Beverages</option>
-                  <option value="Check-in / Check-out Process" {{ request('category') == 'Check-in / Check-out Process' ? 'selected' : '' }}>Check-in / Check-out</option>
-                  <option value="Value for Money" {{ request('category') == 'Value for Money' ? 'selected' : '' }}>Value for Money</option>
-                  <option value="General Suggestion" {{ request('category') == 'General Suggestion' ? 'selected' : '' }}>General Suggestion</option>
-                  <option value="Complaint" {{ request('category') == 'Complaint' ? 'selected' : '' }}>Complaint</option>
-                  <option value="Other" {{ request('category') == 'Other' ? 'selected' : '' }}>Other</option>
-                </select>
-              </div>
-              <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel me-1"></i> Filter</button>
-              </div>
-              <div class="col-md-2">
-                <a href="{{ route('admin.feedbacks.index') }}" class="btn btn-outline-secondary w-100"><i class="bi bi-x-circle me-1"></i> Clear</a>
-              </div>
-            </form>
+    <div class="mv-chips mb-3">
+      <span class="mv-chip"><i class="bi bi-chat-square-text"></i> {{ number_format($feedbacks->total()) }} {{ $hasFilters ? 'matching' : 'total' }} {{ Str::plural('entry', $feedbacks->total()) }}</span>
+      @if($hasFilters)
+        <a href="{{ route('admin.feedbacks.index') }}" class="mv-chip"><i class="bi bi-x-circle"></i> Clear filters</a>
+      @endif
+    </div>
 
-            @if($feedbacks->count() > 0)
-            <div class="table-responsive">
-              <table class="table table-hover align-middle">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Guest</th>
-                    <th>Order #</th>
-                    <th>Category</th>
-                    <th>Message</th>
-                    <th>Contact?</th>
-                    <th>Attachment</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($feedbacks as $fb)
-                  <tr>
-                    <td>{{ $fb->id }}</td>
-                    <td>
-                      <strong>{{ $fb->guest_name }}</strong><br>
-                      <small class="text-muted">{{ $fb->guest_email }}</small>
-                    </td>
-                    <td>
-                      @if($fb->order_id)
-                        <a href="{{ route('admin.orders.show', $fb->order_id) }}"><strong>#{{ $fb->order_number }}</strong></a>
-                      @else
-                        <span class="text-muted">#{{ $fb->order_number }}</span>
-                      @endif
-                    </td>
-                    <td>
-                      @php
-                        $catColors = [
-                          'Complaint' => 'bg-danger',
-                          'Room Cleanliness' => 'bg-warning text-dark',
-                          'Staff Service' => 'bg-info text-dark',
-                          'General Suggestion' => 'bg-primary',
-                        ];
-                        $badgeClass = $catColors[$fb->category] ?? 'bg-secondary';
-                      @endphp
-                      <span class="badge {{ $badgeClass }}">{{ $fb->category }}</span>
-                    </td>
-                    <td style="max-width:300px;">
-                      <p class="mb-0 text-truncate" title="{{ $fb->message }}">{{ Str::limit($fb->message, 80) }}</p>
-                    </td>
-                    <td>
-                      @if($fb->contact_me)
-                        <span class="badge bg-success"><i class="bi bi-telephone me-1"></i> Yes</span>
-                      @else
-                        <span class="text-muted small">No</span>
-                      @endif
-                    </td>
-                    <td>
-                      @if($fb->screenshot_path)
-                        <a href="{{ asset($fb->screenshot_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                          <i class="bi bi-file-earmark-image"></i> View
-                        </a>
-                      @else
-                        <span class="text-muted small">—</span>
-                      @endif
-                    </td>
-                    <td><small>{{ $fb->created_at->format('M d, Y') }}<br>{{ $fb->created_at->format('g:i A') }}</small></td>
-                  </tr>
-                  @endforeach
-                </tbody>
-              </table>
-            </div>
-
-            <div class="mt-3">
-              {{ $feedbacks->appends(request()->query())->links() }}
-            </div>
-
-            @else
-              <div class="text-center py-5">
-                <i class="bi bi-chat-square-text" style="font-size:48px; color:#cbd5e1;"></i>
-                <p class="text-muted mt-3">No feedback submissions found.</p>
-              </div>
-            @endif
-
-          </div>
+    <form method="GET" action="{{ route('admin.feedbacks.index') }}" class="mv-filters">
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-5 col-md-6">
+          <label class="form-label" for="fb-search">Search</label>
+          <input type="search" id="fb-search" name="search" class="form-control" placeholder="Name, email or order #…" value="{{ request('search') }}">
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <label class="form-label" for="fb-category">Category</label>
+          <select id="fb-category" name="category" class="form-select">
+            <option value="">All categories</option>
+            @foreach($categories as $cat)
+              <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="col-lg-3 d-flex gap-2">
+          <button type="submit" class="btn btn-primary flex-grow-1"><i class="bi bi-funnel me-1"></i> Filter</button>
+          <a href="{{ route('admin.feedbacks.index') }}" class="btn btn-outline-secondary"><i class="bi bi-x-circle"></i></a>
         </div>
       </div>
+    </form>
+
+    <div class="mv-table-wrap">
+      <div class="table-responsive">
+        <table class="table mv-responsive-table align-middle">
+          <thead>
+            <tr>
+              <th>Guest</th>
+              <th>Order</th>
+              <th>Category</th>
+              <th>Message</th>
+              <th>Follow-up</th>
+              <th>Received</th>
+            </tr>
+          </thead>
+          <tbody>
+            @forelse($feedbacks as $fb)
+              @php
+                $badgeClass = [
+                  'Complaint'          => 'bg-danger',
+                  'Room Cleanliness'   => 'bg-warning',
+                  'Staff Service'      => 'bg-info',
+                  'General Suggestion' => 'bg-secondary',
+                ][$fb->category] ?? 'bg-secondary';
+              @endphp
+              <tr>
+                <td data-label="Guest" class="mv-cell-block">
+                  <span class="mv-cell-strong">{{ $fb->guest_name ?: 'Guest' }}</span>
+                  <div class="mv-cell-sub">{{ $fb->guest_email }}</div>
+                </td>
+
+                <td data-label="Order">
+                  @if($fb->order_id)
+                    <a href="{{ route('admin.orders.show', $fb->order_id) }}" class="mv-cell-strong">#{{ $fb->order_number }}</a>
+                  @else
+                    <span class="text-muted">#{{ $fb->order_number }}</span>
+                  @endif
+                </td>
+
+                <td data-label="Category"><span class="badge {{ $badgeClass }}">{{ $fb->category }}</span></td>
+
+                <td data-label="Message" class="mv-cell-block" style="max-width:340px;">
+                  <p class="mb-2" style="font-size:.86rem;color:var(--mv-text-2);">{{ Str::limit($fb->message, 140) }}</p>
+                  @if($fb->screenshot_path)
+                    <a href="{{ asset($fb->screenshot_path) }}" target="_blank" rel="noopener" class="mv-fact">
+                      <i class="bi bi-paperclip"></i> Attachment
+                    </a>
+                  @endif
+                </td>
+
+                <td data-label="Follow-up">
+                  @if($fb->contact_me)
+                    <span class="badge bg-success"><i class="bi bi-telephone me-1"></i> Requested</span>
+                  @else
+                    <span class="mv-cell-sub">Not requested</span>
+                  @endif
+                </td>
+
+                <td data-label="Received">
+                  <span class="mv-cell-strong">{{ $fb->created_at?->format('M d, Y') }}</span>
+                  <div class="mv-cell-sub">{{ $fb->created_at?->format('g:i A') }}</div>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="6">
+                  <div class="mv-empty">
+                    <i class="bi bi-chat-square-text"></i>
+                    {{ $hasFilters ? 'No feedback matches these filters.' : 'No guest feedback received yet.' }}
+                  </div>
+                </td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    @if($feedbacks->hasPages())
+      <div class="d-flex justify-content-center mt-4">
+        {{ $feedbacks->appends(request()->query())->links() }}
+      </div>
+    @endif
+
   </section>
 
 </main>

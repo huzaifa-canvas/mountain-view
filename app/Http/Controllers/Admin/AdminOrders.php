@@ -33,6 +33,28 @@ class AdminOrders extends Controller
             $query->where('payment_status', $request->status);
         }
 
+        // Stay Filter — confirmed -> checked_in -> checked_out
+        if ($request->has('stay') && !empty($request->stay)) {
+            $settled = ['checked_in', 'checked_out', 'cancelled'];
+
+            if (in_array($request->stay, $settled, true)) {
+                $query->where('checkout_status', $request->stay);
+            } elseif ($request->stay === 'no_show') {
+                // Never checked in and every night of the stay is in the past
+                $query->whereNotIn('checkout_status', $settled)
+                      ->whereHas('items')
+                      ->whereDoesntHave('items', function ($q) {
+                          $q->whereDate('check_out', '>=', now()->toDateString());
+                      });
+            } elseif ($request->stay === 'arriving') {
+                // Still upcoming or in progress, so not a no-show yet
+                $query->whereNotIn('checkout_status', $settled)
+                      ->whereHas('items', function ($q) {
+                          $q->whereDate('check_out', '>=', now()->toDateString());
+                      });
+            }
+        }
+
         // Room/Listing Filter
         if ($request->has('listing_id') && !empty($request->listing_id)) {
             $query->whereHas('items', function($q) use ($request) {
@@ -52,12 +74,18 @@ class AdminOrders extends Controller
             });
         }
 
+        // Totals for the current filter set, not just the visible page
+        $summary = [
+            'count'   => (clone $query)->count(),
+            'revenue' => (float) (clone $query)->where('payment_status', 'paid')->sum('grand_total'),
+        ];
+
         $orders = $query->paginate(15);
         $listings = \App\Models\Listing::all();
         $general_setting = DB::table('general_setting')->where('general_setting_id', '1')->first();
         $currency = $general_setting ? $general_setting->currency : 'CAD';
 
-        return view('admin.orders.index', compact('orders', 'currency', 'listings'));
+        return view('admin.orders.index', compact('orders', 'currency', 'listings', 'summary'));
     }
 
     public function show($id)
@@ -132,11 +160,77 @@ class AdminOrders extends Controller
     }
 
     /**
+     * Cancel a booking. The reason is required because it is the only record
+     * of why the stay was called off, and it is shown on the order timeline.
+     */
+    public function cancel(Request $request, $id)
+    {
+        $order = Order::with('items')->findOrFail($id);
+
+        if (!$order->canCancel()) {
+            return redirect()->back()->with('error', $order->stayState() === 'cancelled'
+                ? 'This booking is already cancelled.'
+                : 'A booking that has already been checked out cannot be cancelled.');
+        }
+
+        $validated = $request->validate([
+            'cancellation_reason' => ['required', 'string', 'min:5', 'max:1000'],
+        ], [
+            'cancellation_reason.required' => 'Please give a reason for cancelling this booking.',
+            'cancellation_reason.min'      => 'Please give a little more detail about why this booking is being cancelled.',
+        ]);
+
+        $order->checkout_status = 'cancelled';
+        $order->cancelled_at = now();
+        $order->cancellation_reason = $validated['cancellation_reason'];
+        $order->save();
+
+        // Any refund is handled in Stripe; payment_status is left untouched so
+        // the record still shows what was actually collected.
+        return redirect()->back()->with('success', 'Booking cancelled. The reason has been added to the timeline.');
+    }
+
+    /**
+     * Record the guest's arrival. A stay must be checked in before it can be
+     * checked out, so this is the only way into the "checked_in" state.
+     */
+    public function markCheckedIn(Request $request, $id)
+    {
+        $order = Order::with('items')->findOrFail($id);
+
+        if (!$order->canCheckIn()) {
+            return redirect()->back()->with('error', [
+                'cancelled'   => 'This booking is cancelled and cannot be checked in.',
+                'checked_out' => 'This booking has already been checked out.',
+                'checked_in'  => 'This booking is already checked in.',
+                'no_show'     => 'This stay has already ended and the guest never arrived, so it cannot be checked in.',
+            ][$order->stayState()]);
+        }
+
+        $order->checkout_status = 'checked_in';
+        $order->checked_in_at = now();
+        $order->save();
+
+        return redirect()->back()->with('success', 'Guest checked in. You can mark the booking as checked out when they leave.');
+    }
+
+    /**
      * Mark an order as checked out and send Thank You + Feedback email to guest.
      */
     public function markCheckedOut(Request $request, $id)
     {
         $order = Order::with(['customer', 'items'])->findOrFail($id);
+
+        // Checking out without a recorded arrival would leave a gap in the
+        // timeline, so the guest must be checked in first.
+        if (!$order->canCheckOut()) {
+            return redirect()->back()->with('error', [
+                'cancelled'   => 'This booking is cancelled and cannot be checked out.',
+                'checked_out' => 'This booking has already been checked out.',
+                'no_show'     => 'The guest never checked in for this stay, so it cannot be checked out.',
+                'awaiting'    => 'Check the guest in before marking the booking as checked out.',
+            ][$order->stayState()]);
+        }
 
         $order->checkout_status = 'checked_out';
         $order->checked_out_at = now();

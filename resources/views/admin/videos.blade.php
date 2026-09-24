@@ -1,4 +1,4 @@
-@include('admin.inc.header')
+@include('admin.inc.header', ['pageTitle' => 'Videos'])
 <main id="main" class="main">
 
   <div class="pagetitle">

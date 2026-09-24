@@ -47,14 +47,25 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('get-team/{id}',[Dashboard::class,'team_edit']);
     Route::get('get-service/{id}',[Dashboard::class,'services_edit']);
 
+    // Registered members
+    Route::get('/members', [\App\Http\Controllers\Admin\Customers::class, 'index'])->name('admin.members.index');
+    Route::get('/members/{id}', [\App\Http\Controllers\Admin\Customers::class, 'show'])->name('admin.members.show');
+
     // Admin Orders & Calendar
     Route::get('/orders', [\App\Http\Controllers\Admin\AdminOrders::class, 'index'])->name('admin.orders.index');
     Route::get('/orders/calendar', [\App\Http\Controllers\Admin\AdminOrders::class, 'calendar'])->name('admin.orders.calendar');
     Route::get('/orders/calendar-events', [\App\Http\Controllers\Admin\AdminOrders::class, 'calendarEvents'])->name('admin.orders.calendar-events');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\AdminOrders::class, 'show'])->name('admin.orders.show');
+    Route::post('/orders/{id}/cancel', [\App\Http\Controllers\Admin\AdminOrders::class, 'cancel'])->name('admin.orders.cancel');
+    Route::post('/orders/{id}/mark-checked-in', [\App\Http\Controllers\Admin\AdminOrders::class, 'markCheckedIn'])->name('admin.orders.mark-checked-in');
     Route::post('/orders/{id}/mark-checked-out', [\App\Http\Controllers\Admin\AdminOrders::class, 'markCheckedOut'])->name('admin.orders.mark-checked-out');
     Route::post('/orders/{id}/send-reminder', [\App\Http\Controllers\Admin\AdminOrders::class, 'sendReminder'])->name('admin.orders.send-reminder');
     Route::get('/feedbacks', [\App\Http\Controllers\Admin\AdminOrders::class, 'feedbacks'])->name('admin.feedbacks.index');
+
+    // Email template gallery (read-only previews)
+    Route::get('/email-templates', [\App\Http\Controllers\Admin\EmailTemplates::class, 'index'])->name('admin.emails.index');
+    Route::get('/email-templates/{key}', [\App\Http\Controllers\Admin\EmailTemplates::class, 'show'])->name('admin.emails.show');
+    Route::get('/email-templates/{key}/render', [\App\Http\Controllers\Admin\EmailTemplates::class, 'render'])->name('admin.emails.render');
 
     
     Route::get('/founder-page', [Dashboard::class, 'founder_page']);
@@ -99,9 +110,13 @@ Route::middleware('auth:customer')->group(function () {
     Route::get('/my-account', [CustomerAuth::class, 'dashboard'])->name('customer.dashboard');
     Route::post('/customer/profile-update', [CustomerAuth::class, 'updateProfile'])->name('customer.profile.update');
     Route::post('/customer/password-update', [CustomerAuth::class, 'updatePassword'])->name('customer.password.update');
+    Route::get('/my-account/booking/{order_number}', [CustomerAuth::class, 'booking'])->name('customer.booking.show');
+    Route::post('/my-account/booking/{order_number}/cancel', [CustomerAuth::class, 'cancelBooking'])->name('customer.booking.cancel');
 });
 
 
+Route::get('room-availability',[Ecommerce::class,'availability'])->name('room.availability');
+Route::get('room-availability/calendar',[Ecommerce::class,'calendarAvailability'])->name('room.availability.calendar');
 Route::post('booking/{id}',[Ecommerce::class,'booking_cart'])->name('booking_cart');
 Route::delete('cart/{id}',[Ecommerce::class,'remove_cart'])->name('remove_cart');
 Route::delete('cart-listing/{id}',[Ecommerce::class,'remove_cart_listing'])->name('remove_cart_listing');
