@@ -2413,7 +2413,6 @@ input.sm_input {
 .flatpickr-day.flatpickr-disabled .mv-day-left { opacity: .45; }
 
 /* A room type with nothing free for the chosen dates */
-.is_sold_out { opacity: .6; }
 .is_sold_out .btn_reserve_room.is_disabled {
     cursor: not-allowed;
     filter: grayscale(1);

@@ -20,6 +20,9 @@
       </nav>
     </div>
     <div class="mv-page-actions">
+      <a href="{{ route('admin.orders.create') }}" class="btn btn-success">
+        <i class="bi bi-plus-lg me-1"></i> New booking
+      </a>
       <a href="{{ route('admin.orders.calendar') }}" class="btn btn-outline-secondary">
         <i class="bi bi-calendar-event me-1"></i> Calendar view
       </a>

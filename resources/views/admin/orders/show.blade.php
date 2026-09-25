@@ -227,6 +227,30 @@
                   {{ $order->stripe_payment_intent_id ? 'Stripe · ' . $order->stripe_payment_intent_id : 'No Stripe reference recorded' }}
                 </div>
               </li>
+
+              {{-- Oldest first here, so the timeline reads forwards --}}
+              @foreach($order->changes->sortBy('created_at') as $change)
+                <li class="is-done">
+                  <div class="mv-timeline-title">
+                    Dates moved by {{ $change->changed_by === 'admin' ? 'staff' : 'the guest' }}
+                    @if($change->changed_by_name)
+                      <span class="text-muted">&middot; {{ $change->changed_by_name }}</span>
+                    @endif
+                  </div>
+                  <div class="mv-timeline-meta">{{ $change->created_at->format('F d, Y · g:i A') }}</div>
+                  <div class="mv-timeline-note">
+                    {{ $change->from_check_in->format('M d') }} &rarr; {{ $change->from_check_out->format('M d, Y') }}
+                    became
+                    {{ $change->to_check_in->format('M d') }} &rarr; {{ $change->to_check_out->format('M d, Y') }}
+                    @php
+                        $shift = $change->shiftInDays();
+                        $words = ($shift > 0 ? 'moved back ' : 'brought forward ')
+                            . abs($shift) . ' ' . Str::plural('day', abs($shift));
+                    @endphp
+                    ({{ $words }}, same length and same price)
+                  </div>
+                </li>
+              @endforeach
               @if($isCancelled)
                 <li class="is-cancelled">
                   <div class="mv-timeline-title">Booking cancelled</div>

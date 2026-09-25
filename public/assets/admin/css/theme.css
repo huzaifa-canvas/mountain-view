@@ -81,6 +81,27 @@
 
   --mv-shadow: 0 1px 2px rgba(24, 78, 119, .05), 0 8px 24px rgba(24, 78, 119, .07);
   --mv-shadow-lg: 0 2px 6px rgba(24, 78, 119, .08), 0 18px 40px rgba(24, 78, 119, .13);
+
+  /*
+   * Bootstrap colours its own components from these variables, not from the
+   * body. Without this, anything with no rule of its own -- helper text, check
+   * labels, plain spans inside a card -- keeps Bootstrap's near-black default
+   * and disappears against a dark surface. Pointing them at the theme fixes
+   * every admin page at once, and they follow automatically in dark mode
+   * because the --mv- values are redefined there.
+   */
+  --bs-body-color: var(--mv-text);
+  --bs-body-color-rgb: 28, 43, 58;
+  --bs-body-bg: var(--mv-bg);
+  --bs-emphasis-color: var(--mv-text);
+  --bs-emphasis-color-rgb: 28, 43, 58;
+  --bs-secondary-color: var(--mv-text-2);
+  --bs-secondary-bg: var(--mv-surface-2);
+  --bs-tertiary-bg: var(--mv-surface-2);
+  --bs-heading-color: var(--mv-text);
+  --bs-border-color: var(--mv-border);
+  --bs-link-color: var(--mv-brand);
+  --bs-link-hover-color: var(--mv-brand-soft);
 }
 
 [data-theme="dark"] {
@@ -98,6 +119,10 @@
   --mv-text: #E8EFF6;
   --mv-text-2: #B7C4D2;
   --mv-muted: #8496A8;
+
+  /* rgb() pairs have to be restated; they cannot be read out of a hex value */
+  --bs-body-color-rgb: 232, 239, 246;
+  --bs-emphasis-color-rgb: 232, 239, 246;
 
   --mv-brand: #6FA9D6;
   --mv-brand-soft: #8FBEE2;

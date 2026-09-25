@@ -37,10 +37,12 @@
             
             <p>Thank you for choosing <strong>Mountain View Motel (MWM)</strong> in Hope (BC) for your stay. Your booking is confirmed and we look forward to welcoming you at MWM.</p>
             
+            @if(!$order->customer_id)
             <div class="promo-box">
                 <p>In case, you haven't signed up for our Membership Program using the link below so that you can start earning reward points for every stay and can use these points to avail great discounts in future.</p>
                 <a href="{{ url('customer/register') }}" class="btn-link">Sign Up For Membership Program &rarr;</a>
             </div>
+            @endif
 
             <h3 style="font-size:15px; color:#0f172a; margin-top:24px; border-bottom:2px solid #f1f5f9; padding-bottom:8px;">Booking Details</h3>
             <table>
@@ -87,10 +89,7 @@
                 </tr>
             </table>
 
-            <p style="margin-top:30px; font-weight:600; color:#334155;">
-                Looking forward to welcoming you again soon!<br>
-                <span style="color:#184E77; font-weight:700;">Mountain View Motel Management</span>
-            </p>
+            @include('emails.partials.signoff')
         </div>
         
         <div class="footer">

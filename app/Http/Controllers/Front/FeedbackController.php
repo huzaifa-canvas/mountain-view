@@ -16,7 +16,13 @@ class FeedbackController extends Controller
     {
         $order = Order::with(['customer', 'items'])->where('order_number', $orderNumber)->firstOrFail();
 
-        return view('front.feedback', compact('order'));
+        // One booking, one review. If this guest has already told us how the
+        // stay went, the page shows what they said instead of an empty form.
+        $existingFeedback = Feedback::where('order_id', $order->id)
+            ->orderByDesc('id')
+            ->first();
+
+        return view('front.feedback', compact('order', 'existingFeedback'));
     }
 
     /**
@@ -26,11 +32,20 @@ class FeedbackController extends Controller
     {
         $order = Order::where('order_number', $orderNumber)->firstOrFail();
 
+        // The form is hidden once feedback exists, but a stale tab or a
+        // resubmitted POST would still land here, so the rule is enforced on
+        // the way in rather than only in the view.
+        if (Feedback::where('order_id', $order->id)->exists()) {
+            return redirect()
+                ->route('feedback.show', $order->order_number)
+                ->with('feedback_duplicate', true);
+        }
+
         $request->validate([
             'guest_name' => 'required|string|max:255',
             'guest_email' => 'required|email|max:255',
             'category' => 'required|string|max:255',
-            'message' => 'required|string',
+            'message' => 'required|string|max:500',
             'screenshot' => 'nullable|file|max:5120',
         ]);
 

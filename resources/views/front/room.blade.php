@@ -27,37 +27,81 @@
                 </div>
                 <div class="d-flex align-items-start justify-content-between amenities_tabs">
                     <div class="scroll_box">
-                        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                            <button class="nav-link active" id="v-pills-amenities-1-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-1" type="button" role="tab"
-                                aria-controls="v-pills-amenities-1" aria-selected="true">
+                        <div class="nav flex-column nav-pills me-3" id="v-pills-r1-tab" role="tablist" aria-orientation="vertical">
+                            <button class="nav-link active" id="v-pills-r1-gallery-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r1-gallery" type="button" role="tab"
+                                aria-controls="v-pills-r1-gallery" aria-selected="true">
+                                <span>Photos</span>
+                            </button>
+                            <button class="nav-link" id="v-pills-r1-amenities-1-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r1-amenities-1" type="button" role="tab"
+                                aria-controls="v-pills-r1-amenities-1" aria-selected="false">
                                 <span>In Your Private Kitchenette</span>
                             </button>
-                            <button class="nav-link" id="v-pills-amenities-2-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-2" type="button" role="tab"
-                                aria-controls="v-pills-amenities-2" aria-selected="false">
+                            <button class="nav-link" id="v-pills-r1-amenities-2-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r1-amenities-2" type="button" role="tab"
+                                aria-controls="v-pills-r1-amenities-2" aria-selected="false">
                                 <span>In Your Private Bathroom</span>
                             </button>
-                            <button class="nav-link" id="v-pills-amenities-3-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-3" type="button" role="tab"
-                                aria-controls="v-pills-amenities-3" aria-selected="false">
+                            <button class="nav-link" id="v-pills-r1-amenities-3-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r1-amenities-3" type="button" role="tab"
+                                aria-controls="v-pills-r1-amenities-3" aria-selected="false">
                                 <span>View</span>
                             </button>
-                            <button class="nav-link" id="v-pills-amenities-4-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-4" type="button" role="tab"
-                                aria-controls="v-pills-amenities-4" aria-selected="false">
+                            <button class="nav-link" id="v-pills-r1-amenities-4-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r1-amenities-4" type="button" role="tab"
+                                aria-controls="v-pills-r1-amenities-4" aria-selected="false">
                                 <span>Room Facilities</span>
                             </button>
-                            <button class="nav-link" id="v-pills-amenities-5-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-5" type="button" role="tab"
-                                aria-controls="v-pills-amenities-5" aria-selected="false">
+                            <button class="nav-link" id="v-pills-r1-amenities-5-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r1-amenities-5" type="button" role="tab"
+                                aria-controls="v-pills-r1-amenities-5" aria-selected="false">
                                 <span>Smoking</span>
                             </button>
                         </div>
                     </div>
-                    <div class="tab-content" id="v-pills-tabContent">
-                        <div class="tab-pane fade show active" id="v-pills-amenities-1" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-1-tab">
+                    <div class="tab-content" id="v-pills-r1-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-r1-gallery" role="tabpanel"
+                            aria-labelledby="v-pills-r1-gallery-tab">
+                            @php
+                                $rmListing = ($roomListings ?? collect())->get('superior-queen-room');
+                                $rmImages  = $rmListing ? (json_decode($rmListing->listings_img, true) ?: []) : [];
+                            @endphp
+                            @if(count($rmImages))
+                                <div class="room_gallery" data-room-gallery="superior-queen-room">
+                                    <div class="swiper room_gallery_main room_gallery_main_superior-queen-room">
+                                        <div class="swiper-wrapper">
+                                            @foreach($rmImages as $rmImg)
+                                                <div class="swiper-slide">
+                                                    <img src="{{ asset('storage/listing/' . $rmImg) }}"
+                                                         alt="{{ $rmListing->listings_name }}"
+                                                         loading="lazy" />
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div class="swiper-button-prev room_gallery_prev"></div>
+                                        <div class="swiper-button-next room_gallery_next"></div>
+                                    </div>
+                                    @if(count($rmImages) > 1)
+                                        <div class="swiper room_gallery_thumbs room_gallery_thumbs_superior-queen-room">
+                                            <div class="swiper-wrapper">
+                                                @foreach($rmImages as $rmImg)
+                                                    <div class="swiper-slide">
+                                                        <img src="{{ asset('storage/listing/' . $rmImg) }}"
+                                                             alt="{{ $rmListing->listings_name }}"
+                                                             loading="lazy" />
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @else
+                                <p class="desc mb-0">Photos of this room are coming soon.</p>
+                            @endif
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-r1-amenities-1" role="tabpanel"
+                            aria-labelledby="v-pills-r1-amenities-1-tab">
                             <div class="amenities_box_main">
                                 <p class="title">In Your Private Kitchenette</p>
                                 <div class="row">
@@ -88,8 +132,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="v-pills-amenities-2" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-2-tab">
+                        <div class="tab-pane fade" id="v-pills-r1-amenities-2" role="tabpanel"
+                            aria-labelledby="v-pills-r1-amenities-2-tab">
                             <div class="amenities_box_main">
                                 <p class="title">In Your Private Bathroom</p>
                                 <div class="row">
@@ -124,8 +168,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="v-pills-amenities-3" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-3-tab">
+                        <div class="tab-pane fade" id="v-pills-r1-amenities-3" role="tabpanel"
+                            aria-labelledby="v-pills-r1-amenities-3-tab">
                             <div class="amenities_box_main">
                                 <p class="title">View</p>
                                 <div class="row">
@@ -148,8 +192,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="v-pills-amenities-4" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-4-tab">
+                        <div class="tab-pane fade" id="v-pills-r1-amenities-4" role="tabpanel"
+                            aria-labelledby="v-pills-r1-amenities-4-tab">
                             <div class="amenities_box_main">
                                 <p class="title">Room Facilities</p>
                                 <div class="row">
@@ -244,8 +288,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="v-pills-amenities-5" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-5-tab">
+                        <div class="tab-pane fade" id="v-pills-r1-amenities-5" role="tabpanel"
+                            aria-labelledby="v-pills-r1-amenities-5-tab">
                             <div class="amenities_box_main">
                                 <p class="title">Smoking</p>
                                 <div class="row">
@@ -271,37 +315,81 @@
                 </div>
                 <div class="d-flex align-items-start justify-content-between amenities_tabs">
                     <div class="scroll_box">
-                        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                            <button class="nav-link active" id="v-pills-amenities-1-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-1" type="button" role="tab"
-                                aria-controls="v-pills-amenities-1" aria-selected="true">
+                        <div class="nav flex-column nav-pills me-3" id="v-pills-r2-tab" role="tablist" aria-orientation="vertical">
+                            <button class="nav-link active" id="v-pills-r2-gallery-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r2-gallery" type="button" role="tab"
+                                aria-controls="v-pills-r2-gallery" aria-selected="true">
+                                <span>Photos</span>
+                            </button>
+                            <button class="nav-link" id="v-pills-r2-amenities-1-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r2-amenities-1" type="button" role="tab"
+                                aria-controls="v-pills-r2-amenities-1" aria-selected="false">
                                 <span>In Your Private Kitchenette</span>
                             </button>
-                            <button class="nav-link" id="v-pills-amenities-2-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-2" type="button" role="tab"
-                                aria-controls="v-pills-amenities-2" aria-selected="false">
+                            <button class="nav-link" id="v-pills-r2-amenities-2-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r2-amenities-2" type="button" role="tab"
+                                aria-controls="v-pills-r2-amenities-2" aria-selected="false">
                                 <span>In Your Private Bathroom</span>
                             </button>
-                            <button class="nav-link" id="v-pills-amenities-3-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-3" type="button" role="tab"
-                                aria-controls="v-pills-amenities-3" aria-selected="false">
+                            <button class="nav-link" id="v-pills-r2-amenities-3-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r2-amenities-3" type="button" role="tab"
+                                aria-controls="v-pills-r2-amenities-3" aria-selected="false">
                                 <span>View</span>
                             </button>
-                            <button class="nav-link" id="v-pills-amenities-4-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-4" type="button" role="tab"
-                                aria-controls="v-pills-amenities-4" aria-selected="false">
+                            <button class="nav-link" id="v-pills-r2-amenities-4-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r2-amenities-4" type="button" role="tab"
+                                aria-controls="v-pills-r2-amenities-4" aria-selected="false">
                                 <span>Room Facilities</span>
                             </button>
-                            <button class="nav-link" id="v-pills-amenities-5-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-amenities-5" type="button" role="tab"
-                                aria-controls="v-pills-amenities-5" aria-selected="false">
+                            <button class="nav-link" id="v-pills-r2-amenities-5-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-r2-amenities-5" type="button" role="tab"
+                                aria-controls="v-pills-r2-amenities-5" aria-selected="false">
                                 <span>Smoking</span>
                             </button>
                         </div>
                     </div>
-                    <div class="tab-content" id="v-pills-tabContent">
-                        <div class="tab-pane fade show active" id="v-pills-amenities-1" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-1-tab">
+                    <div class="tab-content" id="v-pills-r2-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-r2-gallery" role="tabpanel"
+                            aria-labelledby="v-pills-r2-gallery-tab">
+                            @php
+                                $rmListing = ($roomListings ?? collect())->get('deluxe-family-room');
+                                $rmImages  = $rmListing ? (json_decode($rmListing->listings_img, true) ?: []) : [];
+                            @endphp
+                            @if(count($rmImages))
+                                <div class="room_gallery" data-room-gallery="deluxe-family-room">
+                                    <div class="swiper room_gallery_main room_gallery_main_deluxe-family-room">
+                                        <div class="swiper-wrapper">
+                                            @foreach($rmImages as $rmImg)
+                                                <div class="swiper-slide">
+                                                    <img src="{{ asset('storage/listing/' . $rmImg) }}"
+                                                         alt="{{ $rmListing->listings_name }}"
+                                                         loading="lazy" />
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div class="swiper-button-prev room_gallery_prev"></div>
+                                        <div class="swiper-button-next room_gallery_next"></div>
+                                    </div>
+                                    @if(count($rmImages) > 1)
+                                        <div class="swiper room_gallery_thumbs room_gallery_thumbs_deluxe-family-room">
+                                            <div class="swiper-wrapper">
+                                                @foreach($rmImages as $rmImg)
+                                                    <div class="swiper-slide">
+                                                        <img src="{{ asset('storage/listing/' . $rmImg) }}"
+                                                             alt="{{ $rmListing->listings_name }}"
+                                                             loading="lazy" />
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @else
+                                <p class="desc mb-0">Photos of this room are coming soon.</p>
+                            @endif
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-r2-amenities-1" role="tabpanel"
+                            aria-labelledby="v-pills-r2-amenities-1-tab">
                             <div class="amenities_box_main">
                                 <p class="title">In Your Private Kitchenette</p>
                                 <div class="row">
@@ -332,8 +420,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="v-pills-amenities-2" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-2-tab">
+                        <div class="tab-pane fade" id="v-pills-r2-amenities-2" role="tabpanel"
+                            aria-labelledby="v-pills-r2-amenities-2-tab">
                             <div class="amenities_box_main">
                                 <p class="title">In Your Private Bathroom</p>
                                 <div class="row">
@@ -368,8 +456,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="v-pills-amenities-3" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-3-tab">
+                        <div class="tab-pane fade" id="v-pills-r2-amenities-3" role="tabpanel"
+                            aria-labelledby="v-pills-r2-amenities-3-tab">
                             <div class="amenities_box_main">
                                 <p class="title">View</p>
                                 <div class="row">
@@ -392,8 +480,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="v-pills-amenities-4" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-4-tab">
+                        <div class="tab-pane fade" id="v-pills-r2-amenities-4" role="tabpanel"
+                            aria-labelledby="v-pills-r2-amenities-4-tab">
                             <div class="amenities_box_main">
                                 <p class="title">Room Facilities</p>
                                 <div class="row">
@@ -488,8 +576,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="v-pills-amenities-5" role="tabpanel"
-                            aria-labelledby="v-pills-amenities-5-tab">
+                        <div class="tab-pane fade" id="v-pills-r2-amenities-5" role="tabpanel"
+                            aria-labelledby="v-pills-r2-amenities-5-tab">
                             <div class="amenities_box_main">
                                 <p class="title">Smoking</p>
                                 <div class="row">
@@ -666,5 +754,99 @@
         </div>
     </div>
 </section>
+
+<style>
+    /*
+     * The amenities panel is a flex item with the default `flex: 0 1 auto`, so
+     * it shrink-wraps whatever is inside it. That is fine for lists of text,
+     * but a Swiper sizes its slides from the container it is in, so the two
+     * kept growing off each other until the panel measured 33 million pixels
+     * and squeezed the pill column down to nothing. Giving the panel a zero
+     * basis fixes its width first and breaks the loop.
+     */
+    .amenities_tabs > .scroll_box { flex: 0 0 auto; }
+    .amenities_tabs > .tab-content { flex: 1 1 0; min-width: 0; }
+
+    .room_gallery { width: 100%; min-width: 0; max-width: 100%; }
+    .room_gallery .swiper { width: 100%; min-width: 0; max-width: 100%; }
+    .room_gallery_main {
+        border-radius: 14px; overflow: hidden; background: #EEF2F7;
+    }
+    .room_gallery_main .swiper-slide img {
+        width: 100%; height: 380px; object-fit: cover; display: block;
+    }
+    .room_gallery_main .swiper-button-prev,
+    .room_gallery_main .swiper-button-next {
+        width: 38px; height: 38px; border-radius: 50%;
+        background: rgba(255, 255, 255, .92); color: #184E77;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, .18);
+    }
+    .room_gallery_main .swiper-button-prev::after,
+    .room_gallery_main .swiper-button-next::after { font-size: 14px; font-weight: 800; }
+    .room_gallery_thumbs { margin-top: 10px; }
+    .room_gallery_thumbs .swiper-slide {
+        border-radius: 9px; overflow: hidden; cursor: pointer;
+        opacity: .5; transition: opacity .2s ease, box-shadow .2s ease;
+    }
+    .room_gallery_thumbs .swiper-slide img {
+        width: 100%; height: 74px; object-fit: cover; display: block;
+    }
+    .room_gallery_thumbs .swiper-slide-thumb-active {
+        opacity: 1; box-shadow: 0 0 0 2px #184E77;
+    }
+    @media (max-width: 767px) {
+        .room_gallery_main .swiper-slide img { height: 230px; }
+        .room_gallery_thumbs .swiper-slide img { height: 58px; }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var galleries = {};
+
+        document.querySelectorAll('[data-room-gallery]').forEach(function (gallery) {
+            var slug = gallery.getAttribute('data-room-gallery');
+            var thumbsEl = gallery.querySelector('.room_gallery_thumbs_' + slug);
+
+            // Only build the thumbnail strip when the room has more than one
+            // photo; Swiper errors on an empty thumbs element otherwise.
+            var thumbs = thumbsEl ? new Swiper('.room_gallery_thumbs_' + slug, {
+                spaceBetween: 10,
+                slidesPerView: 4,
+                watchSlidesProgress: true,
+                observer: true,
+                observeParents: true,
+                breakpoints: { 768: { slidesPerView: 5 } }
+            }) : null;
+
+            galleries[slug] = new Swiper('.room_gallery_main_' + slug, {
+                spaceBetween: 0,
+                loop: true,
+                // Each gallery lives inside a tab pane, and a pane that has
+                // never been shown has no width to measure. Watching the DOM
+                // lets Swiper lay itself out the moment its tab opens.
+                observer: true,
+                observeParents: true,
+                navigation: {
+                    nextEl: '.room_gallery_main_' + slug + ' .room_gallery_next',
+                    prevEl: '.room_gallery_main_' + slug + ' .room_gallery_prev'
+                },
+                thumbs: thumbs ? { swiper: thumbs } : undefined
+            });
+        });
+
+        // Belt and braces: recalculate when any tab on this page is revealed.
+        document.querySelectorAll('[data-bs-toggle="tab"], [data-bs-toggle="pill"]').forEach(function (btn) {
+            btn.addEventListener('shown.bs.tab', function () {
+                Object.keys(galleries).forEach(function (slug) {
+                    galleries[slug].update();
+                    if (galleries[slug].thumbs && galleries[slug].thumbs.swiper) {
+                        galleries[slug].thumbs.swiper.update();
+                    }
+                });
+            });
+        });
+    });
+</script>
 
 @include('front.inc.footer')

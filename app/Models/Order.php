@@ -91,6 +91,38 @@ class Order extends Model
         return $this->stayState() === 'awaiting';
     }
 
+    /**
+     * Whether the guest may move this booking to different dates.
+     *
+     * Same window as cancelling: once they have arrived, or the dates have
+     * gone by, it is a front-desk decision rather than a self-service one.
+     */
+    public function canCustomerReschedule(): bool
+    {
+        if ($this->stayState() !== 'awaiting') {
+            return false;
+        }
+
+        $firstIn = $this->items->min('check_in');
+
+        if (!$firstIn) {
+            return false;
+        }
+
+        // Changes close a day before arrival: the room has to be made ready
+        // and the night's occupancy fixed, so a last-minute move is a call to
+        // the front desk rather than something to do online.
+        return \Carbon\Carbon::parse($firstIn)->startOfDay()->subDay()->isFuture();
+    }
+
+    /** When self-service changes stop being possible. */
+    public function rescheduleDeadline(): ?\Carbon\Carbon
+    {
+        $firstIn = $this->items->min('check_in');
+
+        return $firstIn ? \Carbon\Carbon::parse($firstIn)->startOfDay()->subDay() : null;
+    }
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
@@ -99,5 +131,15 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
+    public function changes()
+    {
+        return $this->hasMany(BookingChange::class)->orderByDesc('created_at');
     }
 }

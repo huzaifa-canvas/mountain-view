@@ -98,6 +98,59 @@
     display: flex !important;
     flex-direction: column !important;
     gap: 6px !important;
+    flex: 1 1 140px !important;
+    min-width: 0 !important;
+    padding-left: 22px !important;
+    border-left: 1px solid #e2e8f0 !important;
+}
+.control_tile:first-child {
+    padding-left: 0 !important;
+    border-left: 0 !important;
+}
+/* The room tile carries the availability message, so give it room to sit on
+   one line rather than wrapping mid-sentence. */
+.control_tile:last-child {
+    flex: 0 0 auto !important;
+    min-width: 172px !important;
+}
+.control_tile_title i {
+    width: 15px;
+    text-align: center;
+    opacity: .85;
+}
+
+/* A room type with nothing free on the chosen dates */
+.is_sold_out .booking_options_bar {
+    background: #fdf5f4 !important;
+    border-color: #f3d3cd !important;
+}
+.is_sold_out .options_grid {
+    pointer-events: none !important;
+}
+/* Fade the controls, not the whole card: the reason it is unavailable has to
+   stay the most readable thing in the row. */
+.is_sold_out .control_tile {
+    opacity: .45 !important;
+}
+.is_sold_out .control_tile:last-child {
+    opacity: 1 !important;
+}
+.btn_reserve_room.is_disabled,
+.btn_reserve_room:disabled {
+    background: #94a3b8 !important;
+    border-color: #94a3b8 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+.rooms_left_note .is_full {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #fde8e4;
+    color: #b02a10;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 3px 11px;
 }
 .control_tile_title {
     font-size: 12px !important;
@@ -435,7 +488,16 @@
                         </div>
 
                         <!-- Form Options Bar -->
-                        <div id="reserve-form-container-{{ $listing->listings_id }}" class="col-12">
+                        @php
+                            // Rooms free on the chosen dates; null means no limit is set.
+                            // Worked out here so the very first paint already shows a
+                            // sold-out room as sold out, rather than waiting for the
+                            // availability call that only runs when a date changes.
+                            $freeRooms = $availability[$listing->listings_id] ?? null;
+                            $stepperMax = $freeRooms === null ? 99 : $freeRooms;
+                            $isSoldOut = $freeRooms === 0;
+                        @endphp
+                        <div id="reserve-form-container-{{ $listing->listings_id }}" class="col-12 {{ $isSoldOut ? 'is_sold_out' : '' }}">
                             <form class="reserve-form" id="reserve-form-{{ $listing->listings_id }}" action="{{ route('booking_cart', ['id' => $listing->listings_id]) }}" method="post">
                                 @csrf
                                 <input type="hidden" name="checkin" id="form_checkin_{{ $listing->listings_id }}" value="{{ request()->get('check_in') }}">
@@ -451,7 +513,7 @@
                                         
                                         <!-- Guest Tile -->
                                         <div class="control_tile">
-                                            <h4 class="control_tile_title"><i class="fa-solid fa-users text-primary"></i> Guests</h4>
+                                            <h4 class="control_tile_title"><i class="fa-solid fa-users"></i> Guests</h4>
                                             <div style="display:flex; align-items:center; gap:6px; min-height:34px;">
                                                 @for($i = 0; $i < ($listing->listings_number_of_persons ?? 1); $i++)
                                                 <i class="fa-solid fa-user" style="color:#184E77; font-size:15px;"></i>
@@ -462,7 +524,7 @@
 
                                         <!-- Beds Tile -->
                                         <div class="control_tile">
-                                            <h4 class="control_tile_title"><i class="fa-solid fa-bed text-primary"></i> Beds</h4>
+                                            <h4 class="control_tile_title"><i class="fa-solid fa-bed"></i> Beds</h4>
                                             <div style="display:flex; align-items:center; gap:8px; min-height:34px;">
                                                 <span style="font-weight:700; font-size:14px; color:#1e293b; background:#fff; border:1px solid #cbd5e1; padding:4px 12px; border-radius:8px;">
                                                     {{ $listing->listings_number_of_beds ?? 1 }} {{ Str::plural('Bed', $listing->listings_number_of_beds ?? 1) }}
@@ -473,7 +535,7 @@
                                         <!-- Laundry Tile (Inline Loads Counter) -->
                                         <div class="control_tile">
                                             <h4 class="control_tile_title">
-                                                Laundry
+                                                <i class="fa-solid fa-shirt"></i> Laundry
                                                 <span class="fee_badge fee_badge_blue">${{ $laundryFeeAmount }}/load</span>
                                             </h4>
                                             <div style="display:flex; align-items:center; gap:8px; min-height:34px;">
@@ -500,7 +562,7 @@
                                         <!-- Pets Tile -->
                                         <div class="control_tile">
                                             <h4 class="control_tile_title">
-                                                Pets
+                                                <i class="fa-solid fa-paw"></i> Pets
                                                 <span class="fee_badge fee_badge_amber">${{ $petFeeAmount }}/pet</span>
                                             </h4>
                                             <div class="number">
@@ -511,16 +573,11 @@
                                         </div>
 
                                         <!-- Room Tile -->
-                                        @php
-                                            // Rooms free on the chosen dates; null means the listing has no limit
-                                            $freeRooms = $availability[$listing->listings_id] ?? null;
-                                            $stepperMax = $freeRooms === null ? 99 : $freeRooms;
-                                        @endphp
                                         <div class="control_tile">
-                                            <h4 class="control_tile_title">Select Room</h4>
+                                            <h4 class="control_tile_title"><i class="fa-solid fa-door-open"></i> Select Room</h4>
                                             <div class="number">
                                                 <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                                                <input type="text" name="room" value="{{ $savedRooms }}" maxlength="3" readonly required
+                                                <input type="text" name="room" value="{{ $isSoldOut ? 0 : $savedRooms }}" maxlength="3" readonly required
                                                        data-max="{{ $stepperMax }}"
                                                        data-price="{{ $listing->listings_price }}"
                                                        data-listing-id="{{ $listing->listings_id }}"
@@ -556,8 +613,10 @@
 
                                             <!-- Unreserved Actions -->
                                             <div id="unreserved-actions-{{ $listing->listings_id }}" style="display: {{ $isInCart ? 'none' : 'flex' }}; align-items:center; gap:10px;">
-                                                <button type="submit" class="btn_reserve_room reserve-btn" data-listing="{{ $listing->listings_id }}">
-                                                    <span class="btn-text">Reserve Room</span> <i class="fa-solid fa-circle-chevron-right"></i>
+                                                <button type="submit" class="btn_reserve_room reserve-btn {{ $isSoldOut ? 'is_disabled' : '' }}"
+                                                        data-listing="{{ $listing->listings_id }}" {{ $isSoldOut ? 'disabled' : '' }}>
+                                                    <span class="btn-text">{{ $isSoldOut ? 'Fully Booked' : 'Reserve Room' }}</span>
+                                                    <i class="fa-solid {{ $isSoldOut ? 'fa-circle-xmark' : 'fa-circle-chevron-right' }}"></i>
                                                 </button>
                                             </div>
 
@@ -803,6 +862,22 @@
                         if (reserveBtn) {
                             reserveBtn.disabled = (free === 0);
                             reserveBtn.classList.toggle('is_disabled', free === 0);
+
+                            // Keep the wording in step with what the server
+                            // would have rendered for these dates
+                            var label = reserveBtn.querySelector('.btn-text');
+                            var icon = reserveBtn.querySelector('i');
+                            if (label) label.textContent = free === 0 ? 'Fully Booked' : 'Reserve Room';
+                            if (icon) {
+                                icon.classList.toggle('fa-circle-xmark', free === 0);
+                                icon.classList.toggle('fa-circle-chevron-right', free !== 0);
+                            }
+                        }
+
+                        // Nothing free means nothing selected
+                        if (free === 0 && (parseInt(input.value) || 0) !== 0) {
+                            input.value = 0;
+                            updatePriceForListing(id);
                         }
                         if (card) {
                             card.classList.toggle('is_sold_out', free === 0);

@@ -95,6 +95,18 @@
         </div>
 
         <div class="row mb-3">
+          <label class="col-sm-2 col-form-label">Manager / Owner name</label>
+          <div class="col-sm-4">
+            <input type="text" name="manager_name" value="{{ $general_setting->manager_name ?? '' }}" class="form-control" placeholder="e.g. Sarah Khan">
+            <div class="form-text">Guest emails are signed with this name.</div>
+          </div>
+          <label class="col-sm-2 col-form-label text-end">Their title</label>
+          <div class="col-sm-4">
+            <input type="text" name="manager_title" value="{{ $general_setting->manager_title ?? '' }}" class="form-control" placeholder="e.g. Owner / Manager">
+          </div>
+        </div>
+
+        <div class="row mb-3">
           <label class="col-sm-2 col-form-label">Tax Rate (%)</label>
           <div class="col-sm-4">
             <input type="number" step="0.01" name="tax_rate" value="{{ $general_setting->tax_rate ?? '15.00' }}" class="form-control" placeholder="15.00">

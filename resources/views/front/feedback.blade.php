@@ -3,6 +3,17 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
     
+    .fb_icon_done { background: #DBEAFE !important; color: #1E40AF !important; }
+    .fb_prev_review {
+        text-align: left; background: #F8FAFC; border: 1px solid #E2E8F0;
+        border-radius: 12px; padding: 16px 18px; margin: 0 auto 24px; max-width: 520px;
+    }
+    .fb_prev_label {
+        font-size: 11px; font-weight: 700; color: #94A3B8;
+        text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px;
+    }
+    .fb_prev_meta { font-size: 13px; font-weight: 700; color: #184E77; margin-bottom: 6px; }
+    .fb_prev_msg { font-size: 14px; color: #475569; margin: 0; white-space: pre-line; }
     .feedback_section {
         padding: 70px 0 90px;
         background: #f8fafc;
@@ -91,6 +102,13 @@
         background: #ffffff;
         box-shadow: 0 0 0 4px rgba(24, 78, 119, 0.1);
     }
+    .fb_hint {
+        display: flex; flex-wrap: wrap; gap: 6px 14px;
+        justify-content: space-between; align-items: center;
+        margin-top: 7px; font-size: 12px; color: #94a3b8; font-weight: 600;
+    }
+    .fb_hint i { color: #d97706; margin-right: 4px; }
+    .fb_hint span:last-child { font-variant-numeric: tabular-nums; }
     .fb_textarea {
         min-height: 120px;
         resize: vertical;
@@ -175,7 +193,35 @@
             </div>
 
             <div class="feedback_body">
-                @if(session('feedback_success'))
+                @if($existingFeedback && !session('feedback_success'))
+                    <div class="fb_success_box">
+                        <div class="fb_success_icon fb_icon_done">
+                            <i class="fa-solid fa-comment-dots"></i>
+                        </div>
+                        <h3 style="font-weight:800; color:#0f172a; margin-bottom:8px;">You have already reviewed this stay</h3>
+                        <p style="color:#64748b; font-size:14px; margin-bottom:22px;">
+                            We received your feedback for booking <strong>#{{ $order->order_number }}</strong>
+                            on {{ $existingFeedback->created_at->format('F d, Y') }}. Thank you &mdash; one review per booking is all we need.
+                        </p>
+
+                        @if(session('feedback_duplicate'))
+                            <p style="color:#92400e; background:#FEF3C7; border:1px solid #FDE68A; border-radius:10px; padding:11px 15px; font-size:13px; margin-bottom:22px;">
+                                <i class="fa-solid fa-circle-info me-1"></i>
+                                Your feedback for this booking was already recorded, so this one was not saved again.
+                            </p>
+                        @endif
+
+                        <div class="fb_prev_review">
+                            <div class="fb_prev_label">What you told us</div>
+                            <div class="fb_prev_meta">{{ $existingFeedback->category }}</div>
+                            <p class="fb_prev_msg">{{ $existingFeedback->message }}</p>
+                        </div>
+
+                        <a href="{{ url('/') }}" class="fb_submit_btn" style="display:inline-flex; width:auto; text-decoration:none;">
+                            <i class="fa-solid fa-house"></i> Return Home
+                        </a>
+                    </div>
+                @elseif(session('feedback_success'))
                     <div class="fb_success_box">
                         <div class="fb_success_icon">
                             <i class="fa-solid fa-check"></i>
@@ -242,7 +288,13 @@
 
                         <div class="fb_field">
                             <div class="fb_label"><i class="fa-solid fa-message"></i> Your Feedback <span class="req">*</span></div>
-                            <textarea class="fb_textarea" name="message" required placeholder="Please share your experience, suggestions, or any concerns..."></textarea>
+                            <textarea class="fb_textarea" name="message" required maxlength="500"
+                                      id="fb-message"
+                                      placeholder="Please share your experience, suggestions, or any concerns...">{{ old('message') }}</textarea>
+                            <div class="fb_hint">
+                                <span><i class="fa-solid fa-triangle-exclamation"></i> Please do not include payment or credit card information.</span>
+                                <span id="fb-count">0 / 500</span>
+                            </div>
                         </div>
 
                         <div class="fb_field">
@@ -266,5 +318,17 @@
         </div>
     </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var box = document.getElementById('fb-message');
+    var count = document.getElementById('fb-count');
+    if (!box || !count) return;
+
+    function update() { count.textContent = box.value.length + ' / 500'; }
+    box.addEventListener('input', update);
+    update();
+});
+</script>
 
 @include('front.inc.footer')

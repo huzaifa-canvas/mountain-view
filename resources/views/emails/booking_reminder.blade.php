@@ -100,10 +100,7 @@
                 </table>
             </div>
 
-            <p style="margin-top:24px; font-weight:600; color:#334155;">
-                Looking forward to welcoming you again soon!<br>
-                <span style="color:#184E77; font-weight:700;">Mountain View Motel Management</span>
-            </p>
+            @include('emails.partials.signoff')
         </div>
         
         <div class="footer">

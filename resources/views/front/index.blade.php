@@ -26,7 +26,7 @@
                     <div class="number">
                         <label for="Adult">Adult</label>
                         <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                        <input type="number" placeholder="No of Adult" name="adult" oninput="this.value = this.value.slice(0, 3)" id="Adult">
+                        <input type="number" placeholder="No of Adult" name="adult" min="1" data-min="1" oninput="this.value = this.value.slice(0, 3)" id="Adult">
                         <span class="plus"><i class="fa-solid fa-plus"></i></span>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                     <div class="number">
                         <label for="Children">Children</label>
                         <span class="minus"><i class="fa-solid fa-minus"></i></span>
-                        <input type="number" placeholder="No of Children" name="children" oninput="this.value = this.value.slice(0, 3)" id="Children">
+                        <input type="number" placeholder="No of Children" name="children" min="0" data-min="0" oninput="this.value = this.value.slice(0, 3)" id="Children">
                         <span class="plus"><i class="fa-solid fa-plus"></i></span>
                     </div>
                 </div>
@@ -476,12 +476,56 @@
         const checkInInput = document.getElementById('check_in');
         const checkOutInput = document.getElementById('check_out');
 
+        // The same per-night counts the booking page shows, so a guest is not
+        // offered a date here that the next page turns out to have nothing on.
+        var mvCalendar = {};
+
+        function mvDateKey(date) {
+            return date.getFullYear()
+                + '-' + String(date.getMonth() + 1).padStart(2, '0')
+                + '-' + String(date.getDate()).padStart(2, '0');
+        }
+
+        function mvNightIsFull(date) {
+            var info = mvCalendar[mvDateKey(date)];
+            return !!(info && info.full);
+        }
+
+        function mvDecorateDay(dayElem) {
+            var info = mvCalendar[mvDateKey(dayElem.dateObj)];
+            if (!info) return;
+
+            var old = dayElem.querySelector('.mv-day-left');
+            if (old) old.remove();
+
+            var tag = document.createElement('span');
+            tag.className = 'mv-day-left' + (info.full ? ' is_full' : '');
+            tag.textContent = info.full ? 'Full' : info.free;
+            dayElem.appendChild(tag);
+
+            dayElem.title = info.full
+                ? 'No rooms left on this date'
+                : info.free + (info.free === 1 ? ' room' : ' rooms') + ' left';
+        }
+
+        function loadCalendarAvailability(pickers) {
+            fetch('{{ route("room.availability.calendar") }}')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    mvCalendar = (data && data.dates) || {};
+                    pickers.forEach(function (fp) { if (fp) fp.redraw(); });
+                })
+                .catch(function () { /* the picker still works, just without counts */ });
+        }
+
         if(checkInInput && checkOutInput) {
             const checkInPicker = flatpickr(checkInInput, {
                 minDate: "today",
                 dateFormat: "Y-m-d",
                 altInput: true,
                 altFormat: "M j, Y",
+                disable: [mvNightIsFull],
+                onDayCreate: function (dObj, dStr, fp, dayElem) { mvDecorateDay(dayElem); },
                 onChange: function(selectedDates, dateStr, instance) {
                     if (selectedDates.length > 0) {
                         const nextDay = new Date(selectedDates[0]);
@@ -500,8 +544,12 @@
                 minDate: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
                 dateFormat: "Y-m-d",
                 altInput: true,
-                altFormat: "M j, Y"
+                altFormat: "M j, Y",
+                // The departure day itself is not slept in, so it is never blocked
+                onDayCreate: function (dObj, dStr, fp, dayElem) { mvDecorateDay(dayElem); }
             });
+
+            loadCalendarAvailability([checkInPicker, checkOutPicker]);
         }
     });
 </script>

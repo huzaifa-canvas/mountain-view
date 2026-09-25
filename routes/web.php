@@ -55,6 +55,10 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/orders', [\App\Http\Controllers\Admin\AdminOrders::class, 'index'])->name('admin.orders.index');
     Route::get('/orders/calendar', [\App\Http\Controllers\Admin\AdminOrders::class, 'calendar'])->name('admin.orders.calendar');
     Route::get('/orders/calendar-events', [\App\Http\Controllers\Admin\AdminOrders::class, 'calendarEvents'])->name('admin.orders.calendar-events');
+    // Registered before /orders/{id} so "create" is not read as an order id.
+    Route::get('/orders/create', [\App\Http\Controllers\Admin\AdminOrders::class, 'create'])->name('admin.orders.create');
+    Route::post('/orders', [\App\Http\Controllers\Admin\AdminOrders::class, 'store'])->name('admin.orders.store');
+    Route::get('/orders/room-availability', [\App\Http\Controllers\Admin\AdminOrders::class, 'availability'])->name('admin.orders.availability');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\AdminOrders::class, 'show'])->name('admin.orders.show');
     Route::post('/orders/{id}/cancel', [\App\Http\Controllers\Admin\AdminOrders::class, 'cancel'])->name('admin.orders.cancel');
     Route::post('/orders/{id}/mark-checked-in', [\App\Http\Controllers\Admin\AdminOrders::class, 'markCheckedIn'])->name('admin.orders.mark-checked-in');
@@ -112,6 +116,7 @@ Route::middleware('auth:customer')->group(function () {
     Route::post('/customer/password-update', [CustomerAuth::class, 'updatePassword'])->name('customer.password.update');
     Route::get('/my-account/booking/{order_number}', [CustomerAuth::class, 'booking'])->name('customer.booking.show');
     Route::post('/my-account/booking/{order_number}/cancel', [CustomerAuth::class, 'cancelBooking'])->name('customer.booking.cancel');
+    Route::post('/my-account/booking/{order_number}/reschedule', [CustomerAuth::class, 'rescheduleBooking'])->name('customer.booking.reschedule');
 });
 
 

@@ -17,6 +17,46 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
+    .stat_box_label {
+        font-size: 12px; font-weight: 700; color: #64748b;
+        text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px;
+    }
+    .stat_box_value {
+        font-size: 30px; font-weight: 800; margin-bottom: 4px;
+        font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.1;
+    }
+    .stat_box_icon {
+        background: #ffffff; width: 42px; height: 42px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        color: #184E77; font-size: 18px; flex: 0 0 auto;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
+    }
+    .mini_stat_label i { margin-right: 5px; opacity: .8; }
+    .pay_badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 4px 11px; border-radius: 30px;
+        font-size: 12px; font-weight: 700; white-space: nowrap;
+    }
+    .pay_badge_paid { background: #DCFCE7; color: #166534; }
+    .pay_badge_due  { background: #FEF3C7; color: #92400E; }
+    .points_summary {
+        display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px;
+    }
+    .points_summary_item {
+        flex: 1 1 150px; background: #fff; border: 1px solid #e2e8f0;
+        border-radius: 12px; padding: 13px 16px;
+    }
+    .points_summary_label {
+        font-size: 11px; font-weight: 700; color: #94a3b8;
+        text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px;
+    }
+    .points_summary_value { font-size: 19px; font-weight: 800; }
+    .txn_order_link { color: #184E77; font-weight: 700; text-decoration: none; }
+    .txn_order_link:hover { text-decoration: underline; }
+    .member_since {
+        font-size: 12px; color: #64748b; font-weight: 600;
+        margin: 6px 0 0; display: flex; align-items: center; gap: 6px;
+    }
     .stay_badge {
         display: inline-flex; align-items: center; gap: 6px;
         padding: 5px 13px; border-radius: 30px;
@@ -304,6 +344,10 @@
                             <div>
                                 <h5 class="dash_user_title">Hello, {{ $customer->first_name }}</h5>
                                 <p class="dash_user_sub">{{ $customer->email }}</p>
+                                <p class="member_since">
+                                    <i class="fa-regular fa-calendar-check"></i>
+                                    Member since {{ $customer->created_at->format('M Y') }}
+                                </p>
                             </div>
                         </div>
 
@@ -372,13 +416,11 @@
                                         <div class="stat_box_card stat_box_loyalty">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h6 class="text-muted fw-bold mb-1" style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">Available Loyalty Points</h6>
-                                                    <h2 class="display-6 fw-bold mb-1" style="color: #184E77; font-family:'Plus Jakarta Sans', sans-serif;">{{ number_format($customer->loyalty_points, 0) }}</h2>
-                                                    <p class="text-success fw-bold mb-0" style="font-size:14px;"><i class="fa-solid fa-tags me-1"></i> Value: {{ $currency }} {{ number_format($points_value, 2) }}</p>
+                                                    <h6 class="stat_box_label">Available Loyalty Points</h6>
+                                                    <h2 class="stat_box_value" style="color:#184E77;">{{ number_format($customer->loyalty_points, 0) }}</h2>
+                                                    <p class="text-success fw-bold mb-0" style="font-size:14px;"><i class="fa-solid fa-tags me-1"></i> Worth {{ $currency }} {{ number_format($points_value, 2) }}</p>
                                                 </div>
-                                                <div style="background:#ffffff; width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#184E77; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
-                                                    <i class="fa-solid fa-coins fs-5"></i>
-                                                </div>
+                                                <div class="stat_box_icon"><i class="fa-solid fa-coins"></i></div>
                                             </div>
                                         </div>
                                     </div>
@@ -386,40 +428,40 @@
                                         <div class="stat_box_card stat_box_bookings">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h6 class="text-muted fw-bold mb-1" style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">Total Bookings</h6>
-                                                    <h2 class="display-6 fw-bold mb-0 text-dark" style="font-family:'Plus Jakarta Sans', sans-serif;">{{ count($orders) }}</h2>
+                                                    <h6 class="stat_box_label">Total Spent</h6>
+                                                    <h2 class="stat_box_value text-dark">{{ $currency }} {{ number_format($stats['total_spent'], 2) }}</h2>
+                                                    <p class="mb-0" style="font-size:14px; color:#64748b; font-weight:600;">
+                                                        across {{ $stats['bookings'] }} {{ Str::plural('booking', $stats['bookings']) }}
+                                                    </p>
                                                 </div>
-                                                <div style="background:#ffffff; width:42px; height:42px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#184E77; box-shadow:0 4px 10px rgba(0,0,0,0.05);">
-                                                    <i class="fa-solid fa-hotel fs-5"></i>
-                                                </div>
+                                                <div class="stat_box_icon"><i class="fa-solid fa-wallet"></i></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-
                                 <div class="row g-3 mt-1">
                                     <div class="col-6 col-lg-3">
                                         <div class="mini_stat">
-                                            <div class="mini_stat_label">Upcoming</div>
+                                            <div class="mini_stat_label"><i class="fa-solid fa-suitcase-rolling"></i> Upcoming</div>
                                             <div class="mini_stat_value">{{ $stats['upcoming'] }}</div>
                                         </div>
                                     </div>
                                     <div class="col-6 col-lg-3">
                                         <div class="mini_stat">
-                                            <div class="mini_stat_label">Nights booked</div>
+                                            <div class="mini_stat_label"><i class="fa-solid fa-circle-check"></i> Completed</div>
+                                            <div class="mini_stat_value">{{ $stats['completed'] }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-lg-3">
+                                        <div class="mini_stat">
+                                            <div class="mini_stat_label"><i class="fa-solid fa-moon"></i> Nights booked</div>
                                             <div class="mini_stat_value">{{ $stats['nights'] }}</div>
                                         </div>
                                     </div>
                                     <div class="col-6 col-lg-3">
                                         <div class="mini_stat">
-                                            <div class="mini_stat_label">Total spent</div>
-                                            <div class="mini_stat_value" style="font-size:18px;">{{ $currency }} {{ number_format($stats['total_spent'], 2) }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-lg-3">
-                                        <div class="mini_stat">
-                                            <div class="mini_stat_label">All bookings</div>
+                                            <div class="mini_stat_label"><i class="fa-solid fa-receipt"></i> All bookings</div>
                                             <div class="mini_stat_value">{{ $stats['bookings'] }}</div>
                                         </div>
                                     </div>
@@ -504,6 +546,9 @@
                                                     <span class="stay_badge" style="background: {{ $tone['bg'] }}; color: {{ $tone['fg'] }};">
                                                         <i class="fa-solid {{ $tone['icon'] }}"></i> {{ $order->stayLabel() }}
                                                     </span>
+                                                    <span class="pay_badge {{ $order->payment_status === 'paid' ? 'pay_badge_paid' : 'pay_badge_due' }}">
+                                                        <i class="fa-solid fa-credit-card"></i> {{ ucfirst($order->payment_status) }}
+                                                    </span>
                                                 </div>
                                                 <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i> {{ $order->created_at->format('F d, Y g:i A') }}</span>
                                             </div>
@@ -579,31 +624,53 @@
                                     </div>
                                 </div>
                                 
+                                <div class="points_summary">
+                                    <div class="points_summary_item">
+                                        <div class="points_summary_label">Earned all time</div>
+                                        <div class="points_summary_value text-success">+{{ number_format($points['earned']) }}</div>
+                                    </div>
+                                    <div class="points_summary_item">
+                                        <div class="points_summary_label">Redeemed all time</div>
+                                        <div class="points_summary_value text-danger">&minus;{{ number_format($points['redeemed']) }}</div>
+                                    </div>
+                                    <div class="points_summary_item">
+                                        <div class="points_summary_label">Balance</div>
+                                        <div class="points_summary_value" style="color:#184E77;">{{ number_format($customer->loyalty_points) }}</div>
+                                    </div>
+                                </div>
+
                                 <h5 class="fw-bold mt-4 mb-3" style="font-size: 16px; color: #0f172a;"><i class="fa-solid fa-list-check text-primary me-2"></i> Recent Transactions</h5>
-                                @php
-                                    $transactions = $customer->loyaltyTransactions()->orderBy('created_at', 'desc')->get();
-                                @endphp
-                                
+
                                 @if(count($transactions) > 0)
                                     <div class="table-responsive">
                                         <table class="table table-hover align-middle">
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>Date</th>
-                                                    <th>Description</th>
-                                                    <th>Points</th>
+                                                    <th>Booking</th>
+                                                    <th>Reason</th>
+                                                    <th class="text-end">Points</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach($transactions as $trans)
                                                 <tr>
-                                                    <td>{{ $trans->created_at->format('M d, Y') }}</td>
-                                                    <td>{{ $trans->description }}</td>
+                                                    <td style="white-space:nowrap;">{{ $trans->created_at->format('M d, Y') }}</td>
                                                     <td>
+                                                        @if($orderNumbers->has($trans->order_id))
+                                                            <a href="{{ route('customer.booking.show', $orderNumbers[$trans->order_id]) }}" class="txn_order_link">
+                                                                #{{ $orderNumbers[$trans->order_id] }}
+                                                            </a>
+                                                        @else
+                                                            <span class="text-muted">&mdash;</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $trans->type === 'earned' ? 'Earned on this stay' : 'Used as a discount' }}</td>
+                                                    <td class="text-end">
                                                         @if($trans->type == 'earned')
                                                             <span class="text-success fw-bold">+{{ number_format($trans->points, 0) }}</span>
                                                         @else
-                                                            <span class="text-danger fw-bold">-{{ number_format($trans->points, 0) }}</span>
+                                                            <span class="text-danger fw-bold">&minus;{{ number_format($trans->points, 0) }}</span>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -612,7 +679,7 @@
                                         </table>
                                     </div>
                                 @else
-                                    <p class="text-muted">No loyalty transactions found.</p>
+                                    <p class="text-muted">You have not earned any points yet. They are added automatically when a stay is paid for.</p>
                                 @endif
                             </div>
                         </div>

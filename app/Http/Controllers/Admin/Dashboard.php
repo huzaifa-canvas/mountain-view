@@ -94,6 +94,8 @@ class Dashboard extends Controller
             'currency' => $request->input('currency', 'CAD'),
             'tax_rate' => $request->input('tax_rate', 15.00),
             'tax_label' => $request->input('tax_label', 'Taxes & fees'),
+            'manager_name' => $request->input('manager_name'),
+            'manager_title' => $request->input('manager_title'),
             'pet_fee' => $request->input('pet_fee', 25.00),
             'laundry_fee' => $request->input('laundry_fee', 25.00),
             'loyalty_points_per_dollar' => $request->input('loyalty_points_per_dollar', 0.2000),

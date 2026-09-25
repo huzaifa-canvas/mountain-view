@@ -18,6 +18,9 @@
         table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 13px; }
         th { background: #f1f5f9; color: #334155; text-align: left; padding: 10px; border-bottom: 2px solid #e2e8f0; font-weight: 700; }
         td { padding: 10px; border-bottom: 1px solid #f1f5f9; color: #475569; }
+        .promo-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 16px; margin: 20px 0; text-align: center; }
+        .promo-box p { margin: 0 0 12px; font-size: 13px; color: #0369a1; line-height: 1.5; }
+        .btn-link { display: inline-block; background: #184E77; color: #ffffff !important; padding: 10px 22px; border-radius: 20px; text-decoration: none; font-weight: 700; font-size: 13px; }
         .footer { background: #f8fafc; padding: 20px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; }
     </style>
 </head>
@@ -70,10 +73,23 @@
 
             <p style="font-size:13px; color:#64748b; margin-top:20px;">If you have any concerns or need further assistance, please don't hesitate to reach out to us directly.</p>
 
-            <p style="margin-top:24px; font-weight:600; color:#334155;">
-                We hope to welcome you back soon!<br>
-                <span style="color:#184E77; font-weight:700;">Mountain View Motel Management</span>
-            </p>
+            @if(!$order->customer_id)
+                <div class="promo-box">
+                    <p>
+                        Please come back soon &mdash; and do remember to sign up for our Membership Program
+                        so you earn reward points on every stay with us and can use those points for great
+                        discounts in future.
+                    </p>
+                    <a href="{{ url('customer/register') }}" class="btn-link">Sign Up For Membership Program &rarr;</a>
+                </div>
+            @else
+                <p style="font-size:13px; color:#475569; margin-top:14px;">
+                    Your reward points from this stay have been added to your account. Use them for a discount
+                    the next time you book with us.
+                </p>
+            @endif
+
+            @include('emails.partials.signoff', ['closing' => 'Looking forward to welcoming you again soon!'])
         </div>
         
         <div class="footer">

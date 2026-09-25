@@ -263,6 +263,45 @@
     color: #475569 !important;
     margin-bottom: 10px !important;
 }
+/*
+ * The rule above is !important and more specific than Bootstrap's .d-none, so
+ * without this the discount row could never be hidden again once shown.
+ */
+.checkout_review_text p.d-none { display: none !important; }
+.loyalty_redeem_box {
+    background: #F0F9FF;
+    border: 1px solid #BAE6FD;
+    border-radius: 14px;
+    padding: 15px 17px;
+    margin: 16px 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+}
+.loyalty_redeem_head { display: flex; align-items: center; gap: 12px; flex: 1 1 200px; min-width: 0; }
+.loyalty_redeem_icon {
+    width: 38px; height: 38px; border-radius: 10px; flex: 0 0 auto;
+    background: #fff; color: #184E77; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, .06);
+}
+.loyalty_redeem_copy h6 {
+    margin: 0 0 3px; font-size: 13px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .5px; color: #184E77;
+}
+.loyalty_redeem_copy p { margin: 0; font-size: 13px; color: #475569; }
+.loyalty_redeem_copy strong { color: #0F172A; }
+.loyalty_redeem_switch {
+    display: inline-flex; align-items: center; gap: 9px;
+    cursor: pointer; margin: 0; flex: 0 0 auto;
+}
+.loyalty_redeem_switch_text { font-size: 13px; font-weight: 800; color: #0F7B6C; }
+.loyalty_redeem_box .form-check-input { cursor: pointer; width: 42px; height: 22px; margin: 0; }
+.loyalty_redeem_box .form-check-input:checked { background-color: #0F7B6C; border-color: #0F7B6C; }
+.loyalty_points_used {
+    flex: 1 1 100%; margin: 0; font-size: 12px; font-weight: 700; color: #0F7B6C;
+}
 .checkout_review_text p span {
     font-weight: 700 !important;
     color: #0f172a !important;
@@ -653,19 +692,29 @@
                                     $redemptionRate = $general_setting->loyalty_points_redemption_rate ?? 0.10;
                                     $pointsValue = $customer->loyalty_points * $redemptionRate;
                                 @endphp
-                                <div class="loyalty_redeem_box p-3 mt-3 mb-3" style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:12px;">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="mb-1 text-primary" style="font-weight:700;"><i class="fa-solid fa-coins me-1"></i> Loyalty Points Balance</h6>
-                                            <p class="mb-0 text-muted small">You have <strong>{{ number_format($customer->loyalty_points, 0) }} points</strong> (Worth {{ $currency }} {{ number_format($pointsValue, 2) }})</p>
+                                <div class="loyalty_redeem_box">
+                                    <div class="loyalty_redeem_head">
+                                        <span class="loyalty_redeem_icon"><i class="fa-solid fa-coins"></i></span>
+                                        <div class="loyalty_redeem_copy">
+                                            <h6>Loyalty points</h6>
+                                            <p>
+                                                <strong>{{ number_format($customer->loyalty_points, 0) }}</strong> points
+                                                &middot; worth <strong>{{ $currency }} {{ number_format($pointsValue, 2) }}</strong>
+                                            </p>
                                         </div>
-                                        @if($customer->loyalty_points > 0)
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="apply_loyalty_points" style="cursor:pointer; transform: scale(1.3);">
-                                                <label class="form-check-label fw-bold text-success ms-2" for="apply_loyalty_points">Redeem Points</label>
-                                            </div>
-                                        @endif
                                     </div>
+
+                                    @if($customer->loyalty_points > 0)
+                                        <label class="loyalty_redeem_switch" for="apply_loyalty_points">
+                                            <span class="loyalty_redeem_switch_text">Use them</span>
+                                            <span class="form-check form-switch m-0">
+                                                <input class="form-check-input" type="checkbox" id="apply_loyalty_points">
+                                            </span>
+                                        </label>
+                                        <p class="loyalty_points_used" id="loyalty-points-used"></p>
+                                    @else
+                                        <p class="loyalty_points_used">Points are added once a stay is paid for.</p>
+                                    @endif
                                 </div>
                             @endif
 
@@ -991,6 +1040,8 @@
 
         // Loyalty points toggle handler
         const loyaltyCheckbox = document.getElementById('apply_loyalty_points');
+        const pointsUsed = document.getElementById('loyalty-points-used');
+        const REDEMPTION_RATE = {{ (float) ($general_setting->loyalty_points_redemption_rate ?? 0.10) }};
         if(loyaltyCheckbox) {
             loyaltyCheckbox.addEventListener('change', function() {
                 showLoyaltyLoader();
@@ -1013,11 +1064,18 @@
                         const discountAmt = document.getElementById('loyalty-discount-amount');
                         const grandTotal = document.getElementById('summary-grand-total');
 
-                        if(data.loyalty_discount > 0) {
-                            discountAmt.textContent = '-{{ $currency }} ' + data.loyalty_discount.toFixed(2);
-                            discountRow.classList.remove('d-none');
-                        } else {
-                            discountRow.classList.add('d-none');
+                        var discount = parseFloat(data.loyalty_discount) || 0;
+
+                        // Clear the figure as well as hiding the row: a hidden
+                        // row holding an old amount is one stylesheet change
+                        // away from being shown again with the wrong number.
+                        discountAmt.textContent = '-{{ $currency }} ' + discount.toFixed(2);
+                        discountRow.classList.toggle('d-none', discount <= 0);
+
+                        if (pointsUsed) {
+                            pointsUsed.textContent = discount > 0
+                                ? Math.round(discount / REDEMPTION_RATE).toLocaleString() + ' points applied'
+                                : '';
                         }
 
                         grandTotal.textContent = '{{ $currency }} ' + data.total.toFixed(2);

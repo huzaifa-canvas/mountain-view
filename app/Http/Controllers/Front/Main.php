@@ -40,7 +40,16 @@ class Main extends Controller
 
 
     public function room(){
-        return view('front.room');
+
+        // The two room tabs on this page are hand-written, so the listings are
+        // handed over keyed by slug and each tab picks out its own. Matching on
+        // slug rather than position means reordering the listings in admin
+        // cannot put one room's photos under the other room's heading.
+        $roomListings = \App\Models\Listing::where('listings_status', 1)
+            ->get()
+            ->keyBy('listings_slug');
+
+        return view('front.room', compact('roomListings'));
     }
 
     public function gallery(){
