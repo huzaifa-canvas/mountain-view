@@ -212,6 +212,98 @@
           </div>
         </div>
 
+        <!-- Change the dates -->
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Change dates</h5>
+
+            @php
+              $curIn  = $order->items->min('check_in');
+              $curOut = $order->items->max('check_out');
+              $curNights = $curIn && $curOut
+                  ? (int) \Carbon\Carbon::parse($curIn)->diffInDays(\Carbon\Carbon::parse($curOut))
+                  : 0;
+            @endphp
+
+            <p class="text-muted mb-3" style="font-size:13px;">
+              Staff can move a booking to any dates, including past ones, and change how long it runs.
+              The rooms still have to be free &mdash; the desk cannot double-book a night.
+            </p>
+
+            <form method="POST" action="{{ route('admin.orders.update-dates', $order->id) }}" id="admin-dates-form">
+              @csrf
+              <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                  <label class="form-label" for="ad_check_in">Check in</label>
+                  <input type="text" class="form-control" id="ad_check_in" name="check_in" autocomplete="off"
+                         value="{{ old('check_in', $curIn ? \Carbon\Carbon::parse($curIn)->toDateString() : '') }}" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="ad_check_out">Check out</label>
+                  <input type="text" class="form-control" id="ad_check_out" name="check_out" autocomplete="off"
+                         value="{{ old('check_out', $curOut ? \Carbon\Carbon::parse($curOut)->toDateString() : '') }}" required>
+                </div>
+                <div class="col-md-4">
+                  <button type="button" class="btn btn-primary w-100" id="admin-dates-open">
+                    <i class="bi bi-calendar-check"></i> Update dates
+                  </button>
+                </div>
+              </div>
+
+              <div class="mv-dates-preview mt-3" id="admin-dates-preview">
+                Currently <strong>{{ $curNights }} {{ Str::plural('night', $curNights) }}</strong>,
+                total {{ $currency }} {{ number_format($order->grand_total, 2) }}.
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="modal fade" id="adminDatesModal" tabindex="-1" aria-labelledby="adminDatesLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="adminDatesLabel">Change these dates?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mv-confirm-grid">
+                  <div>
+                    <div class="mv-confirm-label">Currently</div>
+                    <div class="mv-confirm-dates">
+                      {{ $curIn ? \Carbon\Carbon::parse($curIn)->format('M d') : '' }}
+                      &rarr;
+                      {{ $curOut ? \Carbon\Carbon::parse($curOut)->format('M d, Y') : '' }}
+                    </div>
+                    <div class="mv-confirm-sub">
+                      {{ $curNights }} {{ Str::plural('night', $curNights) }}
+                      &middot; {{ $currency }} {{ number_format($order->grand_total, 2) }}
+                    </div>
+                  </div>
+                  <i class="bi bi-arrow-right mv-confirm-arrow"></i>
+                  <div>
+                    <div class="mv-confirm-label">Changing to</div>
+                    <div class="mv-confirm-dates" id="confirm-new-dates">&mdash;</div>
+                    <div class="mv-confirm-sub" id="confirm-new-sub">&mdash;</div>
+                  </div>
+                </div>
+
+                <p class="mb-0 mt-3" id="confirm-money" style="font-size:13px;"></p>
+
+                <p class="mb-0 mt-2 text-muted" style="font-size:12px;">
+                  The rooms are checked again when this is saved. If they are not free for the new dates,
+                  nothing will change.
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Keep the current dates</button>
+                <button type="submit" form="admin-dates-form" class="btn btn-primary" id="admin-dates-btn">
+                  <i class="bi bi-check2"></i> Yes, update
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Booking timeline -->
         <div class="card">
           <div class="card-body">
@@ -244,10 +336,40 @@
                     {{ $change->to_check_in->format('M d') }} &rarr; {{ $change->to_check_out->format('M d, Y') }}
                     @php
                         $shift = $change->shiftInDays();
-                        $words = ($shift > 0 ? 'moved back ' : 'brought forward ')
-                            . abs($shift) . ' ' . Str::plural('day', abs($shift));
+                        $wasNights = (int) $change->from_check_in->diffInDays($change->from_check_out);
+                        $nowNights = (int) $change->to_check_in->diffInDays($change->to_check_out);
+
+                        $words = $shift === 0
+                            ? 'same arrival'
+                            : ($shift > 0 ? 'moved back ' : 'brought forward ')
+                                . abs($shift) . ' ' . Str::plural('day', abs($shift));
+
+                        // Staff can change the length as well, which changes the
+                        // price; a guest never can, so only say so when it is true.
+                        if ($wasNights !== $nowNights) {
+                            $words .= ', ' . $wasNights . ' ' . Str::plural('night', $wasNights)
+                                . ' became ' . $nowNights . ' ' . Str::plural('night', $nowNights);
+                        }
+
+                        $diff = $change->totalDifference();
                     @endphp
-                    ({{ $words }}, same length and same price)
+                    ({{ $words }})
+
+                    @if($diff !== null)
+                      <div class="mv-change-money">
+                        @if(abs($diff) < 0.01)
+                          Total unchanged at <strong>{{ $currency }} {{ number_format($change->to_total, 2) }}</strong>.
+                        @else
+                          Total went from <strong>{{ $currency }} {{ number_format($change->from_total, 2) }}</strong>
+                          to <strong>{{ $currency }} {{ number_format($change->to_total, 2) }}</strong> &mdash;
+                          @if($diff > 0)
+                            <span class="mv-money-up">{{ $currency }} {{ number_format($diff, 2) }} to collect from the guest.</span>
+                          @else
+                            <span class="mv-money-down">{{ $currency }} {{ number_format(abs($diff), 2) }} to refund in Stripe.</span>
+                          @endif
+                        @endif
+                      </div>
+                    @endif
                   </div>
                 </li>
               @endforeach
@@ -540,5 +662,156 @@
       </script>
     @enderror
   @endif
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<style>
+  .mv-dates-preview {
+    font-size: 13px; font-weight: 600; color: var(--mv-text-2);
+    background: var(--mv-surface-2); border: 1px solid var(--mv-border);
+    border-radius: 10px; padding: 11px 15px;
+  }
+  .mv-dates-preview strong { color: var(--mv-text); }
+  .mv-dates-preview .is_more { color: var(--mv-danger); }
+  .mv-dates-preview .is_less { color: var(--mv-success); }
+  .mv-confirm-grid {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    background: var(--mv-surface-2); border: 1px solid var(--mv-border);
+    border-radius: 12px; padding: 14px 18px;
+  }
+  .mv-confirm-label {
+    font-size: 11px; font-weight: 700; color: var(--mv-muted);
+    text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px;
+  }
+  .mv-confirm-dates { font-size: 15px; font-weight: 800; color: var(--mv-text); }
+  .mv-confirm-sub { font-size: 12px; color: var(--mv-text-2); margin-top: 2px; }
+  .mv-confirm-arrow { color: var(--mv-brand); font-size: 18px; }
+  .mv-change-money {
+    margin-top: 6px; font-size: 12px; color: var(--mv-text-2);
+  }
+  .mv-change-money strong { color: var(--mv-text); }
+  .mv-money-up { color: var(--mv-danger); font-weight: 700; }
+  .mv-money-down { color: var(--mv-success); font-weight: 700; }
+</style>
+
+<script>
+(function () {
+  var inEl  = document.getElementById('ad_check_in');
+  var outEl = document.getElementById('ad_check_out');
+  if (!inEl || !outEl) return;
+
+  var preview = document.getElementById('admin-dates-preview');
+  var CURRENCY = @json($currency);
+  var TAX_RATE = {{ (float) (DB::table('general_setting')->where('general_setting_id','1')->value('tax_rate') ?? 15) }};
+  var EXTRAS   = {{ (float) $order->pet_fee_total + (float) $order->laundry_fee_total }};
+  var DISCOUNT = {{ (float) $order->loyalty_discount }};
+  var PER_NIGHT = {{ (float) $order->items->sum(fn ($i) => $i->price_per_night * $i->rooms) }};
+  var CUR_NIGHTS = {{ $curNights }};
+  var CUR_TOTAL = {{ (float) $order->grand_total }};
+
+  function money(n) { return CURRENCY + ' ' + n.toFixed(2); }
+
+  function nights() {
+    if (!inEl.value || !outEl.value) return 0;
+    var d = Math.round((new Date(outEl.value) - new Date(inEl.value)) / 86400000);
+    return d > 0 ? d : 0;
+  }
+
+  // Shows what the booking would come to, so staff know before they save
+  // whether money needs collecting or refunding.
+  function update() {
+    var n = nights();
+    if (!n) { preview.innerHTML = 'Check-out has to be after check-in.'; return; }
+
+    var sub = PER_NIGHT * n + EXTRAS;
+    var total = Math.max(0, sub + sub * (TAX_RATE / 100) - DISCOUNT);
+    var diff = total - CUR_TOTAL;
+
+    var html = '<strong>' + n + (n === 1 ? ' night' : ' nights') + '</strong>, total <strong>' + money(total) + '</strong>';
+
+    if (Math.abs(diff) < 0.01) {
+      html += ' &mdash; unchanged.';
+    } else if (diff > 0) {
+      html += ' &mdash; <span class="is_more">' + money(diff) + ' more to collect</span> than the ' + money(CUR_TOTAL) + ' already on this booking.';
+    } else {
+      html += ' &mdash; <span class="is_less">' + money(-diff) + ' to refund</span> against the ' + money(CUR_TOTAL) + ' already on this booking.';
+    }
+
+    preview.innerHTML = html;
+  }
+
+  var outPicker = flatpickr(outEl, {
+    dateFormat: 'Y-m-d', altInput: true, altFormat: 'M j, Y',
+    onChange: update
+  });
+
+  // No minDate anywhere: staff may need to correct a stay that has already
+  // happened, which a guest never can.
+  flatpickr(inEl, {
+    dateFormat: 'Y-m-d', altInput: true, altFormat: 'M j, Y',
+    onChange: function (dates) {
+      if (dates.length) {
+        var next = new Date(dates[0]);
+        next.setDate(next.getDate() + 1);
+        if (!outPicker.selectedDates[0] || outPicker.selectedDates[0] <= dates[0]) {
+          outPicker.setDate(next, false);
+        }
+      }
+      update();
+    }
+  });
+
+  // The dialog restates what is about to happen, including the money, so a
+  // mis-typed date is caught before the booking moves.
+  var CUR_IN = @json($curIn ? \Carbon\Carbon::parse($curIn)->toDateString() : '');
+  var CUR_OUT = @json($curOut ? \Carbon\Carbon::parse($curOut)->toDateString() : '');
+
+  document.getElementById('admin-dates-open').addEventListener('click', function () {
+    var n = nights();
+
+    if (!n) {
+      preview.innerHTML = 'Check-out has to be after check-in.';
+      return;
+    }
+
+    if (inEl.value === CUR_IN && outEl.value === CUR_OUT) {
+      preview.innerHTML = 'Those are already this booking\'s dates.';
+      return;
+    }
+
+    var sub = PER_NIGHT * n + EXTRAS;
+    var total = Math.max(0, sub + sub * (TAX_RATE / 100) - DISCOUNT);
+    var diff = total - CUR_TOTAL;
+
+    document.getElementById('confirm-new-dates').textContent =
+      inEl._flatpickr.altInput.value + '  \u2192  ' + outEl._flatpickr.altInput.value;
+    document.getElementById('confirm-new-sub').textContent =
+      n + (n === 1 ? ' night' : ' nights') + '  \u00b7  ' + money(total);
+
+    var money_line = document.getElementById('confirm-money');
+    if (Math.abs(diff) < 0.01) {
+      money_line.className = 'mb-0 mt-3 text-muted';
+      money_line.textContent = 'The total does not change, so there is nothing to collect or refund.';
+    } else if (diff > 0) {
+      money_line.className = 'mb-0 mt-3 fw-bold text-danger';
+      money_line.textContent = 'You will need to collect ' + money(diff) + ' more from the guest.';
+    } else {
+      money_line.className = 'mb-0 mt-3 fw-bold text-success';
+      money_line.textContent = 'You will need to refund ' + money(-diff) + ' in Stripe.';
+    }
+
+    new bootstrap.Modal(document.getElementById('adminDatesModal')).show();
+  });
+
+  document.getElementById('admin-dates-form').addEventListener('submit', function () {
+    var btn = document.getElementById('admin-dates-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Saving\u2026';
+  });
+
+  update();
+})();
+</script>
 
 @include('admin.inc.footer')

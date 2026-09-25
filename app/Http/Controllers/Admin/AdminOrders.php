@@ -385,6 +385,136 @@ class AdminOrders extends Controller
         ]);
     }
 
+    /**
+     * Change a booking's dates from the front desk.
+     *
+     * Deliberately looser than what a guest can do: any dates, including past
+     * ones and a different number of nights, and at any point in the stay's
+     * life. The one thing it will not do is oversell — the rooms still have to
+     * be free, or the desk would be creating a clash it cannot serve.
+     *
+     * Changing the length changes the price, so the totals are worked out
+     * again and the difference is reported back for staff to settle.
+     */
+    public function updateDates(Request $request, $id)
+    {
+        $order = Order::with('items')->findOrFail($id);
+
+        $validated = $request->validate([
+            'check_in'  => ['required', 'date'],
+            'check_out' => ['required', 'date', 'after:check_in'],
+        ], [
+            'check_out.after' => 'The check-out date has to be after the check-in date.',
+        ]);
+
+        if ($order->items->isEmpty()) {
+            return back()->with('error', 'This booking has no rooms on it, so there are no dates to change.');
+        }
+
+        $checkIn  = \Carbon\Carbon::parse($validated['check_in'])->startOfDay();
+        $checkOut = \Carbon\Carbon::parse($validated['check_out'])->startOfDay();
+        $nights   = (int) $checkIn->diffInDays($checkOut) ?: 1;
+
+        $wasFrom  = \Carbon\Carbon::parse($order->items->min('check_in'));
+        $wasTo    = \Carbon\Carbon::parse($order->items->max('check_out'));
+        $wasTotal = (float) $order->grand_total;
+
+        if ($wasFrom->equalTo($checkIn) && $wasTo->equalTo($checkOut)) {
+            return back()->with('error', 'Those are already this booking\'s dates.');
+        }
+
+        $settings    = DB::table('general_setting')->where('general_setting_id', '1')->first();
+        $taxRate     = $settings->tax_rate ?? 15.00;
+
+        try {
+            DB::transaction(function () use ($order, $checkIn, $checkOut, $nights, $taxRate) {
+                // Check every room first, then write: a booking must not end up
+                // half moved because the second room was taken.
+                foreach ($order->items as $item) {
+                    $listing = \App\Models\Listing::where('listings_id', $item->listings_id)->first();
+
+                    if (!$listing) {
+                        continue; // the room type is gone; nothing to reserve against
+                    }
+
+                    DB::table('listings')->where('listings_id', $listing->listings_id)->lockForUpdate()->first();
+
+                    // This booking's own rooms are ignored — it is being moved,
+                    // not added, so it must not block itself.
+                    $fits = \App\Support\RoomAvailability::canFit(
+                        $listing, $checkIn, $checkOut, (int) $item->rooms, $order->id
+                    );
+
+                    if (!$fits) {
+                        $left = \App\Support\RoomAvailability::remaining($listing, $checkIn, $checkOut, $order->id);
+
+                        throw new \RuntimeException(
+                            $listing->listings_name . ' does not have ' . $item->rooms . ' '
+                            . \Illuminate\Support\Str::plural('room', $item->rooms)
+                            . ' free for those dates (' . (int) $left . ' free). Nothing has been changed.'
+                        );
+                    }
+                }
+
+                $roomSubtotal = 0;
+
+                foreach ($order->items as $item) {
+                    $item->check_in   = $checkIn->toDateString();
+                    $item->check_out  = $checkOut->toDateString();
+                    $item->nights     = $nights;
+                    $item->item_total = $item->price_per_night * $item->rooms * $nights;
+                    $item->save();
+
+                    $roomSubtotal += $item->item_total;
+                }
+
+                // Pet and laundry fees are per booking, not per night, so they
+                // carry over untouched. The loyalty discount already granted
+                // stays granted.
+                $subtotal = $roomSubtotal + (float) $order->pet_fee_total + (float) $order->laundry_fee_total;
+                $tax      = $subtotal * ($taxRate / 100);
+
+                $order->subtotal    = $subtotal;
+                $order->tax_amount  = $tax;
+                $order->grand_total = max(0, $subtotal + $tax - (float) $order->loyalty_discount);
+                $order->save();
+            });
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        $order->refresh()->load('items');
+
+        \App\Models\BookingChange::create([
+            'order_id'        => $order->id,
+            'changed_by'      => 'admin',
+            'changed_by_name' => optional(auth()->user())->name,
+            'from_check_in'   => $wasFrom->toDateString(),
+            'from_check_out'  => $wasTo->toDateString(),
+            'to_check_in'     => $checkIn->toDateString(),
+            'to_check_out'    => $checkOut->toDateString(),
+            'from_total'      => $wasTotal,
+            'to_total'        => $order->grand_total,
+        ]);
+
+        $currency = $settings->currency ?? 'CAD';
+        $newTotal = (float) $order->grand_total;
+        $message  = 'Dates updated to ' . $checkIn->format('M d') . ' → ' . $checkOut->format('M d, Y')
+            . ' (' . $nights . ' ' . \Illuminate\Support\Str::plural('night', $nights) . ').';
+
+        if (abs($newTotal - $wasTotal) >= 0.01) {
+            $message .= ' The total changed from ' . $currency . ' ' . number_format($wasTotal, 2)
+                . ' to ' . $currency . ' ' . number_format($newTotal, 2)
+                . ' — ' . ($newTotal > $wasTotal
+                    ? 'collect the difference from the guest.'
+                    : 'refund the difference in Stripe.');
+        } else {
+            $message .= ' The total is unchanged.';
+        }
+
+        return redirect()->route('admin.orders.show', $order->id)->with('success', $message);
+    }
+
     public function cancel(Request $request, $id)
     {
         $order = Order::with('items')->findOrFail($id);

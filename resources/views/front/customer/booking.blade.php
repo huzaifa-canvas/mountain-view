@@ -107,6 +107,10 @@
     }
     .bk_log_what { font-size: 14px; color: #475569; flex: 1 1 260px; }
     .bk_log_who { font-size: 12px; font-weight: 700; color: #184E77; }
+    .bk_log_money {
+        flex: 1 1 100%; font-size: 12px; font-weight: 700; color: #92400E;
+        background: #FEF3C7; border-radius: 8px; padding: 6px 11px; margin-top: 4px;
+    }
     .bk_move_form {
         display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px;
     }
@@ -257,6 +261,14 @@
                                     <span class="bk_log_who">
                                         by {{ $change->changed_by === 'admin' ? 'our team' : 'you' }}
                                     </span>
+                                    @php $diff = $change->totalDifference(); @endphp
+                                    @if($diff !== null && abs($diff) >= 0.01)
+                                        <span class="bk_log_money">
+                                            Total {{ $diff > 0 ? 'increased' : 'reduced' }} from
+                                            {{ $currency }} {{ number_format($change->from_total, 2) }}
+                                            to {{ $currency }} {{ number_format($change->to_total, 2) }}
+                                        </span>
+                                    @endif
                                 </li>
                             @endforeach
                         </ul>

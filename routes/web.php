@@ -60,6 +60,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::post('/orders', [\App\Http\Controllers\Admin\AdminOrders::class, 'store'])->name('admin.orders.store');
     Route::get('/orders/room-availability', [\App\Http\Controllers\Admin\AdminOrders::class, 'availability'])->name('admin.orders.availability');
     Route::get('/orders/{id}', [\App\Http\Controllers\Admin\AdminOrders::class, 'show'])->name('admin.orders.show');
+    Route::post('/orders/{id}/update-dates', [\App\Http\Controllers\Admin\AdminOrders::class, 'updateDates'])->name('admin.orders.update-dates');
     Route::post('/orders/{id}/cancel', [\App\Http\Controllers\Admin\AdminOrders::class, 'cancel'])->name('admin.orders.cancel');
     Route::post('/orders/{id}/mark-checked-in', [\App\Http\Controllers\Admin\AdminOrders::class, 'markCheckedIn'])->name('admin.orders.mark-checked-in');
     Route::post('/orders/{id}/mark-checked-out', [\App\Http\Controllers\Admin\AdminOrders::class, 'markCheckedOut'])->name('admin.orders.mark-checked-out');

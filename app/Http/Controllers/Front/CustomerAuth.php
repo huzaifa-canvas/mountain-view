@@ -298,6 +298,10 @@ class CustomerAuth extends Controller
                     'from_check_out'  => $wasTo->toDateString(),
                     'to_check_in'     => \Carbon\Carbon::parse($order->items->min('check_in'))->toDateString(),
                     'to_check_out'    => \Carbon\Carbon::parse($order->items->max('check_out'))->toDateString(),
+                    // A guest move never changes the length, so these match by
+                    // design; recording both still makes the log self-explaining.
+                    'from_total'      => $order->grand_total,
+                    'to_total'        => $order->grand_total,
                 ]);
             });
         } catch (\RuntimeException $e) {

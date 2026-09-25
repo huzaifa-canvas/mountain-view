@@ -102,6 +102,8 @@
   --bs-border-color: var(--mv-border);
   --bs-link-color: var(--mv-brand);
   --bs-link-hover-color: var(--mv-brand-soft);
+  --bs-dropdown-link-active-bg: var(--mv-brand);
+  --bs-dropdown-link-active-color: #FFFFFF;
 }
 
 [data-theme="dark"] {
@@ -991,9 +993,25 @@ a.mv-stat:hover {
   color: var(--mv-text-2);
   padding: .5rem .7rem;
 }
-.dropdown-item:hover, .dropdown-item:focus {
-  background: var(--mv-surface-2);
+/*
+ * NiceAdmin ships `.header-nav .profile .dropdown-item:hover` with a white
+ * background, which is more specific than a bare `.dropdown-item:hover`. In
+ * dark mode that left light text on a white pill, so these match its
+ * specificity instead of trying to out-shout it with !important.
+ */
+.dropdown-item:hover,
+.dropdown-item:focus,
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus,
+.header-nav .profile .dropdown-item:hover,
+.header-nav .profile .dropdown-item:focus {
+  background-color: var(--mv-surface-2);
   color: var(--mv-text);
+}
+.dropdown-item:hover i,
+.dropdown-menu .dropdown-item:hover i,
+.header-nav .profile .dropdown-item:hover i {
+  color: var(--mv-brand);
 }
 .dropdown-item i { color: var(--mv-muted); margin-right: 8px; }
 .dropdown-divider { border-color: var(--mv-border); }
